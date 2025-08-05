@@ -1,24 +1,16 @@
-# README
+# 🛠️ Workshop API (Rails + Docker)
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Este projeto é uma aplicação **Ruby on Rails (API only)** containerizada com **Docker**, utilizando **PostgreSQL** como banco de dados.
 
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+## 🚀 Comandos disponíveis
+```bash
+make setup     # Builda a imagem do projeto e faz a configuração do banco
+make build     # Builda a imagem do projeto
+make up        # Sobe os containers em segundo plano (detached)
+make down      # Derruba os containers e remove órfãos
+make db-create # Cria e migra o banco de dados
+make console   # Acessa o console Rails
+make server    # Inicia o servidor Rails
+make spec      # Roda os testes unitários
+make bash      # Acessa o bash do container web
+```
