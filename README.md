@@ -13,4 +13,5 @@ make console   # Acessa o console Rails
 make server    # Inicia o servidor Rails
 make spec      # Roda os testes unitários
 make bash      # Acessa o bash do container web
+make seed      # Cria massa para testar as funcionalidades em ambiente de desenvolvimento
 ```

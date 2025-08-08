@@ -10,8 +10,86 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 0) do
+ActiveRecord::Schema[7.2].define(version: 2025_08_08_213219) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "auto_parts", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "description"
+    t.integer "stock_quantity", default: 0, null: false
+    t.decimal "base_price", precision: 10, scale: 2, default: "0.0", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "budgets", force: :cascade do |t|
+    t.bigint "service_order_id", null: false
+    t.date "date", null: false
+    t.decimal "total_value", precision: 12, scale: 2, default: "0.0", null: false
+    t.string "status", default: "pending", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["service_order_id"], name: "index_budgets_on_service_order_id", unique: true
+  end
+
+  create_table "customers", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "document_number", null: false
+    t.string "email"
+    t.string "phone"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["document_number"], name: "index_customers_on_document_number", unique: true
+  end
+
+  create_table "service_order_items", force: :cascade do |t|
+    t.bigint "service_order_id", null: false
+    t.integer "quantity", default: 1, null: false
+    t.string "item_type", null: false
+    t.bigint "item_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["item_type", "item_id"], name: "index_service_order_items_on_item"
+    t.index ["service_order_id"], name: "index_service_order_items_on_service_order_id"
+  end
+
+  create_table "service_orders", force: :cascade do |t|
+    t.bigint "customer_id", null: false
+    t.bigint "vehicle_id", null: false
+    t.datetime "opening_date", null: false
+    t.datetime "closing_date"
+    t.string "status", default: "open", null: false
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["customer_id"], name: "index_service_orders_on_customer_id"
+    t.index ["vehicle_id"], name: "index_service_orders_on_vehicle_id"
+  end
+
+  create_table "services", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "description"
+    t.decimal "base_price", precision: 10, scale: 2, default: "0.0", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "vehicles", force: :cascade do |t|
+    t.bigint "customer_id", null: false
+    t.string "license_plate", null: false
+    t.string "brand"
+    t.string "model"
+    t.integer "year"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["customer_id"], name: "index_vehicles_on_customer_id"
+    t.index ["license_plate"], name: "index_vehicles_on_license_plate", unique: true
+  end
+
+  add_foreign_key "budgets", "service_orders"
+  add_foreign_key "service_order_items", "service_orders"
+  add_foreign_key "service_orders", "customers"
+  add_foreign_key "service_orders", "vehicles"
+  add_foreign_key "vehicles", "customers"
 end
