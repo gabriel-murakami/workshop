@@ -33,16 +33,16 @@ vehicles = [
 
 puts "Creating services..."
 services = [
-  { name: "Oil Change", description: "Replace engine oil and filter", base_price: 120.00 },
-  { name: "Brake Inspection", description: "Check brake pads and discs", base_price: 80.00 },
-  { name: "Engine Diagnostics", description: "Full engine system diagnostics", base_price: 150.00 }
+  { code: "SVC001", name: "Oil Change", description: "Replace engine oil and filter", base_price: 120.00 },
+  { code: "SVC002", name: "Brake Inspection", description: "Check brake pads and discs", base_price: 80.00 },
+  { code: "SVC003", name: "Engine Diagnostics", description: "Full engine system diagnostics", base_price: 150.00 }
 ].map { |attrs| Domain::ServiceOrderItem::Service.create!(attrs) }
 
 puts "Creating auto parts..."
 auto_parts = [
-  { name: "Oil Filter", description: "High quality oil filter", stock_quantity: 50, base_price: 30.00 },
-  { name: "Brake Pads", description: "Set of front brake pads", stock_quantity: 20, base_price: 90.00 },
-  { name: "Spark Plug", description: "Standard spark plug", stock_quantity: 100, base_price: 15.00 }
+  { sku: "AP001", name: "Oil Filter", description: "High quality oil filter", stock_quantity: 50, base_price: 30.00 },
+  { sku: "AP002", name: "Brake Pads", description: "Set of front brake pads", stock_quantity: 20, base_price: 90.00 },
+  { sku: "AP003", name: "Spark Plug", description: "Standard spark plug", stock_quantity: 100, base_price: 15.00 }
 ].map { |attrs| Domain::ServiceOrderItem::AutoPart.create!(attrs) }
 
 puts "Creating service orders with items and budgets..."

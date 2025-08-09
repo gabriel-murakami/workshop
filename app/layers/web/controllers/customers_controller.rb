@@ -21,11 +21,11 @@ module Web
       end
 
       def create
-        command = Application::Customer::Commands::CreateCustomerCommand.new(customer: customer_params)
+        customer = Application::Customer::CustomerApplication.new.create_customer(
+          Application::Customer::Commands::CreateCustomerCommand.new(customer: customer_params)
+        )
 
-        Application::Customer::CustomerApplication.new.create_customer(command)
-
-        head :created
+        render json: customer
       end
 
       def update

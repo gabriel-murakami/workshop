@@ -18,11 +18,11 @@ module Web
       end
 
       def create
-        command = Application::Customer::Commands::CreateVehicleCommand.new(vehicle: vehicle_params)
+        vehicle = Application::Customer::VehicleApplication.new.create_vehicle(
+          Application::Customer::Commands::CreateVehicleCommand.new(vehicle: vehicle_params)
+        )
 
-        Application::Customer::VehicleApplication.new.create_vehicle(command)
-
-        head :created
+        render json: vehicle
       end
 
       def update

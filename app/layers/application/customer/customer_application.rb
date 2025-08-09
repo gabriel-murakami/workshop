@@ -11,6 +11,8 @@ module Application
 
         ActiveRecord::Base.transaction do
           @customer_repository.save(customer)
+
+          customer
         end
       end
 

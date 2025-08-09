@@ -13,6 +13,10 @@ module Infra
         vehicle.destroy
       end
 
+      def update(vehicle, vehicle_attributes)
+        vehicle.update!(vehicle_attributes)
+      end
+
       def find_vehicle_by_license_plate(license_plate)
         @vehicle.find_by!(license_plate: license_plate)
       end

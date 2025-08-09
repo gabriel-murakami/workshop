@@ -26,6 +26,18 @@ Rails.application.routes.draw do
       get "vehicles/:license_plate", to: "vehicles#show"
 
       # ======================
+      # Services
+      # ======================
+      resources :services, only: %i[index create update destroy show]
+
+      # ======================
+      # Auto Parts
+      # ======================
+      resources :auto_parts, only: %i[index create update destroy show]
+      post "auto_parts/:id/add", to: "auto_parts#add_auto_parts"
+      post "auto_parts/:id/remove", to: "auto_parts#remove_auto_parts"
+
+      # ======================
       # Orders (exemplo futuro)
       # ======================
       # patch "orders/:order_id/products", to: "orders#add_product"

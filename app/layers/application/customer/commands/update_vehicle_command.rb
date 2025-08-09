@@ -1,7 +1,7 @@
 module Application
   module Customer
     module Commands
-      class UpdateVehicleParams
+      class UpdateVehicleCommand
         attr_accessor :vehicle_attributes
 
         def initialize(vehicle_attributes:)

@@ -14,7 +14,7 @@ module Infra
       end
 
       def update(customer, customer_attributes)
-        customer.update(customer_attributes)
+        customer.update!(customer_attributes)
       end
 
       def find_by_document_number(document_number)

@@ -10,6 +10,8 @@ module Application
 
         ActiveRecord::Base.transaction do
           @vehicle_repository.save(vehicle)
+
+          vehicle
         end
       end
 
