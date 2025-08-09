@@ -11,6 +11,8 @@ module Application
         ActiveRecord::Base.transaction do
           auto_part.add_auto_part(stock_control_command.stock_change)
           @auto_part_repository.save(auto_part)
+
+          auto_part
         end
       end
 
@@ -20,6 +22,8 @@ module Application
         ActiveRecord::Base.transaction do
           auto_part.remove_auto_part(stock_control_command.stock_change)
           @auto_part_repository.save(auto_part)
+
+          auto_part
         end
       end
 
