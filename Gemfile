@@ -5,6 +5,8 @@ gem "pg", "~> 1.1"
 gem "puma", ">= 5.0"
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 gem "bootsnap", require: false
+gem "jwt"
+gem "bcrypt"
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
@@ -14,7 +16,12 @@ gem "bootsnap", require: false
 
 group :development, :test do
   gem "debug", platforms: %i[mri windows], require: "debug/prelude"
-  gem "rspec"
+  gem "rswag-api"
+  gem "rswag-ui"
+  gem "rswag-specs"
+  gem "rspec-rails"
+  gem "faker"
+  gem "factory_bot_rails"
   gem "brakeman", require: false
   gem "rubocop-rails-omakase", require: false
 end

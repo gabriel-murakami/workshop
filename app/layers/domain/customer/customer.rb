@@ -7,6 +7,20 @@ module Domain
 
       validates :name, presence: true
       validates :document_number, presence: true, uniqueness: true
+
+      def add_vehicle(vehicle)
+        if vehicle_already_have_owner?(vehicle)
+          raise Exceptions::CustomerException.new("Vehicle already have owner")
+        end
+
+        self.vehicles << vehicle
+      end
+
+      private
+
+      def vehicle_already_have_owner?(vehicle)
+        vehicle.customer_id.present? && vehicle.customer != self
+      end
     end
   end
 end

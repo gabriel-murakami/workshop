@@ -1,3 +1,4 @@
+Domain::ServiceOrder::User.delete_all
 Domain::ServiceOrder::Budget.delete_all
 Domain::ServiceOrderItem::ServiceOrderItem.delete_all
 Domain::ServiceOrder::ServiceOrder.delete_all
@@ -5,6 +6,14 @@ Domain::Customer::Vehicle.delete_all
 Domain::Customer::Customer.delete_all
 Domain::ServiceOrderItem::Service.delete_all
 Domain::ServiceOrderItem::AutoPart.delete_all
+
+puts "Creating admin user"
+Domain::ServiceOrder::User.create!(
+  name: "Admin",
+  email: 'admin@admin.com',
+  password: 'password123',
+  password_confirmation: 'password123'
+)
 
 puts "Creating customers..."
 customers = [

@@ -32,7 +32,11 @@ server:
 	docker compose run --rm -p 3000:3000 $(APP) bundle exec rails server -b 0.0.0.0 ; \
 	$(MAKE) stop
 
-spec:
+bundle:
+	docker compose run --rm -p 3000:3000 $(APP) bundle install ; \
+	$(MAKE) stop
+
+test:
 	docker compose run --rm -p 3000:3000 $(APP) bundle exec rspec ; \
 	$(MAKE) stop
 
@@ -42,4 +46,8 @@ seed:
 
 bash:
 	docker compose run --rm $(APP) bash ; \
+	$(MAKE) stop
+
+swagger:
+	docker compose run --rm -p 3000:3000 $(APP) bundle exec rake rswag:specs:swaggerize ; \
 	$(MAKE) stop

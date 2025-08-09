@@ -1,15 +1,33 @@
 Rails.application.routes.draw do
+  mount Rswag::Ui::Engine => "/api-docs"
+  mount Rswag::Api::Engine => "/api-docs"
+
   scope module: "web" do
     scope module: "controllers" do
-      # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-
-      # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
-      # Can be used by load balancers and uptime monitors to verify that the app is live.
       get "up" => "rails/health#show", as: :rails_health_check
 
-      # Defines the root path route ("/")
-      # root "posts#index"
-      resources :service_orders, only: %i[index show]
+      # Auth
+      post "/login", to: "auth#login"
+
+      # resources :customers
+      # resources :service_orders, only: %i[index show]
+
+      # Commands
+      post "customers", to: "customers#create"
+      patch "customers/:document_number/add_vehicle", to: "customers#add_vehicle"
+
+      # patch "orders/:order_id/products", to: "orders#add_product"
+      # patch "orders/:order_id/products/:product_id", to: "orders#change_product_quantity"
+      # delete "orders/:order_id/products/:product_id", to: "orders#remove_product"
+
+      # Queries
+      get "customers", to: "customers#index"
+      get "customers/:document_number", to: "customers#show"
+      # get "orders", to: "orders#find_last_orders", constraints: lambda { |request| request.params.key?(:last_orders) }
+      # get "orders", to: "orders#find_orders_per_users", constraints: lambda { |request| request.params.key?(:orders_per_users) }
+
+      get "vehicles", to: "vehicles#index"
+      get "vehicles/:license_plate", to: "vehicles#show"
     end
   end
 end
