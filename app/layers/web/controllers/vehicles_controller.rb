@@ -1,35 +1,49 @@
 module Web
   module Controllers
     class VehiclesController < ApplicationController
-      include Authenticable
+      include ::Web::Controllers::Concerns::Authenticable
 
       def index
-        vehicles = Infra::QueryObjects::VehiclesQuery.all_vehicles
+        vehicles = Infra::Repositories::VehicleRepository.new.find_all
 
         render json: vehicles
       end
 
       def show
         vehicle = Infra::Repositories::VehicleRepository.new.find_vehicle_by_license_plate(
-          permitted_params[:license_plate]
+          vehicle_params[:license_plate]
         )
 
         render json: vehicle
       end
 
       def create
+        command = Application::Customer::Commands::CreateVehicleCommand.new(vehicle: vehicle_params)
+
+        Application::Customer::VehicleApplication.new.create_vehicle(command)
+
+        head :created
       end
 
       def update
+        command = Application::Customer::Commands::UpdateVehicleCommand.new(vehicle_attributes: vehicle_params)
+        vehicle = Application::Customer::VehicleApplication.new.update_vehicle(command)
+
+        render json: vehicle
       end
 
       def destroy
+        command = Application::Customer::Commands::DeleteVehicleCommand.new(vehicle_id: vehicle_params[:id])
+
+        Application::Customer::VehicleApplication.new.delete_vehicle(command)
+
+        head :ok
       end
 
       private
 
-      def permitted_params
-        params.permit(:license_plate, :brand, :model, :year)
+      def vehicle_params
+        params.permit(:id, :license_plate, :brand, :model, :year, :customer_id)
       end
     end
   end

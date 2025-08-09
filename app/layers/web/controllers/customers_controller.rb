@@ -1,36 +1,51 @@
 module Web
   module Controllers
     class CustomersController < ApplicationController
-      include Authenticable
+      include ::Web::Controllers::Concerns::Authenticable
 
-      BASE_FIELDS = %i[name document_number email phone]
+      BASE_FIELDS = %i[id name document_number email phone]
       ADD_VEHICLE_FIELDS = %i[license_plate]
 
       def index
-        customers = Infra::QueryObjects::CustomersQuery.all_customers
+        customers = Infra::Repositories::CustomerRepository.new.find_all
 
         render json: customers
       end
 
       def show
-        customer = Infra::Repositories::CustomerRepository.new.find_customer_by_document_number(
-          permitted_params[:document_number]
+        customer = Infra::Repositories::CustomerRepository.new.find_by_document_number(
+          customer_params[:document_number]
         )
 
         render json: customer, include: :vehicles
       end
 
       def create
-        command = Application::Customer::Commands::CreateCustomerCommand.new(customer: permitted_params)
+        command = Application::Customer::Commands::CreateCustomerCommand.new(customer: customer_params)
 
         Application::Customer::CustomerApplication.new.create_customer(command)
 
         head :created
       end
 
+      def update
+        command = Application::Customer::Commands::UpdateCustomerCommand.new(customer_attributes: customer_params)
+        customer = Application::Customer::CustomerApplication.new.update_customer(command)
+
+        render json: customer
+      end
+
+      def destroy
+        command = Application::Customer::Commands::DeleteCustomerCommand.new(customer_id: customer_params[:id])
+
+        Application::Customer::CustomerApplication.new.delete_customer(command)
+
+        head :ok
+      end
+
       def add_vehicle
         command = Application::Customer::Commands::AddVehicleCommand.new(
-          customer_document_number: permitted_params[:document_number],
+          customer_document_number: customer_params[:document_number],
           vehicle_license_plate: permitted_params[:license_plate]
         )
 
@@ -39,16 +54,14 @@ module Web
         head :ok
       end
 
-      def update
-      end
-
-      def destroy
-      end
-
       private
 
       def permitted_params
         params.permit(BASE_FIELDS | ADD_VEHICLE_FIELDS)
+      end
+
+      def customer_params
+        permitted_params.except(ADD_VEHICLE_FIELDS)
       end
     end
   end

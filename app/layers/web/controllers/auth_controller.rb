@@ -1,4 +1,4 @@
-require_dependency Rails.root.join("app/layers/web/controllers/concerns/authenticable").to_s
+# require_dependency Rails.root.join("app/layers/web/controllers/concerns/authenticable").to_s
 
 module Web
   module Controllers

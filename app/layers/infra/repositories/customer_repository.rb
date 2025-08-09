@@ -9,8 +9,24 @@ module Infra
         customer.save
       end
 
-      def find_customer_by_document_number(document_number)
-        @customer.includes(:vehicles).find_by(document_number: document_number)
+      def delete(customer)
+        customer.destroy
+      end
+
+      def update(customer, customer_attributes)
+        customer.update(customer_attributes)
+      end
+
+      def find_by_document_number(document_number)
+        @customer.includes(:vehicles).find_by!(document_number: document_number)
+      end
+
+      def find_by_id(customer_id)
+        @customer.includes(:vehicles).find_by!(id: customer_id)
+      end
+
+      def find_all
+        @customer.all
       end
     end
   end

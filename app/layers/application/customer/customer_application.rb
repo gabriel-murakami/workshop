@@ -14,18 +14,32 @@ module Application
         end
       end
 
+      def delete_customer(delete_customer_command)
+        customer = @customer_repository.find_by_id(delete_customer_command.customer_id)
+
+        ActiveRecord::Base.transaction do
+          @customer_repository.delete(customer)
+        end
+      end
+
+      def update_customer(update_customer_command)
+        customer = @customer_repository.find_by_id(update_customer_command.customer_attributes[:id])
+
+        ActiveRecord::Base.transaction do
+          @customer_repository.update(customer, update_customer_command.customer_attributes)
+
+          customer
+        end
+      end
+
       def add_vehicle(add_vehicle_command)
-        customer = @customer_repository.find_customer_by_document_number(add_vehicle_command.customer_document_number)
+        customer = @customer_repository.find_by_document_number(add_vehicle_command.customer_document_number)
         vehicle = @vehicle_repository.find_vehicle_by_license_plate(add_vehicle_command.vehicle_license_plate)
 
         ActiveRecord::Base.transaction do
           customer.add_vehicle(vehicle)
           @customer_repository.save(customer)
         end
-      end
-
-      def find_customer_by_document_number(document_number)
-        @customer_repository.find_customer_by_document_number(document_number)
       end
     end
   end
