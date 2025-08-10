@@ -10,6 +10,231 @@ components:
       scheme: bearer
       bearerFormat: JWT
 paths:
+  "/login":
+    post:
+      summary: User login and receives JWT token
+      tags:
+      - Authentication
+      parameters: []
+      responses:
+        '200':
+          description: JWT token returned
+        '401':
+          description: invalid credentials
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: admin@admin.com
+                password:
+                  type: string
+                  example: password123
+              required:
+              - email
+              - password
+  "/customers":
+    get:
+      summary: List all customers
+      tags:
+      - Customers
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: customers found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    document_number:
+                      type: string
+                    email:
+                      type: string
+                    phone:
+                      type: string
+                  required:
+                  - id
+                  - name
+                  - document_number
+                  - email
+                  - phone
+    post:
+      summary: Create a new customer
+      tags:
+      - Customers
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '201':
+          description: customer created
+        '422':
+          description: invalid request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                document_number:
+                  type: string
+                email:
+                  type: string
+                phone:
+                  type: string
+              required:
+              - name
+              - document_number
+              - email
+              - phone
+  "/customers/{document_number}":
+    get:
+      summary: Get customer by document number
+      tags:
+      - Customers
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: document_number
+        in: path
+        description: Customer document number
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: customer found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  document_number:
+                    type: string
+                  email:
+                    type: string
+                  phone:
+                    type: string
+                  vehicles:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        license_plate:
+                          type: string
+                      required:
+                      - license_plate
+                required:
+                - id
+                - name
+                - document_number
+                - email
+                - phone
+                - vehicles
+        '404':
+          description: customer not found
+    put:
+      summary: Update customer by id
+      tags:
+      - Customers
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: customer updated
+        '422':
+          description: invalid request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+                document_number:
+                  type: string
+                email:
+                  type: string
+                phone:
+                  type: string
+              required:
+              - id
+              - name
+              - document_number
+              - email
+              - phone
+    delete:
+      summary: Delete customer by id
+      tags:
+      - Customers
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: customer deleted
+        '404':
+          description: customer not found
+  "/customers/{document_number}/add_vehicle":
+    post:
+      summary: Add vehicle to customer
+      tags:
+      - Customers
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: document_number
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: vehicle added
+        '404':
+          description: customer not found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                license_plate:
+                  type: string
+              required:
+              - license_plate
   "/service_orders":
     get:
       summary: returns all service orders
@@ -58,5 +283,177 @@ paths:
                   - status
                   - created_at
                   - updated_at
+  "/vehicles":
+    get:
+      summary: List all vehicles
+      tags:
+      - Vehicles
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: vehicles found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    license_plate:
+                      type: string
+                    brand:
+                      type: string
+                    model:
+                      type: string
+                    year:
+                      type: integer
+                    customer_id:
+                      type: integer
+                  required:
+                  - id
+                  - license_plate
+                  - brand
+                  - model
+                  - year
+                  - customer_id
+    post:
+      summary: Create a new vehicle
+      tags:
+      - Vehicles
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '201':
+          description: vehicle created
+        '422':
+          description: invalid request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                license_plate:
+                  type: string
+                brand:
+                  type: string
+                model:
+                  type: string
+                year:
+                  type: integer
+                customer_id:
+                  type: integer
+              required:
+              - license_plate
+              - brand
+              - model
+              - year
+              - customer_id
+  "/vehicles/{license_plate}":
+    get:
+      summary: Get vehicle by license plate
+      tags:
+      - Vehicles
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: license_plate
+        in: path
+        description: Vehicle license plate
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: vehicle found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  license_plate:
+                    type: string
+                  brand:
+                    type: string
+                  model:
+                    type: string
+                  year:
+                    type: integer
+                  customer_id:
+                    type: integer
+                required:
+                - id
+                - license_plate
+                - brand
+                - model
+                - year
+                - customer_id
+        '404':
+          description: vehicle not found
+    put:
+      summary: Update vehicle by id
+      tags:
+      - Vehicles
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: vehicle updated
+        '422':
+          description: invalid request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                license_plate:
+                  type: string
+                brand:
+                  type: string
+                model:
+                  type: string
+                year:
+                  type: integer
+                customer_id:
+                  type: integer
+              required:
+              - id
+              - license_plate
+              - brand
+              - model
+              - year
+              - customer_id
+    delete:
+      summary: Delete vehicle by id
+      tags:
+      - Vehicles
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: vehicle deleted
+        '404':
+          description: vehicle not found
 servers:
 - url: http://localhost:3000
