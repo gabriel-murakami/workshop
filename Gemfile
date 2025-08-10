@@ -17,6 +17,7 @@ gem "bcrypt"
 # gem "rack-cors"
 
 group :development, :test do
+  gem "simplecov", require: false
   gem "debug", platforms: %i[mri windows], require: "debug/prelude"
   gem "rswag-api"
   gem "rswag-ui"

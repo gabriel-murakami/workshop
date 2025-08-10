@@ -46,6 +46,9 @@ Rails.application.routes.draw do
       # SerivceOrders
       # ======================
       resources :service_orders, only: %i[index show]
+      post "service_orders/:id/add_auto_parts", to: "service_orders#add_auto_parts"
+      post "service_orders/:id/add_services", to: "service_orders#add_services"
+      post "service_orders/:id/finish", to: "service_orders#finish"
     end
   end
 end

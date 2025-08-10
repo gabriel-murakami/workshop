@@ -1,8 +1,6 @@
 module Web
   module Controllers
-    class CustomersController < ApplicationController
-      include ::Web::Controllers::Concerns::Authenticable
-
+    class CustomersController < AuthController
       BASE_FIELDS = %i[id name document_number email phone]
       ADD_VEHICLE_FIELDS = %i[license_plate]
 

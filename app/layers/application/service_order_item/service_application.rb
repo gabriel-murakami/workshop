@@ -32,6 +32,10 @@ module Application
           service
         end
       end
+
+      def find_services_by_codes(codes)
+        Infra::QueryObjects::ServicesQuery.find_services_by_codes(codes)
+      end
     end
   end
 end

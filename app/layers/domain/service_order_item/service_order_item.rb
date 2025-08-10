@@ -6,6 +6,8 @@ module Domain
 
       validates :quantity, numericality: { only_integer: true, greater_than: 0 }
 
+      scope :auto_parts, -> { where(item_type: "Domain::ServiceOrderItem::AutoPart") }
+
       def item_price
         quantity * item.base_price
       end

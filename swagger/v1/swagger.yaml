@@ -209,7 +209,7 @@ paths:
         '404':
           description: customer not found
   "/customers/{document_number}/add_vehicle":
-    post:
+    patch:
       summary: Add vehicle to customer
       tags:
       - Customers
@@ -238,7 +238,7 @@ paths:
               - license_plate
   "/service_orders":
     get:
-      summary: returns all service orders
+      summary: List all service orders
       tags:
       - Service Orders
       security:
@@ -262,6 +262,7 @@ paths:
                     service_started_at:
                       type: string
                       format: date-time
+                      nullable: true
                     service_finished_at:
                       type: string
                       format: date-time
@@ -284,6 +285,188 @@ paths:
                   - status
                   - created_at
                   - updated_at
+  "/service_orders/{id}/add_services":
+    post:
+      summary: Add services to a service order
+      tags:
+      - Service Orders
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: services added
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                services_codes:
+                  type: array
+                  items:
+                    type: string
+                    pattern: "^SVC.*"
+              required:
+              - services_codes
+  "/service_orders/{id}/add_auto_parts":
+    post:
+      summary: Add auto parts to a service order
+      tags:
+      - Service Orders
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: auto parts added
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                auto_parts_params:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      sku:
+                        type: string
+                        pattern: "^AP.*"
+                      quantity:
+                        type: integer
+                    required:
+                    - sku
+                    - quantity
+              required:
+              - auto_parts_params
+  "/service_orders/{id}/start":
+    post:
+      summary: Start a service order
+      tags:
+      - Service Orders
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: service order started
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  customer_id:
+                    type: integer
+                  vehicle_id:
+                    type: integer
+                  service_started_at:
+                    type: string
+                    format: date-time
+                    nullable: true
+                  service_finished_at:
+                    type: string
+                    format: date-time
+                    nullable: true
+                  status:
+                    type: string
+                  description:
+                    type: string
+                    nullable: true
+                  created_at:
+                    type: string
+                    format: date-time
+                  updated_at:
+                    type: string
+                    format: date-time
+                required:
+                - id
+                - customer_id
+                - vehicle_id
+                - status
+                - created_at
+                - updated_at
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+              required:
+              - id
+  "/service_orders/{id}/finish":
+    post:
+      summary: Finish a service order
+      tags:
+      - Service Orders
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: service order finished
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  customer_id:
+                    type: integer
+                  vehicle_id:
+                    type: integer
+                  service_started_at:
+                    type: string
+                    format: date-time
+                    nullable: true
+                  service_finished_at:
+                    type: string
+                    format: date-time
+                    nullable: true
+                  status:
+                    type: string
+                  description:
+                    type: string
+                    nullable: true
+                  created_at:
+                    type: string
+                    format: date-time
+                  updated_at:
+                    type: string
+                    format: date-time
+                required:
+                - id
+                - customer_id
+                - vehicle_id
+                - status
+                - created_at
+                - updated_at
   "/vehicles":
     get:
       summary: List all vehicles

@@ -1,8 +1,6 @@
 module Web
   module Controllers
-    class VehiclesController < ApplicationController
-      include ::Web::Controllers::Concerns::Authenticable
-
+    class VehiclesController < AuthController
       def index
         vehicles = Infra::Repositories::VehicleRepository.new.find_all
 

@@ -1,6 +1,6 @@
 module Web
   module Controllers
-    class ServicesController < ApplicationController
+    class ServicesController < AuthController
       def index
         services = Infra::Repositories::ServiceRepository.new.find_all
 

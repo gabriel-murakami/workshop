@@ -1,11 +1,12 @@
 module Web
   module Controllers
-    class AutoPartsController < ApplicationController
+    class AutoPartsController < AuthController
       AUTO_PARTS_FIELDS = %i[id name description stock_quantity base_price]
       STOCK_CONTROL_FIELDS = %i[stock_change]
 
       def index
         auto_parts = Infra::Repositories::AutoPartRepository.new.find_all
+
         render json: auto_parts
       end
 
