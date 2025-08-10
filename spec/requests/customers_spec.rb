@@ -123,7 +123,9 @@ RSpec.describe 'Customers', type: :request do
         run_test!
       end
     end
+  end
 
+  path '/customers/{id}' do
     put 'Update customer by id' do
       tags 'Customers'
       security [ bearerAuth: [] ]

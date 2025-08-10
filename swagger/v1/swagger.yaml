@@ -151,6 +151,7 @@ paths:
                 - vehicles
         '404':
           description: customer not found
+  "/customers/{id}":
     put:
       summary: Update customer by id
       tags:
@@ -396,6 +397,7 @@ paths:
                 - customer_id
         '404':
           description: vehicle not found
+  "/vehicles/{id}":
     put:
       summary: Update vehicle by id
       tags:

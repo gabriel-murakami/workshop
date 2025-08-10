@@ -115,7 +115,9 @@ RSpec.describe 'Vehicles', type: :request do
         run_test!
       end
     end
+  end
 
+  path '/vehicles/{id}' do
     put 'Update vehicle by id' do
       tags 'Vehicles'
       security [ bearerAuth: [] ]
