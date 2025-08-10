@@ -49,6 +49,7 @@ Rails.application.routes.draw do
       post "service_orders/:id/add_auto_parts", to: "service_orders#add_auto_parts"
       post "service_orders/:id/add_services", to: "service_orders#add_services"
       post "service_orders/:id/finish", to: "service_orders#finish"
+      post "service_orders/:id/start", to: "service_orders#start"
     end
   end
 end

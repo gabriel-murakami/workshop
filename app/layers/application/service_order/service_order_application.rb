@@ -19,7 +19,7 @@ module Application
 
       def add_auto_parts(add_auto_parts_command)
         service_order = @service_order_repository.find_by_id(add_auto_parts_command.service_order_id)
-        auto_part_parms = add_auto_parts_command.auto_part_params
+        auto_part_parms = add_auto_parts_command.auto_parts_params
 
         auto_parts = Application::ServiceOrderItem::AutoPartApplication.new.find_auto_parts_by_skus(
           auto_part_parms.map { |param| param[:sku] }
@@ -28,12 +28,12 @@ module Application
         auto_parts_list = auto_parts.map do |auto_part|
           {
             item: auto_part,
-            quantity: auto_part_params.find { |param| param[:sku] == auto_part.sku  }[:quantity]
+            quantity: auto_parts_params.find { |param| param[:sku] == auto_part.sku  }[:quantity]
           }
         end
 
         ActiveRecord::Base.transaction do
-          service_order.add_auto_part(auto_parts_list)
+          service_order.add_auto_parts(auto_parts_list)
           @service_order_repository.save(service_order)
 
           remove_auto_parts(auto_parts_list)

@@ -13,7 +13,7 @@
       <img src="./assets/0.13.2/loading.gif" alt="loading"/>
     </div>
     <div id="wrapper" class="hide">
-      <div class="timestamp">Generated <abbr class="timeago" title="2025-08-10T20:02:32+00:00">2025-08-10T20:02:32+00:00</abbr></div>
+      <div class="timestamp">Generated <abbr class="timeago" title="2025-08-10T20:20:44+00:00">2025-08-10T20:20:44+00:00</abbr></div>
       <ul class="group_tabs"></ul>
 
       <div id="content">
@@ -42,9 +42,9 @@
   </div>
 
   <div class="t-line-summary">
-    <b>1154</b> relevant lines,
+    <b>1157</b> relevant lines,
     <span class="green"><b>0</b> lines covered</span> and
-    <span class="red"><b>1154</b> lines missed. </span>
+    <span class="red"><b>1157</b> lines missed. </span>
     (<span class="red">
   0.0%
 </span>
@@ -545,10 +545,10 @@
           <tr class="t-file">
             <td class="strong t-file__name"><a href="#b59f7f10e084d6b1323c7578b00b6e5963efa89c" class="src_link" title="app/layers/infra/repositories/service_order_repository.rb">app/layers/infra/repositories/service_order_repository.rb</a></td>
             <td class="red strong cell--number t-file__coverage">0.00 %</td>
+            <td class="cell--number">25</td>
             <td class="cell--number">21</td>
-            <td class="cell--number">18</td>
             <td class="cell--number">0</td>
-            <td class="cell--number">18</td>
+            <td class="cell--number">21</td>
             <td class="cell--number">0.00</td>
             
           </tr>
@@ -1200,9 +1200,9 @@
   </div>
 
   <div class="t-line-summary">
-    <b>1142</b> relevant lines,
+    <b>1145</b> relevant lines,
     <span class="green"><b>0</b> lines covered</span> and
-    <span class="red"><b>1142</b> lines missed. </span>
+    <span class="red"><b>1145</b> lines missed. </span>
     (<span class="red">
   0.0%
 </span>
@@ -1703,10 +1703,10 @@
           <tr class="t-file">
             <td class="strong t-file__name"><a href="#b59f7f10e084d6b1323c7578b00b6e5963efa89c" class="src_link" title="app/layers/infra/repositories/service_order_repository.rb">app/layers/infra/repositories/service_order_repository.rb</a></td>
             <td class="red strong cell--number t-file__coverage">0.00 %</td>
+            <td class="cell--number">25</td>
             <td class="cell--number">21</td>
-            <td class="cell--number">18</td>
             <td class="cell--number">0</td>
-            <td class="cell--number">18</td>
+            <td class="cell--number">21</td>
             <td class="cell--number">0.00</td>
             
           </tr>
@@ -3991,7 +3991,7 @@
 
             
 
-            <code class="ruby">        attr_accessor :service_order_id, :auto_parts_skus</code>
+            <code class="ruby">        attr_accessor :service_order_id, :auto_parts_params</code>
           </li>
         </div>
       
@@ -4011,7 +4011,7 @@
 
             
 
-            <code class="ruby">        def initialize(service_order_id:, auto_parts_skus:)</code>
+            <code class="ruby">        def initialize(service_order_id:, auto_parts_params:)</code>
           </li>
         </div>
       
@@ -4031,7 +4031,7 @@
 
             
 
-            <code class="ruby">          @auto_parts_skus = auto_parts_skus</code>
+            <code class="ruby">          @auto_parts_params = auto_parts_params</code>
           </li>
         </div>
       
@@ -5217,7 +5217,7 @@
 
             
 
-            <code class="ruby">        auto_part_parms = add_auto_parts_command.auto_part_params</code>
+            <code class="ruby">        auto_part_parms = add_auto_parts_command.auto_parts_params</code>
           </li>
         </div>
       
@@ -5307,7 +5307,7 @@
 
             
 
-            <code class="ruby">            quantity: auto_part_params.find { |param| param[:sku] == auto_part.sku  }[:quantity]</code>
+            <code class="ruby">            quantity: auto_parts_params.find { |param| param[:sku] == auto_part.sku  }[:quantity]</code>
           </li>
         </div>
       
@@ -5357,7 +5357,7 @@
 
             
 
-            <code class="ruby">          service_order.add_auto_part(auto_parts_list)</code>
+            <code class="ruby">          service_order.add_auto_parts(auto_parts_list)</code>
           </li>
         </div>
       
@@ -6788,7 +6788,7 @@
 
             
 
-            <code class="ruby">      def find_auto_parts_by_(skus)</code>
+            <code class="ruby">      def find_auto_parts_by_skus(skus)</code>
           </li>
         </div>
       
@@ -6798,7 +6798,7 @@
 
             
 
-            <code class="ruby">        Infra::QueryObjects::AutoPartsQuery.auto_parts_skus(skus)</code>
+            <code class="ruby">        Infra::QueryObjects::AutoPartsQuery.find_auto_parts_by_sku(skus)</code>
           </li>
         </div>
       
@@ -9170,7 +9170,7 @@
 
             
 
-            <code class="ruby">        new_service_order_count = metric.service_order_count + 1</code>
+            <code class="ruby">        new_service_order_count = service_order_count + 1</code>
           </li>
         </div>
       
@@ -9180,7 +9180,7 @@
 
             
 
-            <code class="ruby">        old_elapsed_time = metric.service_order_count * metric.average_time</code>
+            <code class="ruby">        old_elapsed_time = service_order_count * average_time</code>
           </li>
         </div>
       
@@ -10818,7 +10818,7 @@
 
             
 
-            <code class="ruby">        def auto_part_by_sku(skus)</code>
+            <code class="ruby">        def find_auto_parts_by_sku(skus)</code>
           </li>
         </div>
       
@@ -11070,7 +11070,7 @@
 
             
 
-            <code class="ruby">        def services_by_code(codes)</code>
+            <code class="ruby">        def find_services_by_codes(codes)</code>
           </li>
         </div>
       
@@ -12147,9 +12147,9 @@
     
 
     <div class="t-line-summary">
-      <b>18</b> relevant lines.
+      <b>21</b> relevant lines.
       <span class="green"><b>0</b> lines covered</span> and
-      <span class="red"><b>18</b> lines missed.</span>
+      <span class="red"><b>21</b> lines missed.</span>
     </div>
 
     
@@ -12235,7 +12235,7 @@
 
             
 
-            <code class="ruby">      def find_all</code>
+            <code class="ruby">      def save(service_order)</code>
           </li>
         </div>
       
@@ -12245,7 +12245,7 @@
 
             
 
-            <code class="ruby">        @service_order.all</code>
+            <code class="ruby">        service_order.save!</code>
           </li>
         </div>
       
@@ -12275,7 +12275,7 @@
 
             
 
-            <code class="ruby">      def find_by_id(service_order_id)</code>
+            <code class="ruby">      def find_all</code>
           </li>
         </div>
       
@@ -12285,7 +12285,7 @@
 
             
 
-            <code class="ruby">        @service_order.find_by!(id: service_order_id)</code>
+            <code class="ruby">        @service_order.all</code>
           </li>
         </div>
       
@@ -12315,7 +12315,7 @@
 
             
 
-            <code class="ruby">      def update(service_order, service_order_attributes)</code>
+            <code class="ruby">      def find_by_id(service_order_id)</code>
           </li>
         </div>
       
@@ -12325,7 +12325,7 @@
 
             
 
-            <code class="ruby">        service_order.update!(service_order_attributes)</code>
+            <code class="ruby">        @service_order.find_by!(id: service_order_id)</code>
           </li>
         </div>
       
@@ -12340,12 +12340,12 @@
         </div>
       
         <div>
-          <li class="missed" data-hits="0" data-linenumber="19">
+          <li class="never" data-hits="" data-linenumber="19">
             
 
             
 
-            <code class="ruby">    end</code>
+            <code class="ruby"></code>
           </li>
         </div>
       
@@ -12355,12 +12355,52 @@
 
             
 
-            <code class="ruby">  end</code>
+            <code class="ruby">      def update(service_order, service_order_attributes)</code>
           </li>
         </div>
       
         <div>
           <li class="missed" data-hits="0" data-linenumber="21">
+            
+
+            
+
+            <code class="ruby">        service_order.update!(service_order_attributes)</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="missed" data-hits="0" data-linenumber="22">
+            
+
+            
+
+            <code class="ruby">      end</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="missed" data-hits="0" data-linenumber="23">
+            
+
+            
+
+            <code class="ruby">    end</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="missed" data-hits="0" data-linenumber="24">
+            
+
+            
+
+            <code class="ruby">  end</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="missed" data-hits="0" data-linenumber="25">
             
 
             

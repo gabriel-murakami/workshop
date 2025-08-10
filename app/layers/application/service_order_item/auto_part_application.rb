@@ -55,8 +55,8 @@ module Application
         end
       end
 
-      def find_auto_parts_by_(skus)
-        Infra::QueryObjects::AutoPartsQuery.auto_parts_skus(skus)
+      def find_auto_parts_by_skus(skus)
+        Infra::QueryObjects::AutoPartsQuery.find_auto_parts_by_sku(skus)
       end
     end
   end

@@ -137,7 +137,7 @@ RSpec.describe 'Service Orders', type: :request do
           },
           required: %w[id customer_id vehicle_id status created_at updated_at]
 
-        let(:service_order) { create(:service_order, status: 'pending') }
+        let(:service_order) { create(:service_order, status: 'awaiting_approval') }
         let(:id) { service_order.id }
         let(:body) { { id: service_order.id } }
 
@@ -174,6 +174,7 @@ RSpec.describe 'Service Orders', type: :request do
           },
           required: %w[id customer_id vehicle_id status created_at updated_at]
 
+        let!(:metric) { create(:metric) }
         let(:service_order) { create(:service_order, status: 'in_progress') }
         let(:id) { service_order.id }
         let(:body) { { id: service_order.id } }

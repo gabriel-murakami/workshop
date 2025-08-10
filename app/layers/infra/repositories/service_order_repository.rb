@@ -5,6 +5,10 @@ module Infra
         @service_order = model.fetch(:service_order) { Domain::ServiceOrder::ServiceOrder }
       end
 
+      def save(service_order)
+        service_order.save!
+      end
+
       def find_all
         @service_order.all
       end
