@@ -18,10 +18,10 @@ module Domain
         awaiting_approval: "awaiting_approval",
         in_progress: "in_progress",
         finished: "finished",
-        delivered: "delivered"
+        delivered: "delivered",
+        cancelled: "cancelled"
       }
 
-      validates :opening_date, presence: true
       validates :status, presence: true
     end
   end

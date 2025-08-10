@@ -22,8 +22,8 @@ class CreateInitialTables < ActiveRecord::Migration[7.1]
     create_table :service_orders do |t|
       t.references :customer, null: false, foreign_key: true
       t.references :vehicle, null: false, foreign_key: true
-      t.datetime :opening_date, null: false
-      t.datetime :closing_date
+      t.datetime :service_started_at
+      t.datetime :service_finished_at
       t.string :status, null: false, default: "open"
       t.text :description
 

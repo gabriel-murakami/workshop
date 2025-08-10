@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_08_09_203606) do
+ActiveRecord::Schema[7.2].define(version: 2025_08_09_214743) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -45,6 +45,11 @@ ActiveRecord::Schema[7.2].define(version: 2025_08_09_203606) do
     t.index ["document_number"], name: "index_customers_on_document_number", unique: true
   end
 
+  create_table "metrics", force: :cascade do |t|
+    t.integer "service_order_count", default: 0
+    t.decimal "average_time", default: "0.0"
+  end
+
   create_table "service_order_items", force: :cascade do |t|
     t.bigint "service_order_id", null: false
     t.integer "quantity", default: 1, null: false
@@ -59,8 +64,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_08_09_203606) do
   create_table "service_orders", force: :cascade do |t|
     t.bigint "customer_id", null: false
     t.bigint "vehicle_id", null: false
-    t.datetime "opening_date", null: false
-    t.datetime "closing_date"
+    t.datetime "service_started_at"
+    t.datetime "service_finished_at"
     t.string "status", default: "open", null: false
     t.text "description"
     t.datetime "created_at", null: false

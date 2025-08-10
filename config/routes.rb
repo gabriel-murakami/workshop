@@ -38,6 +38,11 @@ Rails.application.routes.draw do
       post "auto_parts/:id/remove", to: "auto_parts#remove_auto_parts"
 
       # ======================
+      # Metrics
+      # ======================
+      resources :metrics, only: %i[index]
+
+      # ======================
       # Orders (exemplo futuro)
       # ======================
       # patch "orders/:order_id/products", to: "orders#add_product"

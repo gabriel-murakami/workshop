@@ -50,7 +50,6 @@ puts "Creating service orders with items and budgets..."
 service_order1 = Domain::ServiceOrder::ServiceOrder.create!(
   customer: customers[0],
   vehicle: vehicles[0],
-  opening_date: Date.today - 5.days,
   status: :received,
   description: "Customer reported strange noise from engine."
 )
@@ -70,7 +69,6 @@ Domain::ServiceOrder::Budget.create!(
 service_order2 = Domain::ServiceOrder::ServiceOrder.create!(
   customer: customers[1],
   vehicle: vehicles[2],
-  opening_date: Date.today - 2.days,
   status: :in_progress,
   description: "Routine brake check and oil change."
 )
@@ -85,6 +83,11 @@ Domain::ServiceOrder::Budget.create!(
   date: Date.today - 1.day,
   total_value: (services[0].base_price + services[1].base_price + auto_parts[0].base_price + auto_parts[1].base_price),
   status: :approved
+)
+
+Domain::ServiceOrder::Metric.create(
+  average_time: 56.9,
+  service_order_count: 14
 )
 
 puts "Seed created"

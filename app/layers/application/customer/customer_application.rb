@@ -2,8 +2,8 @@ module Application
   module Customer
     class CustomerApplication
       def initialize(repositories = {})
-        @customer_repository = repositories.fetch(:order) { Infra::Repositories::CustomerRepository.new }
-        @vehicle_repository = repositories.fetch(:order) { Infra::Repositories::VehicleRepository.new }
+        @customer_repository = repositories.fetch(:customer) { Infra::Repositories::CustomerRepository.new }
+        @vehicle_repository = repositories.fetch(:vehicle) { Infra::Repositories::VehicleRepository.new }
       end
 
       def create_customer(create_customer_command)
