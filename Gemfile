@@ -16,16 +16,19 @@ gem "bcrypt"
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin Ajax possible
 # gem "rack-cors"
 
-group :development, :test do
+group :test do
   gem "simplecov", require: false
   gem "simplecov-console"
-  gem "debug", platforms: %i[mri windows], require: "debug/prelude"
-  gem "rswag-api"
-  gem "rswag-ui"
   gem "rswag-specs"
   gem "rspec-rails"
-  gem "faker"
   gem "factory_bot_rails"
+  gem "faker"
   gem "brakeman", require: false
+end
+
+group :development, :test do
+  gem "rswag-ui"
+  gem "rswag-api"
+  gem "debug", platforms: %i[mri windows], require: "debug/prelude"
   gem "rubocop-rails-omakase", require: false
 end

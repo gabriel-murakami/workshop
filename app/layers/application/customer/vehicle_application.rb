@@ -5,6 +5,14 @@ module Application
         @vehicle_repository = repositories.fetch(:vehicle) { Infra::Repositories::VehicleRepository.new }
       end
 
+      def find_all
+        @vehicle_repository.find_all
+      end
+
+      def find_vehicle_by_license_plate(license_plate)
+        @vehicle_repository.find_vehicle_by_license_plate(license_plate)
+      end
+
       def create_vehicle(create_vehicle_command)
         vehicle = Domain::Customer::Vehicle.new(create_vehicle_command.vehicle)
 

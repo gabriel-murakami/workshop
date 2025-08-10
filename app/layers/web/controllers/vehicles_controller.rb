@@ -2,13 +2,11 @@ module Web
   module Controllers
     class VehiclesController < AuthController
       def index
-        vehicles = Infra::Repositories::VehicleRepository.new.find_all
-
-        render json: vehicles
+        render json: Application::Customer::VehicleApplication.new.find_all
       end
 
       def show
-        vehicle = Infra::Repositories::VehicleRepository.new.find_vehicle_by_license_plate(
+        vehicle = Application::Customer::VehicleApplication.new.find_vehicle_by_license_plate(
           vehicle_params[:license_plate]
         )
 

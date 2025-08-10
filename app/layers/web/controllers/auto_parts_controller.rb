@@ -5,15 +5,11 @@ module Web
       STOCK_CONTROL_FIELDS = %i[stock_change]
 
       def index
-        auto_parts = Infra::Repositories::AutoPartRepository.new.find_all
-
-        render json: auto_parts
+        render json: Application::ServiceOrderItem::AutoPartApplication.new.find_all
       end
 
       def show
-        auto_part = Infra::Repositories::AutoPartRepository.new.find_by_id(auto_part_params[:id])
-
-        render json: auto_part
+        render json: Application::ServiceOrderItem::AutoPartApplication.new.find_by_id(auto_part_params[:id])
       end
 
       def create

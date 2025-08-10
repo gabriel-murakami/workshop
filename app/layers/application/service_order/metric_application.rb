@@ -5,6 +5,10 @@ module Application
         @metric_repository = repositories.fetch(:order) { Infra::Repositories::MetricRepository.new }
       end
 
+      def find_all
+        Infra::Repositories::MetricRepository.new.find_all
+      end
+
       def update_metric(update_metric_command)
         started_at = update_metric_command.service_started_at
         finished_at = update_metric_command.service_finished_at

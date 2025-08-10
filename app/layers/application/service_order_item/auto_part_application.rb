@@ -5,6 +5,14 @@ module Application
         @auto_part_repository = repositories.fetch(:auto_part) { Infra::Repositories::AutoPartRepository.new }
       end
 
+      def find_all
+        @auto_part_repository.find_all
+      end
+
+      def find_by_id(auto_part_id)
+        @auto_part_repository.find_by_id(auto_part_id)
+      end
+
       def add_auto_part(stock_control_command)
         auto_part = @auto_part_repository.find_by_id(stock_control_command.auto_part_id)
 

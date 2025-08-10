@@ -3,6 +3,8 @@
 module Web
   module Controllers
     class AuthController < ApplicationController
+      include ::Web::Controllers::Concerns::Authenticable
+
       skip_before_action :authenticate_request!, only: [ :login ]
 
       def login

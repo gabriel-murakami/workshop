@@ -5,6 +5,14 @@ module Application
         @service_order_repository = repositories.fetch(:service_order) { Infra::Repositories::ServiceOrderRepository.new }
       end
 
+      def find_all
+        @service_order_repository.find_all
+      end
+
+      def find_by_id(service_order_id)
+        @service_order_repository.find_by_id(service_order_id)
+      end
+
       def add_services(add_services_command)
         service_order = @service_order_repository.find_by_id(add_services_command.service_order_id)
         services = Application::ServiceOrderItem::ServiceApplication.new.find_services_by_codes(

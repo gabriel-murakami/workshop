@@ -2,15 +2,11 @@ module Web
   module Controllers
     class ServicesController < AuthController
       def index
-        services = Infra::Repositories::ServiceRepository.new.find_all
-
-        render json: services
+        render json: Application::ServiceOrderItem::ServiceApplication.new.find_all
       end
 
       def show
-        service = Infra::Repositories::ServiceRepository.new.find_by_id(service_params[:id])
-
-        render json: service
+        render json: Application::ServiceOrderItem::ServiceApplication.new.find_by_id(service_params[:id])
       end
 
       def create

@@ -1,6 +1,24 @@
+ENV['RAILS_ENV'] ||= 'test'
+
+if ENV['RAILS_ENV'] == 'test'
+  require 'simplecov'
+  require 'simplecov-console'
+
+  SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
+    SimpleCov::Formatter::HTMLFormatter,
+    SimpleCov::Formatter::Console
+  ])
+
+  SimpleCov.start 'rails' do
+    add_filter '/spec/'
+    add_filter '/config/'
+    add_filter 'app/layers/web/channels/application_cable'
+  end
+end
+
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 require 'spec_helper'
-ENV['RAILS_ENV'] ||= 'test'
+
 require_relative '../config/environment'
 # Prevent database truncation if the environment is production
 abort("The Rails environment is running in production mode!") if Rails.env.production?

@@ -6,6 +6,14 @@ module Application
         @vehicle_repository = repositories.fetch(:vehicle) { Infra::Repositories::VehicleRepository.new }
       end
 
+      def find_all
+        @customer_repository.find_all
+      end
+
+      def find_by_document_number(document_number)
+        @customer_repository.find_by_document_number(document_number)
+      end
+
       def create_customer(create_customer_command)
         customer = Domain::Customer::Customer.new(create_customer_command.customer)
 

@@ -5,6 +5,14 @@ module Application
         @service_repository = repositories.fetch(:service) { Infra::Repositories::ServiceRepository.new }
       end
 
+      def find_all
+        @service_repository.find_all
+      end
+
+      def find_by_id(service_id)
+        @service_repository.find_by_id(service_id)
+      end
+
       def create_service(create_service_command)
         service = Domain::ServiceOrderItem::Service.new(create_service_command.service)
 

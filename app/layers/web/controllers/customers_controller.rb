@@ -5,15 +5,11 @@ module Web
       ADD_VEHICLE_FIELDS = %i[license_plate]
 
       def index
-        customers = Infra::Repositories::CustomerRepository.new.find_all
-
-        render json: customers
+        render json: Application::Customer::CustomerApplication.new.find_all
       end
 
       def show
-        customer = Infra::Repositories::CustomerRepository.new.find_by_document_number(
-          customer_params[:document_number]
-        )
+        customer = Application::Customer::CustomerApplication.new.find_by_document_number(customer_params[:document_number])
 
         render json: customer, include: :vehicles
       end
