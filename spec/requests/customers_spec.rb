@@ -59,7 +59,7 @@ RSpec.describe 'Customers', type: :request do
         let(:customer) do
           {
             name: 'Luke Skywalker',
-            document_number: '12345678988',
+            document_number: '104.576.560-00',
             email: 'luke@rebellion.com',
             phone: '555-1234'
           }
@@ -68,7 +68,7 @@ RSpec.describe 'Customers', type: :request do
         run_test! do |response|
           data = JSON.parse(response.body)
           expect(data['name']).to eq('Luke Skywalker')
-          expect(data['document_number']).to eq('12345678988')
+          expect(data['document_number']).to eq('104.576.560-00')
         end
       end
 

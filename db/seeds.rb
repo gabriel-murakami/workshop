@@ -17,18 +17,18 @@ Domain::ServiceOrder::User.create!(
 
 puts "Creating customers..."
 customers = [
-  { name: "Luke Skywalker", document_number: "12345678901", email: "luke@rebellion.org", phone: "555-0001" },
-  { name: "Leia Organa", document_number: "10987654321", email: "leia@rebellion.org", phone: "555-0002" },
-  { name: "Han Solo", document_number: "19283746500", email: "han@falcon.space", phone: "555-0003" },
-  { name: "Darth Vader", document_number: "56473829100", email: "vader@empire.gov", phone: "555-0004" }
+  { name: "Luke Skywalker", document_number: "388.304.240-48", email: "luke@rebellion.org", phone: "+55 (11) 91234-5678" },
+  { name: "Leia Organa", document_number: "498.599.240-23", email: "leia@rebellion.org", phone: "+55 (21) 99876-5432" },
+  { name: "Han Solo", document_number: "937.159.930-81", email: "han@falcon.space", phone: "+55 (31) 98765-4321" },
+  { name: "Darth Vader", document_number: "104.576.560-00", email: "vader@empire.gov", phone: "+55 (41) 99999-0000" }
 ].map { |attrs| Domain::Customer::Customer.create!(attrs) }
 
 puts "Creating vehicles..."
 vehicles = [
-  { customer: customers[0], license_plate: "ABC-1234", brand: "Toyota", model: "Corolla", year: 2020 },
-  { customer: customers[0], license_plate: "DEF-5678", brand: "Ford", model: "Mustang", year: 2018 },
-  { customer: customers[1], license_plate: "GHI-9012", brand: "Honda", model: "Civic", year: 2019 },
-  { customer: customers[2], license_plate: "JKL-3456", brand: "Chevrolet", model: "Camaro", year: 2021 }
+  { customer: customers[0], license_plate: "ABC1234", brand: "Toyota", model: "Corolla", year: 2020 },
+  { customer: customers[0], license_plate: "DEF5678", brand: "Ford", model: "Mustang", year: 2018 },
+  { customer: customers[1], license_plate: "GHI9012", brand: "Honda", model: "Civic", year: 2019 },
+  { customer: customers[2], license_plate: "JKL3456", brand: "Chevrolet", model: "Camaro", year: 2021 }
 ].map { |attrs| Domain::Customer::Vehicle.create!(attrs) }
 
 puts "Creating services..."
@@ -50,15 +50,13 @@ puts "Creating service orders with items and budgets..."
 service_order1 = Domain::ServiceOrder::ServiceOrder.create!(
   customer: customers[0],
   vehicle: vehicles[0],
-  status: :received,
+  status: :awaiting_approval,
   description: "Customer reported strange noise from engine."
 )
 
-# Add service items
 service_order1.service_order_items.create!(item: services[2], quantity: 1)
 service_order1.service_order_items.create!(item: auto_parts[2], quantity: 4)
 
-# Add budget
 Domain::ServiceOrder::Budget.create!(
   service_order: service_order1,
   date: Date.today - 4.days,
@@ -70,7 +68,8 @@ service_order2 = Domain::ServiceOrder::ServiceOrder.create!(
   customer: customers[1],
   vehicle: vehicles[2],
   status: :in_progress,
-  description: "Routine brake check and oil change."
+  description: "Routine brake check and oil change.",
+  service_started_at: Time.now
 )
 
 service_order2.service_order_items.create!(item: services[0], quantity: 1)
@@ -85,7 +84,7 @@ Domain::ServiceOrder::Budget.create!(
   status: :approved
 )
 
-Domain::ServiceOrder::Metric.create(
+Domain::ServiceOrder::Metric.create!(
   average_time: 56.9,
   service_order_count: 14
 )

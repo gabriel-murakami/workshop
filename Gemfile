@@ -9,6 +9,7 @@ gem "tzinfo-data", platforms: %i[ windows jruby ]
 gem "bootsnap", require: false
 gem "jwt"
 gem "bcrypt"
+gem "cpf_cnpj"
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
@@ -18,7 +19,7 @@ gem "bcrypt"
 
 group :test do
   gem "simplecov", require: false
-  gem "simplecov-console"
+  gem "simplecov-console", require: false
   gem "rswag-specs"
   gem "rspec-rails"
   gem "factory_bot_rails"

@@ -76,7 +76,6 @@ jobs:
         env:
           RAILS_ENV: test
           DATABASE_URL: postgres://postgres:postgres@localhost:5432
-          # REDIS_URL: redis://localhost:6379/0
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
         run: |
           bin/rails db:test:prepare

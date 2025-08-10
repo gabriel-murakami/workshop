@@ -37,6 +37,219 @@ paths:
               required:
               - email
               - password
+  "/auto_parts":
+    get:
+      summary: List all auto parts
+      tags:
+      - Auto Parts
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: auto parts found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    description:
+                      type: string
+                      nullable: true
+                    stock_quantity:
+                      type: integer
+                    base_price:
+                      type: string
+                  required:
+                  - id
+                  - name
+                  - stock_quantity
+                  - base_price
+    post:
+      summary: Create a new auto part
+      tags:
+      - Auto Parts
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '201':
+          description: auto part created
+        '422':
+          description: invalid request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                stock_quantity:
+                  type: integer
+                base_price:
+                  type: string
+                sku:
+                  type: string
+              required:
+              - name
+              - stock_quantity
+              - base_price
+              - sku
+  "/auto_parts/{id}":
+    get:
+      summary: Get auto part by id
+      tags:
+      - Auto Parts
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        description: Auto part ID
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: auto part found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  description:
+                    type: string
+                    nullable: true
+                  stock_quantity:
+                    type: integer
+                  base_price:
+                    type: string
+                required:
+                - id
+                - name
+                - stock_quantity
+                - base_price
+        '404':
+          description: auto part not found
+    put:
+      summary: Update auto part by id
+      tags:
+      - Auto Parts
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: auto part updated
+        '422':
+          description: invalid request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+                description:
+                  type: string
+                stock_quantity:
+                  type: integer
+                base_price:
+                  type: string
+              required:
+              - id
+              - name
+              - stock_quantity
+              - base_price
+    delete:
+      summary: Delete auto part by id
+      tags:
+      - Auto Parts
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: auto part deleted
+        '404':
+          description: auto part not found
+  "/auto_parts/{id}/add":
+    post:
+      summary: Add stock quantity to auto part
+      tags:
+      - Auto Parts
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: stock added
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                stock_change:
+                  type: integer
+              required:
+              - stock_change
+  "/auto_parts/{id}/remove":
+    post:
+      summary: Remove stock quantity from auto part
+      tags:
+      - Auto Parts
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: stock removed
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                stock_change:
+                  type: integer
+              required:
+              - stock_change
   "/customers":
     get:
       summary: List all customers
@@ -236,6 +449,41 @@ paths:
                   type: string
               required:
               - license_plate
+  "/metrics":
+    get:
+      summary: List all metrics
+      tags:
+      - Metrics
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: metrics found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    service_order_count:
+                      type: integer
+                    average_time:
+                      type: number
+                    created_at:
+                      type: string
+                      format: date-time
+                    updated_at:
+                      type: string
+                      format: date-time
+                  required:
+                  - id
+                  - service_order_count
+                  - average_time
+                  - created_at
+                  - updated_at
   "/service_orders":
     get:
       summary: List all service orders
@@ -467,6 +715,155 @@ paths:
                 - status
                 - created_at
                 - updated_at
+  "/services":
+    get:
+      summary: List all services
+      tags:
+      - Services
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: services found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    description:
+                      type: string
+                      nullable: true
+                    base_price:
+                      type: string
+                  required:
+                  - id
+                  - name
+                  - base_price
+    post:
+      summary: Create a new service
+      tags:
+      - Services
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '201':
+          description: service created
+        '422':
+          description: invalid request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                base_price:
+                  type: string
+                code:
+                  type: string
+              required:
+              - name
+              - base_price
+              - code
+  "/services/{id}":
+    get:
+      summary: Get service by id
+      tags:
+      - Services
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        description: Service ID
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: service found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  description:
+                    type: string
+                    nullable: true
+                  base_price:
+                    type: string
+                required:
+                - id
+                - name
+                - base_price
+        '404':
+          description: service not found
+    put:
+      summary: Update service by id
+      tags:
+      - Services
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: service updated
+        '422':
+          description: invalid request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+                description:
+                  type: string
+                base_price:
+                  type: string
+              required:
+              - id
+              - name
+              - base_price
+    delete:
+      summary: Delete service by id
+      tags:
+      - Services
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: service deleted
+        '404':
+          description: service not found
   "/vehicles":
     get:
       summary: List all vehicles

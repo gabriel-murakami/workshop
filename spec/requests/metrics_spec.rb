@@ -24,7 +24,7 @@ RSpec.describe 'Metrics', type: :request do
             properties: {
               id: { type: :integer },
               service_order_count: { type: :integer },
-              average_time: { type: :string },
+              average_time: { type: :number },
               created_at: { type: :string, format: 'date-time' },
               updated_at: { type: :string, format: 'date-time' }
             },

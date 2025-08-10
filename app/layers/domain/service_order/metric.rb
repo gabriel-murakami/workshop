@@ -15,6 +15,16 @@ module Domain
           average_time: (old_elapsed_time + elapsed_time) / new_service_order_count
         )
       end
+
+      def average_time_rounded
+        average_time.to_f.round(2)
+      end
+
+      def as_json(options = {})
+        super(options).merge(
+          "average_time" => average_time_rounded
+        )
+      end
     end
   end
 end

@@ -111,7 +111,7 @@ RSpec.describe 'Vehicles', type: :request do
       end
 
       response '404', 'vehicle not found' do
-        let(:license_plate) { 'NONEXIST' }
+        let(:license_plate) { 'XXX0000' }
         run_test!
       end
     end

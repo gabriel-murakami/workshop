@@ -64,6 +64,8 @@ module Application
       def start_service_order(start_service_order_command)
         service_order = @service_order_repository.find_by_id(start_service_order_command.service_order_id)
 
+        raise Exceptions::ServiceOrderException.new("Service order already started") if service_order.in_progress?
+
         ActiveRecord::Base.transaction do
           @service_order_repository.update(
             service_order,
@@ -76,6 +78,8 @@ module Application
 
       def finish_service_order(finish_service_order_command)
         service_order = @service_order_repository.find_by_id(finish_service_order_command.service_order_id)
+
+        raise Exceptions::ServiceOrderException.new("Service order already finished") if service_order.finished?
 
         ActiveRecord::Base.transaction do
           @service_order_repository.update(

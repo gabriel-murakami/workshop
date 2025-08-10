@@ -49,5 +49,5 @@ bash:
 	$(MAKE) stop
 
 swagger:
-	docker compose run --rm -p 3000:3000 $(APP) bundle exec rake rswag:specs:swaggerize ; \
+	docker compose run --rm -p 3000:3000 $(APP) bundle exec rake rswag:specs:swaggerize RAILS_ENV=test ; \
 	$(MAKE) stop
