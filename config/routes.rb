@@ -43,11 +43,9 @@ Rails.application.routes.draw do
       resources :metrics, only: %i[index]
 
       # ======================
-      # Orders (exemplo futuro)
+      # SerivceOrders
       # ======================
-      # patch "orders/:order_id/products", to: "orders#add_product"
-      # patch "orders/:order_id/products/:product_id", to: "orders#change_product_quantity"
-      # delete "orders/:order_id/products/:product_id", to: "orders#remove_product"
+      resources :service_orders, only: %i[index show]
     end
   end
 end

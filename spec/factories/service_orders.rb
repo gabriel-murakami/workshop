@@ -2,8 +2,8 @@ FactoryBot.define do
   factory :service_order, class: "Domain::ServiceOrder::ServiceOrder" do
     association :customer
     association :vehicle
-    opening_date { Time.current }
-    closing_date { nil }
+    service_started_at { Time.current }
+    service_finished_at { nil }
     status { "open" }
     description { "Oil change and full inspection" }
   end
