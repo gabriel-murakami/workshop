@@ -59,7 +59,7 @@ RSpec.describe 'Customers', type: :request do
         let(:customer) do
           {
             name: 'Luke Skywalker',
-            document_number: '12345678900',
+            document_number: '12345678988',
             email: 'luke@rebellion.com',
             phone: '555-1234'
           }
@@ -68,12 +68,12 @@ RSpec.describe 'Customers', type: :request do
         run_test! do |response|
           data = JSON.parse(response.body)
           expect(data['name']).to eq('Luke Skywalker')
-          expect(data['document_number']).to eq('12345678900')
+          expect(data['document_number']).to eq('12345678988')
         end
       end
 
       response '422', 'invalid request' do
-        let(:customer) { { name: '' } }
+        let(:customer) { { phone: '555-1234' } }
         run_test!
       end
     end
@@ -189,7 +189,7 @@ RSpec.describe 'Customers', type: :request do
   end
 
   path '/customers/{document_number}/add_vehicle' do
-    post 'Add vehicle to customer' do
+    patch 'Add vehicle to customer' do
       tags 'Customers'
       security [ bearerAuth: [] ]
       consumes 'application/json'
@@ -204,9 +204,10 @@ RSpec.describe 'Customers', type: :request do
       }
 
       response '200', 'vehicle added' do
+        let(:vehicle_record) { create(:vehicle, license_plate: "XYZ9999", customer: nil) }
         let(:customer_record) { create(:customer) }
         let(:document_number) { customer_record.document_number }
-        let(:vehicle) { { license_plate: 'ABC1234' } }
+        let(:vehicle) { { license_plate: vehicle_record.license_plate } }
 
         run_test!
       end

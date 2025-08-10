@@ -160,7 +160,7 @@ RSpec.describe 'Vehicles', type: :request do
 
       response '422', 'invalid request' do
         let(:id) { create(:vehicle).id }
-        let(:vehicle) { { id: id, brand: '' } }
+        let(:vehicle) { { id: id, license_plate: '' } }
         run_test!
       end
     end

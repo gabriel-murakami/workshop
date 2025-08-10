@@ -94,7 +94,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_08_09_214743) do
   end
 
   create_table "vehicles", force: :cascade do |t|
-    t.bigint "customer_id", null: false
+    t.bigint "customer_id"
     t.string "license_plate", null: false
     t.string "brand"
     t.string "model"

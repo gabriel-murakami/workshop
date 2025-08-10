@@ -20,7 +20,7 @@ module Web
           Application::ServiceOrderItem::Commands::CreateAutoPartCommand.new(auto_part: auto_part_params)
         )
 
-        render json: auto_part
+        render json: auto_part, status: :created
       end
 
       def update

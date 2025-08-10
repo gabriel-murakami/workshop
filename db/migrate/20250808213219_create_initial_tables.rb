@@ -10,7 +10,7 @@ class CreateInitialTables < ActiveRecord::Migration[7.1]
     end
 
     create_table :vehicles do |t|
-      t.references :customer, null: false, foreign_key: true
+      t.references :customer, foreign_key: true
       t.string :license_plate, null: false, index: { unique: true }
       t.string :brand
       t.string :model

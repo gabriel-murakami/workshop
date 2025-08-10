@@ -18,7 +18,7 @@ module Web
           Application::ServiceOrderItem::Commands::CreateServiceCommand.new(service: service_params)
         )
 
-        render json: service
+        render json: service, status: :created
       end
 
       def update

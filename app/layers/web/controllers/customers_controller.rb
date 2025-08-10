@@ -25,7 +25,7 @@ module Web
           Application::Customer::Commands::CreateCustomerCommand.new(customer: customer_params)
         )
 
-        render json: customer
+        render json: customer, status: :created
       end
 
       def update

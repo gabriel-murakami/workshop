@@ -22,7 +22,7 @@ module Web
           Application::Customer::Commands::CreateVehicleCommand.new(vehicle: vehicle_params)
         )
 
-        render json: vehicle
+        render json: vehicle, status: :created
       end
 
       def update

@@ -6,7 +6,7 @@ module Infra
       end
 
       def save(customer)
-        customer.save
+        customer.save!
       end
 
       def delete(customer)
