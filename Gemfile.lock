@@ -74,6 +74,7 @@ GEM
       tzinfo (~> 2.0, >= 2.0.5)
     addressable (2.8.7)
       public_suffix (>= 2.0.2, < 7.0)
+    ansi (1.5.0)
     ast (2.4.3)
     base64 (0.3.0)
     bcrypt (3.1.20)
@@ -290,9 +291,15 @@ GEM
       docile (~> 1.1)
       simplecov-html (~> 0.11)
       simplecov_json_formatter (~> 0.1)
+    simplecov-console (0.9.4)
+      ansi
+      simplecov
+      terminal-table
     simplecov-html (0.13.2)
     simplecov_json_formatter (0.1.4)
     stringio (3.1.7)
+    terminal-table (4.0.0)
+      unicode-display_width (>= 1.1.1, < 4)
     thor (1.4.0)
     timeout (0.4.3)
     tzinfo (2.0.6)
@@ -336,6 +343,7 @@ DEPENDENCIES
   rswag-ui
   rubocop-rails-omakase
   simplecov
+  simplecov-console
   tzinfo-data
 
 RUBY VERSION

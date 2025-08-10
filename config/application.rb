@@ -23,13 +23,16 @@ module Workshop
     #
     # config.time_zone = "Central Time (US & Canada)"
     config.time_zone = "America/Sao_Paulo"
-    config.eager_load_paths << Rails.root.join("layers")
+
+    # Ajuste para autoload correto da pasta app/layers
+    config.eager_load_paths << Rails.root.join("app/layers")
 
     # Only loads a smaller set of middleware suitable for API only apps.
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
 
+    # Configura o Zeitwerk para também carregar app/layers
     Rails.autoloaders.main.push_dir(Rails.root.join("app/layers"))
   end
 end

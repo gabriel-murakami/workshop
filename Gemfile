@@ -18,6 +18,7 @@ gem "bcrypt"
 
 group :development, :test do
   gem "simplecov", require: false
+  gem "simplecov-console"
   gem "debug", platforms: %i[mri windows], require: "debug/prelude"
   gem "rswag-api"
   gem "rswag-ui"

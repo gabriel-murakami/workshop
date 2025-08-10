@@ -39,7 +39,7 @@ module Web
       private
 
       def service_params
-        params.permit(:id, :name, :description, :base_price)
+        params.permit(:id, :name, :description, :base_price, :code)
       end
     end
   end

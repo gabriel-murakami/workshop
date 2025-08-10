@@ -1,7 +1,7 @@
 module Web
   module Controllers
     class AutoPartsController < AuthController
-      AUTO_PARTS_FIELDS = %i[id name description stock_quantity base_price]
+      AUTO_PARTS_FIELDS = %i[id name description stock_quantity base_price sku]
       STOCK_CONTROL_FIELDS = %i[stock_change]
 
       def index

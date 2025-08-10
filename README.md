@@ -2,16 +2,34 @@
 
 Este projeto é uma aplicação **Ruby on Rails (API only)** containerizada com **Docker**, utilizando **PostgreSQL** como banco de dados.
 
-## 🚀 Comandos disponíveis
+## 🚀 Execução e Documentação:
 ```bash
-make setup     # Builda a imagem do projeto e faz a configuração do banco
-make build     # Builda a imagem do projeto
-make up        # Sobe os containers em segundo plano (detached)
-make down      # Derruba os containers e remove órfãos
-make db-create # Cria e migra o banco de dados
-make console   # Acessa o console Rails
-make server    # Inicia o servidor Rails
-make spec      # Roda os testes unitários
-make bash      # Acessa o bash do container web
-make seed      # Cria massa para testar as funcionalidades em ambiente de desenvolvimento
+make setup
+make server
 ```
+Com o servidor rodando, a documentação, utilizando Swagger, estará em:
+```
+http://localhost:3000/api-docs/index.html
+```
+
+## Testes e Cobertura
+```bash
+make test
+```
+
+Esse comando rodará os testes e imprimirá no console o resultado.
+
+Ex:
+```bash
+Finished in 0.62083 seconds (files took 2.3 seconds to load)
+48 examples, 0 failures
+
+Coverage report generated for RSpec to /app/coverage.
+Line Coverage: 97.14% (679 / 699)
+
+COVERAGE:  97.14% -- 679/699 lines in 58 files
+
+...
+```
+
+Além disso, é gerado um arquivo em `/coverage/index.html` contendo o relatório completo. Esse arquivo também está disponível pós a execução da pipeline do Github Actions do repositório.
