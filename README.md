@@ -7,7 +7,7 @@ Este projeto é uma aplicação **Ruby on Rails (API only)** containerizada com 
 make setup
 make server
 ```
-Com o servidor rodando, a documentação, utilizando Swagger, estará em:
+Com o servidor rodando, a documentação utilizando Swagger estará em:
 ```
 http://localhost:3000/api-docs/index.html
 ```
