@@ -126,6 +126,26 @@ service_order3.service_order_items.create!(
   total_value: products[2].base_price * 2
 )
 
+service_order4 = Domain::ServiceOrder::ServiceOrder.create!(
+  customer: customers[2],
+  vehicle: vehicles[2],
+  status: :in_progress,
+  description: "Service already in progress for 15 minutes",
+  service_started_at: 15.minutes.ago
+)
+
+service_order4.service_order_items.create!(
+  item: services[1],
+  quantity: 1,
+  total_value: services[1].base_price * 1
+)
+
+service_order4.service_order_items.create!(
+  item: products[3],
+  quantity: 2,
+  total_value: products[3].base_price * 2
+)
+
 Domain::ServiceOrder::Budget.create!(
   service_order: service_order2,
   date: Date.today - 1.day,
@@ -138,15 +158,22 @@ Domain::ServiceOrder::Budget.create!(
   status: :approved
 )
 
+Domain::ServiceOrder::Budget.create!(
+  service_order: service_order4,
+  date: Date.today,
+  total_value: (services[1].base_price * 1 + products[3].base_price * 2),
+  status: :approved
+)
+
 Domain::ServiceOrder::ServiceOrder.create!(
   customer: customers[0],
   vehicle: vehicles[1],
   description: "Strange noises."
 )
 
-Domain::ServiceOrder::Metric.create!(
-  average_time: 56.9,
-  service_order_count: 14
-)
+# Domain::ServiceOrder::Metric.create!(
+#   average_time: 56.9,
+#   service_order_count: 14
+# )
 
 puts "Seed created"

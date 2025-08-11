@@ -37,219 +37,6 @@ paths:
               required:
               - email
               - password
-  "/products":
-    get:
-      summary: List all products
-      tags:
-      - Product
-      security:
-      - bearerAuth: []
-      responses:
-        '200':
-          description: products found
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: integer
-                    name:
-                      type: string
-                    description:
-                      type: string
-                      nullable: true
-                    stock_quantity:
-                      type: integer
-                    base_price:
-                      type: string
-                  required:
-                  - id
-                  - name
-                  - stock_quantity
-                  - base_price
-    post:
-      summary: Create a new product
-      tags:
-      - Product
-      security:
-      - bearerAuth: []
-      parameters: []
-      responses:
-        '201':
-          description: product created
-        '422':
-          description: invalid request
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                description:
-                  type: string
-                stock_quantity:
-                  type: integer
-                base_price:
-                  type: string
-                sku:
-                  type: string
-              required:
-              - name
-              - stock_quantity
-              - base_price
-              - sku
-  "/products/{id}":
-    get:
-      summary: Get product by id
-      tags:
-      - Product
-      security:
-      - bearerAuth: []
-      parameters:
-      - name: id
-        in: path
-        description: Auto part ID
-        required: true
-        schema:
-          type: integer
-      responses:
-        '200':
-          description: product found
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  name:
-                    type: string
-                  description:
-                    type: string
-                    nullable: true
-                  stock_quantity:
-                    type: integer
-                  base_price:
-                    type: string
-                required:
-                - id
-                - name
-                - stock_quantity
-                - base_price
-        '404':
-          description: product not found
-    put:
-      summary: Update product by id
-      tags:
-      - Product
-      security:
-      - bearerAuth: []
-      parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-      responses:
-        '200':
-          description: product updated
-        '422':
-          description: invalid request
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                id:
-                  type: integer
-                name:
-                  type: string
-                description:
-                  type: string
-                stock_quantity:
-                  type: integer
-                base_price:
-                  type: string
-              required:
-              - id
-              - name
-              - stock_quantity
-              - base_price
-    delete:
-      summary: Delete product by id
-      tags:
-      - Product
-      security:
-      - bearerAuth: []
-      parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-      responses:
-        '200':
-          description: product deleted
-        '404':
-          description: product not found
-  "/products/{id}/add":
-    post:
-      summary: Add stock quantity to product
-      tags:
-      - Product
-      security:
-      - bearerAuth: []
-      parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-      responses:
-        '200':
-          description: stock added
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                stock_change:
-                  type: integer
-              required:
-              - stock_change
-  "/products/{id}/remove":
-    post:
-      summary: Remove stock quantity from product
-      tags:
-      - Product
-      security:
-      - bearerAuth: []
-      parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-      responses:
-        '200':
-          description: stock removed
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                stock_change:
-                  type: integer
-              required:
-              - stock_change
   "/budgets":
     get:
       summary: Filtered by document number
@@ -603,6 +390,219 @@ paths:
                   - average_time
                   - created_at
                   - updated_at
+  "/products":
+    get:
+      summary: List all products
+      tags:
+      - Products
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: products found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    description:
+                      type: string
+                      nullable: true
+                    stock_quantity:
+                      type: integer
+                    base_price:
+                      type: string
+                  required:
+                  - id
+                  - name
+                  - stock_quantity
+                  - base_price
+    post:
+      summary: Create a new product
+      tags:
+      - Products
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '201':
+          description: product created
+        '422':
+          description: invalid request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                stock_quantity:
+                  type: integer
+                base_price:
+                  type: string
+                sku:
+                  type: string
+              required:
+              - name
+              - stock_quantity
+              - base_price
+              - sku
+  "/products/{id}":
+    get:
+      summary: Get product by id
+      tags:
+      - Products
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        description: Auto part ID
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: product found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  description:
+                    type: string
+                    nullable: true
+                  stock_quantity:
+                    type: integer
+                  base_price:
+                    type: string
+                required:
+                - id
+                - name
+                - stock_quantity
+                - base_price
+        '404':
+          description: product not found
+    put:
+      summary: Update product by id
+      tags:
+      - Products
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: product updated
+        '422':
+          description: invalid request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+                description:
+                  type: string
+                stock_quantity:
+                  type: integer
+                base_price:
+                  type: string
+              required:
+              - id
+              - name
+              - stock_quantity
+              - base_price
+    delete:
+      summary: Delete product by id
+      tags:
+      - Products
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: product deleted
+        '404':
+          description: product not found
+  "/products/{id}/add":
+    post:
+      summary: Add stock quantity to product
+      tags:
+      - Products
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: stock added
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                stock_change:
+                  type: integer
+              required:
+              - stock_change
+  "/products/{id}/remove":
+    post:
+      summary: Remove stock quantity from product
+      tags:
+      - Products
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: stock removed
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                stock_change:
+                  type: integer
+              required:
+              - stock_change
   "/service_orders/{id}":
     get:
       summary: Get a service order by ID

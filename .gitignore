@@ -32,5 +32,8 @@
 # Ignore master key for decrypting credentials and more.
 /config/master.key
 
-# Ignora coverage result
+# Ignore coverage result
 /coverage/index.html
+
+# Ignore brakeman models
+/app/layers/infra/models/brakeman

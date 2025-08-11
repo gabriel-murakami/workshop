@@ -1,6 +1,6 @@
 require 'swagger_helper'
 
-RSpec.describe 'Product', type: :request do
+RSpec.describe 'Products', type: :request do
   let(:user) { create(:user) }
   let(:token) do
     secret_key = Rails.application.credentials.jwt_secret || ENV["JWT_SECRET"]
@@ -11,7 +11,7 @@ RSpec.describe 'Product', type: :request do
 
   path '/products' do
     get 'List all products' do
-      tags 'Product'
+      tags 'Products'
       security [ bearerAuth: [] ]
       produces 'application/json'
 
@@ -39,7 +39,7 @@ RSpec.describe 'Product', type: :request do
     end
 
     post 'Create a new product' do
-      tags 'Product'
+      tags 'Products'
       security [ bearerAuth: [] ]
       consumes 'application/json'
       produces 'application/json'
@@ -84,7 +84,7 @@ RSpec.describe 'Product', type: :request do
 
   path '/products/{id}' do
     get 'Get product by id' do
-      tags 'Product'
+      tags 'Products'
       security [ bearerAuth: [] ]
       produces 'application/json'
 
@@ -117,7 +117,7 @@ RSpec.describe 'Product', type: :request do
     end
 
     put 'Update product by id' do
-      tags 'Product'
+      tags 'Products'
       security [ bearerAuth: [] ]
       consumes 'application/json'
       produces 'application/json'
@@ -162,7 +162,7 @@ RSpec.describe 'Product', type: :request do
     end
 
     delete 'Delete product by id' do
-      tags 'Product'
+      tags 'Products'
       security [ bearerAuth: [] ]
       parameter name: :id, in: :path, type: :integer
 
@@ -180,7 +180,7 @@ RSpec.describe 'Product', type: :request do
 
   path '/products/{id}/add' do
     post 'Add stock quantity to product' do
-      tags 'Product'
+      tags 'Products'
       security [ bearerAuth: [] ]
       consumes 'application/json'
       produces 'application/json'
@@ -209,7 +209,7 @@ RSpec.describe 'Product', type: :request do
 
   path '/products/{id}/remove' do
     post 'Remove stock quantity from product' do
-      tags 'Product'
+      tags 'Products'
       security [ bearerAuth: [] ]
       consumes 'application/json'
       produces 'application/json'
