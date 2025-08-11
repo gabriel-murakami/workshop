@@ -13,6 +13,19 @@ module Application
         @service_order_repository.find_by_id(service_order_id)
       end
 
+      def create_service_order(create_service_order_command)
+        service_order = Domain::ServiceOrder::ServiceOrder.new(
+          customer_id: create_service_order_command.customer_id,
+          vehicle_id: create_service_order_command.vehicle_id
+        )
+
+        ActiveRecord::Base.transaction do
+          @service_order_repository.save(service_order)
+
+          service_order
+        end
+      end
+
       def send_to_diagnosis(send_to_diagnosis_command)
         service_order = @service_order_repository.find_by_id(send_to_diagnosis_command.service_order_id)
 
@@ -26,6 +39,8 @@ module Application
       def send_to_approval(send_to_approval_command)
         service_order = @service_order_repository.find_by_id(send_to_approval_command.service_order_id)
 
+        raise Exceptions::ServiceOrderException.new("The service order is not in diagnosis") unless service_order.diagnosis?
+
         ActiveRecord::Base.transaction do
           @service_order_repository.update(service_order, { status: "waiting_approval" })
         end
@@ -37,6 +52,9 @@ module Application
 
       def add_services(add_services_command)
         service_order = @service_order_repository.find_by_id(add_services_command.service_order_id)
+
+        raise Exceptions::ServiceOrderException.new("The service order is not in diagnosis") unless service_order.diagnosis?
+
         services = Application::ServiceOrderItem::ServiceApplication.new.find_services_by_codes(
           add_services_command.services_codes
         )
@@ -46,13 +64,17 @@ module Application
         ActiveRecord::Base.transaction do
           service_order.add_services(services)
           @service_order_repository.save(service_order)
+
+          service_order
         end
       end
 
       def add_products(add_products_command)
         service_order = @service_order_repository.find_by_id(add_products_command.service_order_id)
-        products_params = add_products_command.products_params
 
+        raise Exceptions::ServiceOrderException.new("The service order is not in diagnosis") unless service_order.diagnosis?
+
+        products_params = add_products_command.products_params
         products = Application::ServiceOrderItem::ProductApplication.new.find_products_by_skus(
           products_params.map { |param| param[:sku] }
         )
@@ -71,11 +93,17 @@ module Application
           @service_order_repository.save(service_order)
 
           remove_products(products_list)
+
+          service_order
         end
       end
 
       def approve_service_order(approve_service_order_command)
         service_order = @service_order_repository.find_by_id(approve_service_order_command.service_order_id)
+
+        unless service_order.waiting_approval?
+          raise Exceptions::ServiceOrderException.new("The service order is not waiting approval")
+        end
 
         ActiveRecord::Base.transaction do
           @service_order_repository.update(
@@ -102,6 +130,7 @@ module Application
         service_order = @service_order_repository.find_by_id(start_service_order_command.service_order_id)
 
         raise Exceptions::ServiceOrderException.new("Service order already started") if service_order.in_progress?
+        raise Exceptions::ServiceOrderException.new("The service order is not approved") unless service_order.approved?
 
         ActiveRecord::Base.transaction do
           @service_order_repository.update(
@@ -117,6 +146,7 @@ module Application
         service_order = @service_order_repository.find_by_id(finish_service_order_command.service_order_id)
 
         raise Exceptions::ServiceOrderException.new("Service order already finished") if service_order.finished?
+        raise Exceptions::ServiceOrderException.new("The service order is not started") unless service_order.in_progress?
 
         ActiveRecord::Base.transaction do
           @service_order_repository.update(

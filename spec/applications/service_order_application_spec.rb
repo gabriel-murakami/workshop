@@ -43,7 +43,7 @@ RSpec.describe Application::ServiceOrder::ServiceOrderApplication do
 
   describe "#add_services" do
     it "adds services to the service order" do
-      service_order = create(:service_order)
+      service_order = create(:service_order, status: 'diagnosis')
       service1 = create(:service, code: "SVC001")
       service2 = create(:service, code: "SVC002")
       command = Application::ServiceOrder::Commands::AddServicesCommand.new(
@@ -61,7 +61,7 @@ RSpec.describe Application::ServiceOrder::ServiceOrderApplication do
 
   describe "#add_products" do
     it "adds products to the service order and removes stock" do
-      service_order = create(:service_order)
+      service_order = create(:service_order, status: 'diagnosis')
       product1 = create(:product, sku: "AP001", stock_quantity: 10)
       product2 = create(:product, sku: "AP002", stock_quantity: 5)
 
@@ -111,7 +111,7 @@ RSpec.describe Application::ServiceOrder::ServiceOrderApplication do
 
   describe "#start_service_order" do
     it "starts the service order setting status and start time" do
-      service_order = create(:service_order, status: "received")
+      service_order = create(:service_order, status: "approved")
       command = Application::ServiceOrder::Commands::StartServiceOrderCommand.new(service_order_id: service_order.id)
 
       updated = application.start_service_order(command)

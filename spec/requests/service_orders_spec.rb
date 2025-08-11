@@ -172,7 +172,7 @@ RSpec.describe 'Service Orders', type: :request do
         let(:service1) { create(:service) }
         let(:service2) { create(:service) }
 
-        let(:service_order) { create(:service_order) }
+        let(:service_order) { create(:service_order, status: 'diagnosis') }
         let(:id) { service_order.id }
         let(:body) { { services_codes: [ service1.code, service2.code ] } }
 
@@ -180,7 +180,7 @@ RSpec.describe 'Service Orders', type: :request do
       end
 
       response '422', 'invalid services' do
-        let(:service_order) { create(:service_order) }
+        let(:service_order) { create(:service_order, status: 'diagnosis') }
         let(:id) { service_order.id }
         let(:body) { { services_codes: [ 'SVC111', 'SVC222' ] } }
 
@@ -217,7 +217,7 @@ RSpec.describe 'Service Orders', type: :request do
 
       response '200', 'products added' do
         let(:product) { create(:product) }
-        let(:service_order) { create(:service_order) }
+        let(:service_order) { create(:service_order, status: 'diagnosis') }
         let(:id) { service_order.id }
         let(:body) { { products_params: [ { sku: product.sku, quantity: 2 } ] } }
 
@@ -265,7 +265,7 @@ RSpec.describe 'Service Orders', type: :request do
           },
           required: %w[id customer_id vehicle_id status created_at updated_at]
 
-        let(:service_order) { create(:service_order, status: 'waiting_approval') }
+        let(:service_order) { create(:service_order, status: 'approved') }
         let(:id) { service_order.id }
         let(:body) { { id: service_order.id } }
 
@@ -312,6 +312,42 @@ RSpec.describe 'Service Orders', type: :request do
           expect(json['id']).to eq(service_order.id)
           expect(json['status']).to eq('finished')
         end
+      end
+    end
+  end
+
+  path '/service_orders' do
+    post 'Create a new service order' do
+      tags 'Service Orders'
+      security [ bearerAuth: [] ]
+      consumes 'application/json'
+      produces 'application/json'
+
+      parameter name: :service_order, in: :body, schema: {
+        type: :object,
+        properties: {
+          customer_id: { type: :integer },
+          vehicle_id: { type: :integer }
+        },
+        required: [ 'customer_id', 'vehicle_id' ]
+      }
+
+      response '201', 'service order created' do
+        let(:customer) { create(:customer) }
+        let(:vehicle) { create(:vehicle, customer: customer) }
+        let(:service_order) { { customer_id: customer.id, vehicle_id: vehicle.id } }
+
+        run_test! do |response|
+          json = JSON.parse(response.body)
+          expect(json['customer_id']).to eq(customer.id)
+          expect(json['vehicle_id']).to eq(vehicle.id)
+          expect(json['id']).to be_present
+        end
+      end
+
+      response '422', 'invalid request' do
+        let(:service_order) { { customer_id: nil, vehicle_id: nil } }
+        run_test!
       end
     end
   end

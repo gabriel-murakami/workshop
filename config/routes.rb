@@ -35,7 +35,7 @@ Rails.application.routes.draw do
       end
 
       scope controller: :service_orders do
-        resources :service_orders, only: %i[index show]
+        resources :service_orders, only: %i[index show create]
         post "service_orders/:id/add_products", action: :add_products
         post "service_orders/:id/add_services", action: :add_services
         post "service_orders/:id/finish", action: :finish

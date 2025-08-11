@@ -51,10 +51,12 @@ Este projeto implementa um sistema completo para gerenciamento de oficinas mecâ
 make setup
 make server
 ```
-É possível consultar a documentação da API com Swagger em:
+É possível consultar a documentação da API com **Swagger** em:
 ```
 http://localhost:3000/api-docs/index.html
 ```
+
+#### **Collection para as APIs**: [Insomnia](docs/collection.yaml)
 
 ## Testes e Cobertura
 ```bash
@@ -63,7 +65,7 @@ make test
 
 Esse comando rodará os testes e imprimirá no console o resultado.
 
-Ex:
+Exemplo:
 ```bash
 Finished in 1.09 seconds (files took 2.35 seconds to load)
 76 examples, 0 failures

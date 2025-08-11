@@ -11,6 +11,17 @@ module Web
         render json: service_order, include: :service_order_items
       end
 
+      def create
+        service_order = Application::ServiceOrder::ServiceOrderApplication.new.create_service_order(
+          Application::ServiceOrder::Commands::CreateServiceOrderCommand.new(
+            customer_id: permitted_params[:customer_id],
+            vehicle_id: permitted_params[:vehicle_id]
+          )
+        )
+
+        render json: service_order, status: :created
+      end
+
       def send_to_diagnosis
         command = Application::ServiceOrder::Commands::SendToDiagnosisCommand.new(
           service_order_id: permitted_params[:id]
@@ -37,9 +48,9 @@ module Web
           services_codes: permitted_params[:services_codes]
         )
 
-        Application::ServiceOrder::ServiceOrderApplication.new.add_services(command)
+        service_order = Application::ServiceOrder::ServiceOrderApplication.new.add_services(command)
 
-        head :ok
+        render json: service_order, include: :service_order_items
       end
 
       def add_products
@@ -48,9 +59,9 @@ module Web
           products_params: permitted_params[:products_params]
         )
 
-        Application::ServiceOrder::ServiceOrderApplication.new.add_products(command)
+        service_order = Application::ServiceOrder::ServiceOrderApplication.new.add_products(command)
 
-        head :ok
+        render json: service_order, include: :service_order_items
       end
 
       def start
@@ -84,6 +95,7 @@ module Web
           :id,
           :status,
           :customer_id,
+          :vehicle_id,
           services_codes: [],
           products_params: [ :sku, :quantity ]
         )

@@ -86,8 +86,8 @@ RSpec.describe 'Budgets', type: :request do
       parameter name: :id, in: :path, type: :integer, description: 'Budget ID'
 
       response '200', 'budget found' do
-        let(:budget_record) { create(:budget) }
-        let(:id) { budget_record.id }
+        let(:budget) { create(:budget) }
+        let(:id) { budget.id }
 
         schema type: :object,
           properties: {
@@ -121,8 +121,9 @@ RSpec.describe 'Budgets', type: :request do
       parameter name: :id, in: :path, type: :integer, description: 'Budget ID'
 
       response '200', 'budget approved' do
-        let(:budget_record) { create(:budget, status: 'pending') }
-        let(:id) { budget_record.id }
+        let(:service_order) { create(:service_order, status: 'waiting_approval') }
+        let(:budget) { create(:budget, status: 'pending', service_order_id: service_order.id) }
+        let(:id) { budget.id }
 
         run_test!
       end
@@ -142,8 +143,8 @@ RSpec.describe 'Budgets', type: :request do
       parameter name: :id, in: :path, type: :integer, description: 'Budget ID'
 
       response '200', 'budget rejected' do
-        let(:budget_record) { create(:budget, status: 'pending') }
-        let(:id) { budget_record.id }
+        let(:budget) { create(:budget, status: 'pending') }
+        let(:id) { budget.id }
 
         run_test!
       end

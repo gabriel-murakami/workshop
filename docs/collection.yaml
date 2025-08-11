@@ -1,0 +1,1220 @@
+type: collection.insomnia.rest/5.0
+name: Workshop
+meta:
+  id: wrk_a8c0d91339de471680a78c7aeb2bb0b7
+  created: 1754692591128
+  modified: 1754941802631
+  description: ""
+collection:
+  - url: localhost:3000/service_orders
+    name: list service orders
+    meta:
+      id: req_71a93622beb1421c9c9c36f9d38e4ce0
+      created: 1754692591199
+      modified: 1754876418706
+      isPrivate: false
+      description: ""
+      sortKey: -1754692591199
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/11.4.0
+    authentication:
+      type: bearer
+      token: "{% response 'body', 'req_e98453586e9549ab9875b6886cd4b3fb',
+        'b64::JC50b2tlbg==::46b', 'always', 60 %}"
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: localhost:3000/customers
+    name: list customers
+    meta:
+      id: req_c5fe8ec9a5e549bf86117ed2c14ca9bf
+      created: 1754753287459
+      modified: 1754769358818
+      isPrivate: false
+      description: ""
+      sortKey: -1754753287459
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/11.4.0
+    authentication:
+      type: bearer
+      token: "{% response 'body', 'req_e98453586e9549ab9875b6886cd4b3fb',
+        'b64::JC50b2tlbg==::46b', 'always', 60 %}"
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: localhost:3000/customers/:document_number
+    name: customer by document number
+    meta:
+      id: req_8db7909be6164b468b91aa9722c72c2a
+      created: 1754753411645
+      modified: 1754767517343
+      isPrivate: false
+      description: ""
+      sortKey: -1754753411645
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/11.4.0
+    authentication:
+      type: bearer
+      token: "{% response 'body', 'req_e98453586e9549ab9875b6886cd4b3fb',
+        'b64::JC50b2tlbg==::46b', 'never', 60 %}"
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+    pathParameters:
+      - name: document_number
+        value: "12345678901"
+  - url: localhost:3000/vehicles
+    name: list vehicles
+    meta:
+      id: req_52b21ff643264ed3bfd56cd6411d2789
+      created: 1754755246573
+      modified: 1754769352082
+      isPrivate: false
+      description: ""
+      sortKey: -1754755246573
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/11.4.0
+        id: pair_716dcbbf84be45a3a40af9a3095f8075
+    authentication:
+      type: bearer
+      token: "{% response 'body', 'req_e98453586e9549ab9875b6886cd4b3fb',
+        'b64::JC50b2tlbg==::46b', 'always', 60 %}"
+      disabled: false
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: localhost:3000/vehicles/:license_plate
+    name: vehicle by license plate
+    meta:
+      id: req_9c6dadf1efaa4394bfc601dd62dba7d3
+      created: 1754755264299
+      modified: 1754760348061
+      isPrivate: false
+      description: ""
+      sortKey: -1754755264299
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/11.4.0
+    authentication:
+      type: bearer
+      token: "{% response 'body', 'req_e98453586e9549ab9875b6886cd4b3fb',
+        'b64::JC50b2tlbg==::46b', 'always', 60 %}"
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+    pathParameters:
+      - name: license_plate
+        value: ABC-1234
+  - url: localhost:3000/customers
+    name: create customer
+    meta:
+      id: req_55a1e6957dab4b4b923ca9c17e5b9bff
+      created: 1754755658911
+      modified: 1754866848618
+      isPrivate: false
+      description: ""
+      sortKey: -1754755658911
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"name": "Teste da Silva Errado",
+        	"document_number": "123",
+        	"email": "teste@gmail.com",
+        	"phone": "1199887755"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.4.0
+    authentication:
+      type: bearer
+      token: "{% response 'body', 'req_e98453586e9549ab9875b6886cd4b3fb',
+        'b64::JC50b2tlbg==::46b', 'always', 60 %}"
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: localhost:3000/customers/:document_number/add_vehicle
+    name: add vehicle to customer
+    meta:
+      id: req_936c5c5758e8445db8f88c3924c02cd0
+      created: 1754755815768
+      modified: 1754760264339
+      isPrivate: false
+      description: ""
+      sortKey: -1754755815768
+    method: PATCH
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"license_plate": "ABC-1234"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.4.0
+    authentication:
+      type: bearer
+      token: "{% response 'body', 'req_e98453586e9549ab9875b6886cd4b3fb',
+        'b64::JC50b2tlbg==::46b', 'always', 60 %}"
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+    pathParameters:
+      - name: document_number
+        value: "12345670088"
+  - url: localhost:3000/login
+    name: auth
+    meta:
+      id: req_e98453586e9549ab9875b6886cd4b3fb
+      created: 1754758992247
+      modified: 1754759555924
+      isPrivate: false
+      description: ""
+      sortKey: -1754758992247
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"email": "admin@admin.com",
+        	"password": "password123"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.4.0
+    scripts:
+      preRequest: ""
+      afterResponse: ""
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: localhost:3000/customers/:id
+    name: update customer
+    meta:
+      id: req_6213e64f05934e09af748753ba489872
+      created: 1754765270311
+      modified: 1754765465090
+      isPrivate: false
+      description: ""
+      sortKey: -1754765270311
+    method: PUT
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"name": "Luke Skywalker"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.4.0
+    authentication:
+      type: bearer
+      token: "{% response 'body', 'req_e98453586e9549ab9875b6886cd4b3fb',
+        'b64::JC50b2tlbg==::46b', 'always', 60 %}"
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+    pathParameters:
+      - name: id
+        value: "10"
+  - url: localhost:3000/vehicles/:id
+    name: update vehicle
+    meta:
+      id: req_719e829695a541829fb33a35c6314704
+      created: 1754766000966
+      modified: 1754770700530
+      isPrivate: false
+      description: ""
+      sortKey: -1754762131279
+    method: PUT
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"license_plate": "CDE-1234"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.4.0
+    authentication:
+      type: bearer
+      token: "{% response 'body', 'req_e98453586e9549ab9875b6886cd4b3fb',
+        'b64::JC50b2tlbg==::46b', 'always', 60 %}"
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+    pathParameters:
+      - name: id
+        value: "11"
+  - url: localhost:3000/vehicles
+    name: create vehicle
+    meta:
+      id: req_0e3f205a997a423497316f42a6db391a
+      created: 1754766070191
+      modified: 1754866973864
+      isPrivate: false
+      description: ""
+      sortKey: -1754755461605
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"license_plate": "ABC9999",
+        	"brand": "Toyota",
+        	"model": "Corolla",
+        	"year": 2020,
+        	"customer_id": 1
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.4.0
+    authentication:
+      type: bearer
+      token: "{% response 'body', 'req_e98453586e9549ab9875b6886cd4b3fb',
+        'b64::JC50b2tlbg==::46b', 'always', 60 %}"
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: localhost:3000/vehicles/:id
+    name: delete vehicle
+    meta:
+      id: req_4dc31ee20cce47cdb69a24655e1c008e
+      created: 1754766895837
+      modified: 1754766940051
+      isPrivate: false
+      description: ""
+      sortKey: -1754760561763
+    method: DELETE
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"license_plate": "CDE-1234"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.4.0
+    authentication:
+      type: bearer
+      token: "{% response 'body', 'req_e98453586e9549ab9875b6886cd4b3fb',
+        'b64::JC50b2tlbg==::46b', 'always', 60 %}"
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+    pathParameters:
+      - name: id
+        value: "10"
+  - url: localhost:3000/customers/:id
+    name: delete customer
+    meta:
+      id: req_672b51acf2ae418494b709ba3cda66d4
+      created: 1754767291175
+      modified: 1754767297495
+      isPrivate: false
+      description: ""
+      sortKey: -1754759777005
+    method: DELETE
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"license_plate": "CDE-1234"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.4.0
+    authentication:
+      type: bearer
+      token: "{% response 'body', 'req_e98453586e9549ab9875b6886cd4b3fb',
+        'b64::JC50b2tlbg==::46b', 'always', 60 %}"
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+    pathParameters:
+      - name: id
+        value: "14"
+  - url: localhost:3000/products
+    name: list products
+    meta:
+      id: req_0c8f06a3b47c446aaa7028bedef302f7
+      created: 1754768800021
+      modified: 1754932907641
+      isPrivate: false
+      description: ""
+      sortKey: -1754722939329
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/11.4.0
+    authentication:
+      type: bearer
+      token: "{% response 'body', 'req_e98453586e9549ab9875b6886cd4b3fb',
+        'b64::JC50b2tlbg==::46b', 'always', 60 %}"
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: localhost:3000/services
+    name: list services
+    meta:
+      id: req_512f15e0902c450f861d2cb6a89b0a06
+      created: 1754768817002
+      modified: 1754849309633
+      isPrivate: false
+      description: ""
+      sortKey: -1754707765264
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/11.4.0
+    authentication:
+      type: bearer
+      token: "{% response 'body', 'req_e98453586e9549ab9875b6886cd4b3fb',
+        'b64::JC50b2tlbg==::46b', 'always', 60 %}"
+      disabled: false
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: localhost:3000/products/:id
+    name: update product
+    meta:
+      id: req_890e000c379148b09b70ccf6465aaf4c
+      created: 1754768933411
+      modified: 1754933071444
+      isPrivate: false
+      description: ""
+      sortKey: -1754763700795
+    method: PUT
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"name": "Spark Plug",
+        	"stock_quantity": 0,
+        	"base_price": 250.25,
+        	"description": "Standard spark plug"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.4.0
+    authentication:
+      type: bearer
+      token: "{% response 'body', 'req_e98453586e9549ab9875b6886cd4b3fb',
+        'b64::JC50b2tlbg==::46b', 'always', 60 %}"
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+    pathParameters:
+      - name: id
+        value: "1"
+  - url: localhost:3000/services/:id
+    name: update service
+    meta:
+      id: req_518935b120ad424286d5d003e06940e7
+      created: 1754769298593
+      modified: 1754769306525
+      isPrivate: false
+      description: ""
+      sortKey: -1754762916037
+    method: PUT
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"name": "Spark Plug",
+        	"stock_quantity": 100,
+        	"base_price": "15.0",
+        	"description": "Standard spark plug"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.4.0
+    authentication:
+      type: bearer
+      token: "{% response 'body', 'req_e98453586e9549ab9875b6886cd4b3fb',
+        'b64::JC50b2tlbg==::46b', 'always', 60 %}"
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+    pathParameters:
+      - name: id
+        value: "10"
+  - url: localhost:3000/products/:id
+    name: find product
+    meta:
+      id: req_b2af1da77ce7444986e04cb49fd40b8b
+      created: 1754769385425
+      modified: 1754932921113
+      isPrivate: false
+      description: ""
+      sortKey: -1754755255436
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/11.4.0
+    authentication:
+      type: bearer
+      token: "{% response 'body', 'req_e98453586e9549ab9875b6886cd4b3fb',
+        'b64::JC50b2tlbg==::46b', 'always', 60 %}"
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+    pathParameters:
+      - name: id
+        value: "1"
+  - url: localhost:3000/services/:id
+    name: find service
+    meta:
+      id: req_c099b93a65964ae8894cfd36df73d017
+      created: 1754769409510
+      modified: 1754769415087
+      isPrivate: false
+      description: ""
+      sortKey: -1754755251004.5
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/11.4.0
+    authentication:
+      type: bearer
+      token: "{% response 'body', 'req_e98453586e9549ab9875b6886cd4b3fb',
+        'b64::JC50b2tlbg==::46b', 'always', 60 %}"
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+    pathParameters:
+      - name: id
+        value: "9"
+  - url: localhost:3000/products
+    name: create product
+    meta:
+      id: req_417222e383e84f7184776b70327f12e3
+      created: 1754771089284
+      modified: 1754933045022
+      isPrivate: false
+      description: ""
+      sortKey: -1754755362952
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"name": "Tire",
+        	"description": "Speed Racer Tier",
+        	"base_price": "550.60",
+        	"stock_quantity": 60,
+        	"sku": "AP890"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.4.0
+    authentication:
+      type: bearer
+      token: "{% response 'body', 'req_e98453586e9549ab9875b6886cd4b3fb',
+        'b64::JC50b2tlbg==::46b', 'always', 60 %}"
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: localhost:3000/services
+    name: create service
+    meta:
+      id: req_73ba8631c86f40b4983ece6bcfe0c93d
+      created: 1754771421241
+      modified: 1754771442719
+      isPrivate: false
+      description: ""
+      sortKey: -1754755313625.5
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"name": "Tire",
+        	"description": "Speed Racer Tier",
+        	"base_price": "550.60"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.4.0
+    authentication:
+      type: bearer
+      token: "{% response 'body', 'req_e98453586e9549ab9875b6886cd4b3fb',
+        'b64::JC50b2tlbg==::46b', 'always', 60 %}"
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: localhost:3000/services/:id
+    name: delete service
+    meta:
+      id: req_8c6359db688f4d009cbbe436a6b72b76
+      created: 1754771459614
+      modified: 1754771469830
+      isPrivate: false
+      description: ""
+      sortKey: -1754759384626
+    method: DELETE
+    body:
+      mimeType: application/json
+      text: ""
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.4.0
+    authentication:
+      type: bearer
+      token: "{% response 'body', 'req_e98453586e9549ab9875b6886cd4b3fb',
+        'b64::JC50b2tlbg==::46b', 'always', 60 %}"
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+    pathParameters:
+      - name: id
+        value: "10"
+  - url: localhost:3000/products/:id
+    name: delete product
+    meta:
+      id: req_84d409622b6344c5b937b1ac5a016998
+      created: 1754771489652
+      modified: 1754932983628
+      isPrivate: false
+      description: ""
+      sortKey: -1754759188436.5
+    method: DELETE
+    body:
+      mimeType: application/json
+      text: ""
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.4.0
+    authentication:
+      type: bearer
+      token: "{% response 'body', 'req_e98453586e9549ab9875b6886cd4b3fb',
+        'b64::JC50b2tlbg==::46b', 'always', 60 %}"
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+    pathParameters:
+      - name: id
+        value: "1"
+  - url: localhost:3000/products/:id/add
+    name: add product
+    meta:
+      id: req_c00f3757a34544f6ac50e43d8e2ecfab
+      created: 1754772283665
+      modified: 1754932960517
+      isPrivate: false
+      description: ""
+      sortKey: -1754755338288.75
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"stock_change": 10
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.4.0
+    authentication:
+      type: bearer
+      token: "{% response 'body', 'req_e98453586e9549ab9875b6886cd4b3fb',
+        'b64::JC50b2tlbg==::46b', 'always', 60 %}"
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+    pathParameters:
+      - name: id
+        value: "1"
+  - url: localhost:3000/products/:id/remove
+    name: remove products
+    meta:
+      id: req_2566f1f2fbfb4efb9b1eaa75a3ad2d96
+      created: 1754772458161
+      modified: 1754933010691
+      isPrivate: false
+      description: ""
+      sortKey: -1754755325957.125
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"stock_change": 10
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.4.0
+    authentication:
+      type: bearer
+      token: "{% response 'body', 'req_e98453586e9549ab9875b6886cd4b3fb',
+        'b64::JC50b2tlbg==::46b', 'always', 60 %}"
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+    pathParameters:
+      - name: id
+        value: "1"
+  - url: localhost:3000/metrics
+    name: list metrics
+    meta:
+      id: req_e0cc457c72324beca8416992d8465dd3
+      created: 1754778936755
+      modified: 1754778941990
+      isPrivate: false
+      description: ""
+      sortKey: -1754700178231.5
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/11.4.0
+    authentication:
+      type: bearer
+      token: "{% response 'body', 'req_e98453586e9549ab9875b6886cd4b3fb',
+        'b64::JC50b2tlbg==::46b', 'always', 60 %}"
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: localhost:3000/service_orders/:id/start
+    name: start service order
+    meta:
+      id: req_935420210f864a7c8b9b6ed6f505b26a
+      created: 1754867111577
+      modified: 1754876873967
+      isPrivate: false
+      description: ""
+      sortKey: -1754755288962.25
+    method: POST
+    body:
+      mimeType: application/json
+      text: ""
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.4.0
+    authentication:
+      type: bearer
+      token: "{% response 'body', 'req_e98453586e9549ab9875b6886cd4b3fb',
+        'b64::JC50b2tlbg==::46b', 'always', 60 %}"
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+    pathParameters:
+      - name: id
+        value: "15"
+  - url: localhost:3000/service_orders/:id/finish
+    name: finish service order
+    meta:
+      id: req_b2e99a9449c74ef29a2e7f84350328a6
+      created: 1754867132847
+      modified: 1754887175442
+      isPrivate: false
+      description: ""
+      sortKey: -1754755276630.625
+    method: POST
+    body:
+      mimeType: application/json
+      text: ""
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.4.0
+    authentication:
+      type: bearer
+      token: "{% response 'body', 'req_e98453586e9549ab9875b6886cd4b3fb',
+        'b64::JC50b2tlbg==::46b', 'always', 60 %}"
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+    pathParameters:
+      - name: id
+        value: "10"
+  - url: localhost:3000/budgets?document_number=104.576.560-00
+    name: list budgets
+    meta:
+      id: req_0eb64cc4041c4623b3be2c7e13ea077b
+      created: 1754877456320
+      modified: 1754886938518
+      isPrivate: false
+      description: ""
+      sortKey: -1754696384715.25
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/11.4.0
+    authentication:
+      type: bearer
+      token: "{% response 'body', 'req_e98453586e9549ab9875b6886cd4b3fb',
+        'b64::JC50b2tlbg==::46b', 'always', 60 %}"
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: localhost:3000/service_orders/:id/approve
+    name: approve service order
+    meta:
+      id: req_306c1481b4124fa38db72161417542a0
+      created: 1754881803820
+      modified: 1754881810589
+      isPrivate: false
+      description: ""
+      sortKey: -1754755282796.4375
+    method: POST
+    body:
+      mimeType: application/json
+      text: ""
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.4.0
+    authentication:
+      type: bearer
+      token: "{% response 'body', 'req_e98453586e9549ab9875b6886cd4b3fb',
+        'b64::JC50b2tlbg==::46b', 'always', 60 %}"
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+    pathParameters:
+      - name: id
+        value: "15"
+  - url: localhost:3000/budgets/:id/approve
+    name: approve budget
+    meta:
+      id: req_c4e0f3b9a89042a1973b7e7d1c4573c9
+      created: 1754881863837
+      modified: 1754881868648
+      isPrivate: false
+      description: ""
+      sortKey: -1754755279713.5312
+    method: POST
+    body:
+      mimeType: application/json
+      text: ""
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.4.0
+    authentication:
+      type: bearer
+      token: "{% response 'body', 'req_e98453586e9549ab9875b6886cd4b3fb',
+        'b64::JC50b2tlbg==::46b', 'always', 60 %}"
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+    pathParameters:
+      - name: id
+        value: "15"
+  - url: localhost:3000/budgets/:id/reject
+    name: reject budget
+    meta:
+      id: req_a17700b81668491ead6c1efcc7f53ecb
+      created: 1754881926548
+      modified: 1754886970335
+      isPrivate: false
+      description: ""
+      sortKey: -1754755278172.0781
+    method: POST
+    body:
+      mimeType: application/json
+      text: ""
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.4.0
+    authentication:
+      type: bearer
+      token: "{% response 'body', 'req_e98453586e9549ab9875b6886cd4b3fb',
+        'b64::JC50b2tlbg==::46b', 'always', 60 %}"
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+    pathParameters:
+      - name: id
+        value: "9"
+  - url: localhost:3000/service_orders/:id/send_to_diagnosis
+    name: send to diagnosis - service order
+    meta:
+      id: req_13b0db53ea7a42d9a72cddacdc442c3b
+      created: 1754881958391
+      modified: 1754882199514
+      isPrivate: false
+      description: ""
+      sortKey: -1754755270464.8125
+    method: POST
+    body:
+      mimeType: application/json
+      text: ""
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.4.0
+    authentication:
+      type: bearer
+      token: "{% response 'body', 'req_e98453586e9549ab9875b6886cd4b3fb',
+        'b64::JC50b2tlbg==::46b', 'always', 60 %}"
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+    pathParameters:
+      - name: id
+        value: "16"
+  - url: localhost:3000/service_orders/:id/send_to_approval
+    name: send to approval - service order
+    meta:
+      id: req_c045d451d50f4d75850dc3237c41eb0c
+      created: 1754881965241
+      modified: 1754886842955
+      isPrivate: false
+      description: ""
+      sortKey: -1754755267381.9062
+    method: POST
+    body:
+      mimeType: application/json
+      text: ""
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.4.0
+    authentication:
+      type: bearer
+      token: "{% response 'body', 'req_e98453586e9549ab9875b6886cd4b3fb',
+        'b64::JC50b2tlbg==::46b', 'always', 60 %}"
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+    pathParameters:
+      - name: id
+        value: "11"
+  - url: localhost:3000/service_orders/:id
+    name: find service orders
+    meta:
+      id: req_b19db782963a4a7e98898a1db9699bd4
+      created: 1754882531600
+      modified: 1754886366544
+      isPrivate: false
+      description: ""
+      sortKey: -1754692591149
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/11.4.0
+    authentication:
+      type: bearer
+      token: "{% response 'body', 'req_e98453586e9549ab9875b6886cd4b3fb',
+        'b64::JC50b2tlbg==::46b', 'always', 60 %}"
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+    pathParameters:
+      - name: id
+        value: "11"
+  - url: localhost:3000/service_orders/:id/add_products
+    name: add products- service orders
+    meta:
+      id: req_64e816aa2e754ae5af6c068b9c788aff
+      created: 1754884672581
+      modified: 1754932948442
+      isPrivate: false
+      description: ""
+      sortKey: -1754755332122.9375
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"products_params": [
+        		{ "sku": "AP001", "quantity": 4 }
+        	]
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.4.0
+    authentication:
+      type: bearer
+      token: "{% response 'body', 'req_e98453586e9549ab9875b6886cd4b3fb',
+        'b64::JC50b2tlbg==::46b', 'always', 60 %}"
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+    pathParameters:
+      - name: id
+        value: "11"
+  - url: localhost:3000/service_orders/:id/add_services
+    name: add services- service orders
+    meta:
+      id: req_e1cc75b1681741afa3cbfc2276e0066b
+      created: 1754884759080
+      modified: 1754886789470
+      isPrivate: false
+      description: ""
+      sortKey: -1754755329040.0312
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"services_codes": ["SVC002"]
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.4.0
+    authentication:
+      type: bearer
+      token: "{% response 'body', 'req_e98453586e9549ab9875b6886cd4b3fb',
+        'b64::JC50b2tlbg==::46b', 'always', 60 %}"
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+    pathParameters:
+      - name: id
+        value: "11"
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_ad783dac42a0597905f3d561649e8f40f48b1f40
+    created: 1754692591130
+    modified: 1754692591130
+environments:
+  name: Base Environment
+  meta:
+    id: env_ad783dac42a0597905f3d561649e8f40f48b1f40
+    created: 1754692591129
+    modified: 1754759852858
+    isPrivate: false
+  data:
+    auth_token: ""
