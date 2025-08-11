@@ -5,12 +5,34 @@ module Application
         @service_order_repository = repositories.fetch(:service_order) { Infra::Repositories::ServiceOrderRepository.new }
       end
 
-      def find_all
-        @service_order_repository.find_all
+      def find_all(filter_params)
+        Infra::QueryObjects::ServiceOrdersQuery.find_all(filter_params)
       end
 
       def find_by_id(service_order_id)
         @service_order_repository.find_by_id(service_order_id)
+      end
+
+      def send_to_diagnosis(send_to_diagnosis_command)
+        service_order = @service_order_repository.find_by_id(send_to_diagnosis_command.service_order_id)
+
+        ActiveRecord::Base.transaction do
+          @service_order_repository.update(service_order, { status: "diagnosis" })
+        end
+
+        service_order
+      end
+
+      def send_to_approval(send_to_approval_command)
+        service_order = @service_order_repository.find_by_id(send_to_approval_command.service_order_id)
+
+        ActiveRecord::Base.transaction do
+          @service_order_repository.update(service_order, { status: "waiting_approval" })
+        end
+
+        create_new_budget(service_order)
+
+        service_order
       end
 
       def add_services(add_services_command)
@@ -18,6 +40,8 @@ module Application
         services = Application::ServiceOrderItem::ServiceApplication.new.find_services_by_codes(
           add_services_command.services_codes
         )
+
+        raise Exceptions::ServiceOrderException.new("Invalid services codes") if services.empty?
 
         ActiveRecord::Base.transaction do
           service_order.add_services(services)
@@ -27,11 +51,13 @@ module Application
 
       def add_auto_parts(add_auto_parts_command)
         service_order = @service_order_repository.find_by_id(add_auto_parts_command.service_order_id)
-        auto_part_parms = add_auto_parts_command.auto_parts_params
+        auto_parts_params = add_auto_parts_command.auto_parts_params
 
         auto_parts = Application::ServiceOrderItem::AutoPartApplication.new.find_auto_parts_by_skus(
-          auto_part_parms.map { |param| param[:sku] }
+          auto_parts_params.map { |param| param[:sku] }
         )
+
+        raise Exceptions::ServiceOrderException.new("Invalid auto parts codes") if auto_parts.empty?
 
         auto_parts_list = auto_parts.map do |auto_part|
           {
@@ -45,6 +71,17 @@ module Application
           @service_order_repository.save(service_order)
 
           remove_auto_parts(auto_parts_list)
+        end
+      end
+
+      def approve_service_order(approve_service_order_command)
+        service_order = @service_order_repository.find_by_id(approve_service_order_command.service_order_id)
+
+        ActiveRecord::Base.transaction do
+          @service_order_repository.update(
+            service_order,
+            { status: "approved" }
+          )
         end
       end
 
@@ -94,6 +131,14 @@ module Application
       end
 
       private
+
+      def create_new_budget(service_order)
+        create_budget_command = Commands::CreateBudgetCommand.new(
+          service_order_id: service_order.id
+        )
+
+        BudgetApplication.new.create_budget(create_budget_command)
+      end
 
       def replace_auto_parts(service_order)
         service_order.service_order_items.auto_parts.each do |service_order_item|

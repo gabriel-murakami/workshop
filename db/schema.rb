@@ -55,6 +55,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_08_09_214743) do
   create_table "service_order_items", force: :cascade do |t|
     t.bigint "service_order_id", null: false
     t.integer "quantity", default: 1, null: false
+    t.decimal "total_value", precision: 12, scale: 2, default: "0.0", null: false
     t.string "item_type", null: false
     t.bigint "item_id", null: false
     t.datetime "created_at", null: false
@@ -68,7 +69,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_08_09_214743) do
     t.bigint "vehicle_id", null: false
     t.datetime "service_started_at"
     t.datetime "service_finished_at"
-    t.string "status", default: "open", null: false
+    t.string "status", default: "received", null: false
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

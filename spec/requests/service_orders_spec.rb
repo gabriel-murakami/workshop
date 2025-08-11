@@ -9,6 +9,114 @@ RSpec.describe 'Service Orders', type: :request do
   end
   let(:Authorization) { "Bearer #{token}" }
 
+  path '/service_orders/{id}' do
+    get 'Get a service order by ID' do
+      tags 'Service Orders'
+      security [ bearerAuth: [] ]
+      produces 'application/json'
+
+      parameter name: :id, in: :path, type: :integer, required: true
+
+      response '200', 'service order found' do
+        let(:service_order) { create(:service_order) }
+        let(:id) { service_order.id }
+
+        schema type: :object,
+          properties: {
+            id: { type: :integer },
+            customer_id: { type: :integer },
+            vehicle_id: { type: :integer },
+            status: { type: :string },
+            description: { type: :string, nullable: true },
+            service_started_at: { type: :string, format: 'date-time', nullable: true },
+            service_finished_at: { type: :string, format: 'date-time', nullable: true },
+            created_at: { type: :string, format: 'date-time' },
+            updated_at: { type: :string, format: 'date-time' },
+            service_order_items: {
+              type: :array,
+              items: {
+                type: :object,
+                properties: {
+                  id: { type: :integer },
+                  quantity: { type: :integer },
+                  total_value: { type: :string },
+                  item_type: { type: :string },
+                  item_id: { type: :integer }
+                },
+                required: %w[id quantity total_value item_type item_id]
+              }
+            }
+          },
+          required: %w[id customer_id vehicle_id status created_at updated_at service_order_items]
+
+        run_test! do |response|
+          json = JSON.parse(response.body)
+          expect(json['id']).to eq(service_order.id)
+          expect(json).to have_key('service_order_items')
+        end
+      end
+
+      response '404', 'service order not found' do
+        let(:id) { 0 }
+        run_test!
+      end
+    end
+  end
+
+  path '/service_orders/{id}/send_to_diagnosis' do
+    post 'Send service order to diagnosis' do
+      tags 'Service Orders'
+      security [ bearerAuth: [] ]
+      consumes 'application/json'
+      produces 'application/json'
+
+      parameter name: :id, in: :path, type: :integer, required: true
+
+      response '200', 'service order sent to diagnosis' do
+        let(:service_order) { create(:service_order, status: 'received') }
+        let(:id) { service_order.id }
+
+        run_test! do |response|
+          json = JSON.parse(response.body)
+          expect(json['status']).to eq('diagnosis')
+          expect(json['id']).to eq(service_order.id)
+        end
+      end
+
+      response '404', 'service order not found' do
+        let(:id) { 0 }
+        run_test!
+      end
+    end
+  end
+
+  path '/service_orders/{id}/send_to_approval' do
+    post 'Send service order to waiting approval' do
+      tags 'Service Orders'
+      security [ bearerAuth: [] ]
+      consumes 'application/json'
+      produces 'application/json'
+
+      parameter name: :id, in: :path, type: :integer, required: true
+
+      response '200', 'service order sent to waiting approval' do
+        let(:service_order) { create(:service_order, status: 'diagnosis') }
+        let(:id) { service_order.id }
+
+        run_test! do |response|
+          json = JSON.parse(response.body)
+          expect(json['status']).to eq('waiting_approval')
+          expect(json['id']).to eq(service_order.id)
+        end
+      end
+
+      response '404', 'service order not found' do
+        let(:id) { 0 }
+        run_test!
+      end
+    end
+  end
+
   path '/service_orders' do
     get 'List all service orders' do
       tags 'Service Orders'
@@ -61,9 +169,20 @@ RSpec.describe 'Service Orders', type: :request do
       }
 
       response '200', 'services added' do
+        let(:service1) { create(:service) }
+        let(:service2) { create(:service) }
+
         let(:service_order) { create(:service_order) }
         let(:id) { service_order.id }
-        let(:body) { { services_codes: [ 'SVC001', 'SVC002' ] } }
+        let(:body) { { services_codes: [ service1.code, service2.code ] } }
+
+        run_test!
+      end
+
+      response '422', 'invalid services' do
+        let(:service_order) { create(:service_order) }
+        let(:id) { service_order.id }
+        let(:body) { { services_codes: [ 'SVC111', 'SVC222' ] } }
 
         run_test!
       end
@@ -97,9 +216,18 @@ RSpec.describe 'Service Orders', type: :request do
       }
 
       response '200', 'auto parts added' do
+        let(:auto_part) { create(:auto_part) }
         let(:service_order) { create(:service_order) }
         let(:id) { service_order.id }
-        let(:body) { { auto_parts_params: [ { sku: 'AP001', quantity: 2 } ] } }
+        let(:body) { { auto_parts_params: [ { sku: auto_part.sku, quantity: 2 } ] } }
+
+        run_test!
+      end
+
+      response '422', 'invalid auto parts' do
+        let(:service_order) { create(:service_order) }
+        let(:id) { service_order.id }
+        let(:body) { { auto_parts_params: [ { sku: 'AP000', quantity: 2 } ] } }
 
         run_test!
       end
@@ -137,7 +265,7 @@ RSpec.describe 'Service Orders', type: :request do
           },
           required: %w[id customer_id vehicle_id status created_at updated_at]
 
-        let(:service_order) { create(:service_order, status: 'awaiting_approval') }
+        let(:service_order) { create(:service_order, status: 'waiting_approval') }
         let(:id) { service_order.id }
         let(:body) { { id: service_order.id } }
 

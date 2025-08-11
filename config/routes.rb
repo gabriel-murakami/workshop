@@ -50,6 +50,15 @@ Rails.application.routes.draw do
       post "service_orders/:id/add_services", to: "service_orders#add_services"
       post "service_orders/:id/finish", to: "service_orders#finish"
       post "service_orders/:id/start", to: "service_orders#start"
+      post "service_orders/:id/send_to_diagnosis", to: "service_orders#send_to_diagnosis"
+      post "service_orders/:id/send_to_approval", to: "service_orders#send_to_approval"
+
+      # ======================
+      # Budgets
+      # ======================
+      resources :budgets, only: %i[index show]
+      post "budgets/:id/approve", to: "budgets#approve"
+      post "budgets/:id/reject", to: "budgets#reject"
     end
   end
 end

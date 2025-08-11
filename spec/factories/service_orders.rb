@@ -4,7 +4,7 @@ FactoryBot.define do
     association :vehicle
     service_started_at { Time.current }
     service_finished_at { nil }
-    status { "open" }
+    status { "received" }
     description { "Oil change and full inspection" }
   end
 end

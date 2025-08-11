@@ -3,10 +3,10 @@ ENV['RAILS_ENV'] ||= 'test'
 require 'simplecov'
 require 'simplecov-console'
 
-SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
-  SimpleCov::Formatter::HTMLFormatter,
-  SimpleCov::Formatter::Console
-])
+# SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
+#   SimpleCov::Formatter::HTMLFormatter,
+#   SimpleCov::Formatter::Console
+# ])
 
 SimpleCov.start 'rails' do
   add_filter '/spec/'

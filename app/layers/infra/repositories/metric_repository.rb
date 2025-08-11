@@ -10,7 +10,7 @@ module Infra
       end
 
       def find_last_with_lock
-        @metric.order(created_at: :desc).lock(true).first
+        @metric.order(created_at: :desc).lock(true).first || @metric.create!
       end
     end
   end

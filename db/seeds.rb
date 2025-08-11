@@ -1,11 +1,12 @@
-Domain::ServiceOrder::User.delete_all
 Domain::ServiceOrder::Budget.delete_all
 Domain::ServiceOrderItem::ServiceOrderItem.delete_all
 Domain::ServiceOrder::ServiceOrder.delete_all
+Domain::ServiceOrder::User.delete_all
 Domain::Customer::Vehicle.delete_all
 Domain::Customer::Customer.delete_all
 Domain::ServiceOrderItem::Service.delete_all
 Domain::ServiceOrderItem::AutoPart.delete_all
+Domain::ServiceOrder::Metric.delete_all
 
 puts "Creating admin user"
 Domain::ServiceOrder::User.create!(
@@ -50,17 +51,26 @@ puts "Creating service orders with items and budgets..."
 service_order1 = Domain::ServiceOrder::ServiceOrder.create!(
   customer: customers[0],
   vehicle: vehicles[0],
-  status: :awaiting_approval,
+  status: :waiting_approval,
   description: "Customer reported strange noise from engine."
 )
 
-service_order1.service_order_items.create!(item: services[2], quantity: 1)
-service_order1.service_order_items.create!(item: auto_parts[2], quantity: 4)
+service_order1.service_order_items.create!(
+  item: services[2],
+  quantity: 1,
+  total_value: services[2].base_price * 1
+)
+
+service_order1.service_order_items.create!(
+  item: auto_parts[2],
+  quantity: 4,
+  total_value: auto_parts[2].base_price * 4
+)
 
 Domain::ServiceOrder::Budget.create!(
   service_order: service_order1,
   date: Date.today - 4.days,
-  total_value: (services[2].base_price + auto_parts[2].base_price * 4),
+  total_value: (services[2].base_price * 1 + auto_parts[2].base_price * 4),
   status: :pending
 )
 
@@ -69,19 +79,68 @@ service_order2 = Domain::ServiceOrder::ServiceOrder.create!(
   vehicle: vehicles[2],
   status: :in_progress,
   description: "Routine brake check and oil change.",
-  service_started_at: Time.now
+  service_started_at: Time.zone.now
 )
 
-service_order2.service_order_items.create!(item: services[0], quantity: 1)
-service_order2.service_order_items.create!(item: services[1], quantity: 1)
-service_order2.service_order_items.create!(item: auto_parts[0], quantity: 1)
-service_order2.service_order_items.create!(item: auto_parts[1], quantity: 1)
+service_order2.service_order_items.create!(
+  item: services[0],
+  quantity: 1,
+  total_value: services[0].base_price * 1
+)
+
+service_order2.service_order_items.create!(
+  item: services[1],
+  quantity: 1,
+  total_value: services[1].base_price * 1
+)
+
+service_order2.service_order_items.create!(
+  item: auto_parts[0],
+  quantity: 1,
+  total_value: auto_parts[0].base_price * 1
+)
+
+service_order2.service_order_items.create!(
+  item: auto_parts[1],
+  quantity: 1,
+  total_value: auto_parts[1].base_price * 1
+)
+
+service_order3 = Domain::ServiceOrder::ServiceOrder.create!(
+  customer: customers[3],
+  vehicle: vehicles[3],
+  status: :diagnosis,
+  description: "Engine noise diagnosis in progress."
+)
+
+service_order3.service_order_items.create!(
+  item: services[2],
+  quantity: 1,
+  total_value: services[2].base_price * 1
+)
+
+service_order3.service_order_items.create!(
+  item: auto_parts[2],
+  quantity: 2,
+  total_value: auto_parts[2].base_price * 2
+)
 
 Domain::ServiceOrder::Budget.create!(
   service_order: service_order2,
   date: Date.today - 1.day,
-  total_value: (services[0].base_price + services[1].base_price + auto_parts[0].base_price + auto_parts[1].base_price),
+  total_value: (
+    services[0].base_price * 1 +
+    services[1].base_price * 1 +
+    auto_parts[0].base_price * 1 +
+    auto_parts[1].base_price * 1
+  ),
   status: :approved
+)
+
+Domain::ServiceOrder::ServiceOrder.create!(
+  customer: customers[0],
+  vehicle: vehicles[1],
+  description: "Strange noises."
 )
 
 Domain::ServiceOrder::Metric.create!(

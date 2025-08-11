@@ -24,7 +24,7 @@ class CreateInitialTables < ActiveRecord::Migration[7.1]
       t.references :vehicle, null: false, foreign_key: true
       t.datetime :service_started_at
       t.datetime :service_finished_at
-      t.string :status, null: false, default: "open"
+      t.string :status, null: false, default: "received"
       t.text :description
 
       t.timestamps
@@ -59,6 +59,7 @@ class CreateInitialTables < ActiveRecord::Migration[7.1]
     create_table :service_order_items do |t|
       t.references :service_order, null: false, foreign_key: true
       t.integer :quantity, null: false, default: 1
+      t.decimal :total_value, precision: 12, scale: 2, null: false, default: 0
 
       t.references :item, polymorphic: true, null: false
 

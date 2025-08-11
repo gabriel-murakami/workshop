@@ -2,11 +2,33 @@ module Web
   module Controllers
     class ServiceOrdersController < AuthController
       def index
-        render json: Application::ServiceOrder::ServiceOrderApplication.new.find_all
+        render json: Application::ServiceOrder::ServiceOrderApplication.new.find_all(filter_params)
       end
 
       def show
-        render json: Application::ServiceOrder::ServiceOrderApplication.new.find_by_id(params[:id])
+        service_order = Application::ServiceOrder::ServiceOrderApplication.new.find_by_id(params[:id])
+
+        render json: service_order, include: :service_order_items
+      end
+
+      def send_to_diagnosis
+        command = Application::ServiceOrder::Commands::SendToDiagnosisCommand.new(
+          service_order_id: permitted_params[:id]
+        )
+
+        service_order = Application::ServiceOrder::ServiceOrderApplication.new.send_to_diagnosis(command)
+
+        render json: service_order, status: :ok
+      end
+
+      def send_to_approval
+        command = Application::ServiceOrder::Commands::SendToApprovalCommand.new(
+          service_order_id: permitted_params[:id]
+        )
+
+        service_order = Application::ServiceOrder::ServiceOrderApplication.new.send_to_approval(command)
+
+        render json: service_order, status: :ok
       end
 
       def add_services
@@ -53,8 +75,18 @@ module Web
 
       private
 
+      def filter_params
+        permitted_params.slice(:status, :customer_id)
+      end
+
       def permitted_params
-        params.permit(:id, :services_codes, auto_parts_params: [ :sku, :quantity ])
+        params.permit(
+          :id,
+          :status,
+          :customer_id,
+          services_codes: [],
+          auto_parts_params: [ :sku, :quantity ]
+        )
       end
     end
   end

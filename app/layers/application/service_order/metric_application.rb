@@ -15,7 +15,7 @@ module Application
 
         ActiveRecord::Base.transaction do
           metric = @metric_repository.find_last_with_lock
-          metric.add_finished_order(finished_at, started_at)
+          metric.add_finished_order(started_at, finished_at)
         end
       end
     end

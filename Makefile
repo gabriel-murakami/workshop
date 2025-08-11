@@ -24,6 +24,10 @@ db-create:
 	docker compose run --rm $(APP) rails db:create db:migrate ; \
 	$(MAKE) stop
 
+db-recreate:
+	docker compose run --rm $(APP) rails db:drop db:create db:migrate db:seed ; \
+	$(MAKE) stop
+
 console:
 	docker compose run --rm $(APP) rails console ; \
 	$(MAKE) stop

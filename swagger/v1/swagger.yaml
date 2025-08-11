@@ -250,6 +250,125 @@ paths:
                   type: integer
               required:
               - stock_change
+  "/budgets":
+    get:
+      summary: Filtered by document number
+      tags:
+      - Budgets
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: budgets found with filter
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    service_order_id:
+                      type: integer
+                    date:
+                      type: string
+                      format: date
+                    total_value:
+                      type: string
+                    status:
+                      type: string
+                  required:
+                  - id
+                  - service_order_id
+                  - date
+                  - total_value
+                  - status
+      parameters:
+      - name: document_number
+        in: query
+        description: Customer document number to filter budgets
+        schema:
+          type: string
+  "/budgets/{id}":
+    get:
+      summary: Get budget by id
+      tags:
+      - Budgets
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        description: Budget ID
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: budget found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  service_order_id:
+                    type: integer
+                  date:
+                    type: string
+                    format: date
+                  total_value:
+                    type: string
+                  status:
+                    type: string
+                required:
+                - id
+                - service_order_id
+                - date
+                - total_value
+                - status
+        '404':
+          description: budget not found
+  "/budgets/{id}/approve":
+    post:
+      summary: Approve a budget
+      tags:
+      - Budgets
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        description: Budget ID
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: budget approved
+        '404':
+          description: budget not found
+  "/budgets/{id}/reject":
+    post:
+      summary: Reject a budget
+      tags:
+      - Budgets
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        description: Budget ID
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: budget rejected
+        '404':
+          description: budget not found
   "/customers":
     get:
       summary: List all customers
