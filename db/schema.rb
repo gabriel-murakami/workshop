@@ -14,17 +14,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_08_09_214743) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "auto_parts", force: :cascade do |t|
-    t.string "name", null: false
-    t.text "description"
-    t.integer "stock_quantity", default: 0, null: false
-    t.decimal "base_price", precision: 10, scale: 2, default: "0.0", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "sku", null: false
-    t.index ["sku"], name: "index_auto_parts_on_sku", unique: true
-  end
-
   create_table "budgets", force: :cascade do |t|
     t.bigint "service_order_id", null: false
     t.date "date", null: false
@@ -50,6 +39,17 @@ ActiveRecord::Schema[7.2].define(version: 2025_08_09_214743) do
     t.decimal "average_time", default: "0.0"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "products", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "description"
+    t.integer "stock_quantity", default: 0, null: false
+    t.decimal "base_price", precision: 10, scale: 2, default: "0.0", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "sku", null: false
+    t.index ["sku"], name: "index_products_on_sku", unique: true
   end
 
   create_table "service_order_items", force: :cascade do |t|

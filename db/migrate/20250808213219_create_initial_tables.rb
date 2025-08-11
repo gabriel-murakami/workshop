@@ -47,7 +47,7 @@ class CreateInitialTables < ActiveRecord::Migration[7.1]
       t.timestamps
     end
 
-    create_table :auto_parts do |t|
+    create_table :products do |t|
       t.string :name, null: false
       t.text :description
       t.integer :stock_quantity, null: false, default: 0

@@ -49,28 +49,28 @@ module Application
         end
       end
 
-      def add_auto_parts(add_auto_parts_command)
-        service_order = @service_order_repository.find_by_id(add_auto_parts_command.service_order_id)
-        auto_parts_params = add_auto_parts_command.auto_parts_params
+      def add_products(add_products_command)
+        service_order = @service_order_repository.find_by_id(add_products_command.service_order_id)
+        products_params = add_products_command.products_params
 
-        auto_parts = Application::ServiceOrderItem::AutoPartApplication.new.find_auto_parts_by_skus(
-          auto_parts_params.map { |param| param[:sku] }
+        products = Application::ServiceOrderItem::ProductApplication.new.find_products_by_skus(
+          products_params.map { |param| param[:sku] }
         )
 
-        raise Exceptions::ServiceOrderException.new("Invalid auto parts codes") if auto_parts.empty?
+        raise Exceptions::ServiceOrderException.new("Invalid products codes") if products.empty?
 
-        auto_parts_list = auto_parts.map do |auto_part|
+        products_list = products.map do |product|
           {
-            item: auto_part,
-            quantity: auto_parts_params.find { |param| param[:sku] == auto_part.sku  }[:quantity]
+            item: product,
+            quantity: products_params.find { |param| param[:sku] == product.sku  }[:quantity]
           }
         end
 
         ActiveRecord::Base.transaction do
-          service_order.add_auto_parts(auto_parts_list)
+          service_order.add_products(products_list)
           @service_order_repository.save(service_order)
 
-          remove_auto_parts(auto_parts_list)
+          remove_products(products_list)
         end
       end
 
@@ -89,7 +89,7 @@ module Application
         service_order = @service_order_repository.find_by_id(cancel_service_order_command.service_order_id)
 
         ActiveRecord::Base.transaction do
-          replace_auto_parts(service_order)
+          replace_products(service_order)
 
           @service_order_repository.update(
             service_order,
@@ -140,25 +140,25 @@ module Application
         BudgetApplication.new.create_budget(create_budget_command)
       end
 
-      def replace_auto_parts(service_order)
-        service_order.service_order_items.auto_parts.each do |service_order_item|
+      def replace_products(service_order)
+        service_order.service_order_items.products.each do |service_order_item|
           stock_control_command = Application::ServiceOrderItem::Commands::StockControlCommand.new(
-            auto_part_id: service_order_item.item_id,
+            product_id: service_order_item.item_id,
             stock_change: service_order_item.quantity
           )
 
-          Application::ServiceOrderItem::AutoPartApplication.new.add_auto_part(stock_control_command)
+          Application::ServiceOrderItem::ProductApplication.new.add_product(stock_control_command)
         end
       end
 
-      def remove_auto_parts(auto_parts)
-        auto_parts.each do |auto_part|
+      def remove_products(products)
+        products.each do |product|
           stock_control_command = Application::ServiceOrderItem::Commands::StockControlCommand.new(
-            auto_part_id: auto_part[:item].id,
-            stock_change: auto_part[:quantity]
+            product_id: product[:item].id,
+            stock_change: product[:quantity]
           )
 
-          Application::ServiceOrderItem::AutoPartApplication.new.remove_auto_part(stock_control_command)
+          Application::ServiceOrderItem::ProductApplication.new.remove_product(stock_control_command)
         end
       end
 

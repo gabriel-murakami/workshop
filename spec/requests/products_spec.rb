@@ -1,6 +1,6 @@
 require 'swagger_helper'
 
-RSpec.describe 'Auto Parts', type: :request do
+RSpec.describe 'Product', type: :request do
   let(:user) { create(:user) }
   let(:token) do
     secret_key = Rails.application.credentials.jwt_secret || ENV["JWT_SECRET"]
@@ -9,14 +9,14 @@ RSpec.describe 'Auto Parts', type: :request do
   end
   let(:Authorization) { "Bearer #{token}" }
 
-  path '/auto_parts' do
-    get 'List all auto parts' do
-      tags 'Auto Parts'
+  path '/products' do
+    get 'List all products' do
+      tags 'Product'
       security [ bearerAuth: [] ]
       produces 'application/json'
 
-      response '200', 'auto parts found' do
-        before { create_list(:auto_part, 3) }
+      response '200', 'products found' do
+        before { create_list(:product, 3) }
 
         schema type: :array,
           items: {
@@ -38,13 +38,13 @@ RSpec.describe 'Auto Parts', type: :request do
       end
     end
 
-    post 'Create a new auto part' do
-      tags 'Auto Parts'
+    post 'Create a new product' do
+      tags 'Product'
       security [ bearerAuth: [] ]
       consumes 'application/json'
       produces 'application/json'
 
-      parameter name: :auto_part, in: :body, schema: {
+      parameter name: :product, in: :body, schema: {
         type: :object,
         properties: {
           name: { type: :string },
@@ -56,8 +56,8 @@ RSpec.describe 'Auto Parts', type: :request do
         required: %w[name stock_quantity base_price sku]
       }
 
-      response '201', 'auto part created' do
-        let(:auto_part) do
+      response '201', 'product created' do
+        let(:product) do
           {
             name: 'Brake Pad',
             description: 'High quality brake pad',
@@ -76,23 +76,23 @@ RSpec.describe 'Auto Parts', type: :request do
       end
 
       response '422', 'invalid request' do
-        let(:auto_part) { { name: '' } }
+        let(:product) { { name: '' } }
         run_test!
       end
     end
   end
 
-  path '/auto_parts/{id}' do
-    get 'Get auto part by id' do
-      tags 'Auto Parts'
+  path '/products/{id}' do
+    get 'Get product by id' do
+      tags 'Product'
       security [ bearerAuth: [] ]
       produces 'application/json'
 
       parameter name: :id, in: :path, type: :integer, description: 'Auto part ID'
 
-      response '200', 'auto part found' do
-        let(:auto_part_record) { create(:auto_part) }
-        let(:id) { auto_part_record.id }
+      response '200', 'product found' do
+        let(:product_record) { create(:product) }
+        let(:id) { product_record.id }
 
         schema type: :object,
           properties: {
@@ -110,20 +110,20 @@ RSpec.describe 'Auto Parts', type: :request do
         end
       end
 
-      response '404', 'auto part not found' do
+      response '404', 'product not found' do
         let(:id) { 0 }
         run_test!
       end
     end
 
-    put 'Update auto part by id' do
-      tags 'Auto Parts'
+    put 'Update product by id' do
+      tags 'Product'
       security [ bearerAuth: [] ]
       consumes 'application/json'
       produces 'application/json'
 
       parameter name: :id, in: :path, type: :integer
-      parameter name: :auto_part, in: :body, schema: {
+      parameter name: :product, in: :body, schema: {
         type: :object,
         properties: {
           id: { type: :integer },
@@ -135,16 +135,16 @@ RSpec.describe 'Auto Parts', type: :request do
         required: %w[id name stock_quantity base_price]
       }
 
-      response '200', 'auto part updated' do
-        let(:auto_part_record) { create(:auto_part) }
-        let(:id) { auto_part_record.id }
-        let(:auto_part) do
+      response '200', 'product updated' do
+        let(:product_record) { create(:product) }
+        let(:id) { product_record.id }
+        let(:product) do
           {
             id: id,
             name: 'Updated Brake Pad',
-            description: auto_part_record.description,
-            stock_quantity: auto_part_record.stock_quantity,
-            base_price: auto_part_record.base_price
+            description: product_record.description,
+            stock_quantity: product_record.stock_quantity,
+            base_price: product_record.base_price
           }
         end
 
@@ -155,32 +155,32 @@ RSpec.describe 'Auto Parts', type: :request do
       end
 
       response '422', 'invalid request' do
-        let(:id) { create(:auto_part).id }
-        let(:auto_part) { { id: id, name: '' } }
+        let(:id) { create(:product).id }
+        let(:product) { { id: id, name: '' } }
         run_test!
       end
     end
 
-    delete 'Delete auto part by id' do
-      tags 'Auto Parts'
+    delete 'Delete product by id' do
+      tags 'Product'
       security [ bearerAuth: [] ]
       parameter name: :id, in: :path, type: :integer
 
-      response '200', 'auto part deleted' do
-        let(:id) { create(:auto_part).id }
+      response '200', 'product deleted' do
+        let(:id) { create(:product).id }
         run_test!
       end
 
-      response '404', 'auto part not found' do
+      response '404', 'product not found' do
         let(:id) { 0 }
         run_test!
       end
     end
   end
 
-  path '/auto_parts/{id}/add' do
-    post 'Add stock quantity to auto part' do
-      tags 'Auto Parts'
+  path '/products/{id}/add' do
+    post 'Add stock quantity to product' do
+      tags 'Product'
       security [ bearerAuth: [] ]
       consumes 'application/json'
       produces 'application/json'
@@ -195,21 +195,21 @@ RSpec.describe 'Auto Parts', type: :request do
       }
 
       response '200', 'stock added' do
-        let(:auto_part_record) { create(:auto_part, stock_quantity: 10) }
-        let(:id) { auto_part_record.id }
+        let(:product_record) { create(:product, stock_quantity: 10) }
+        let(:id) { product_record.id }
         let(:body) { { stock_change: 5 } }
 
         run_test! do |response|
           data = JSON.parse(response.body)
-          expect(data['stock_quantity']).to eq(auto_part_record.stock_quantity + 5)
+          expect(data['stock_quantity']).to eq(product_record.stock_quantity + 5)
         end
       end
     end
   end
 
-  path '/auto_parts/{id}/remove' do
-    post 'Remove stock quantity from auto part' do
-      tags 'Auto Parts'
+  path '/products/{id}/remove' do
+    post 'Remove stock quantity from product' do
+      tags 'Product'
       security [ bearerAuth: [] ]
       consumes 'application/json'
       produces 'application/json'
@@ -224,13 +224,13 @@ RSpec.describe 'Auto Parts', type: :request do
       }
 
       response '200', 'stock removed' do
-        let(:auto_part_record) { create(:auto_part, stock_quantity: 10) }
-        let(:id) { auto_part_record.id }
+        let(:product_record) { create(:product, stock_quantity: 10) }
+        let(:id) { product_record.id }
         let(:body) { { stock_change: 3 } }
 
         run_test! do |response|
           data = JSON.parse(response.body)
-          expect(data['stock_quantity']).to eq(auto_part_record.stock_quantity - 3)
+          expect(data['stock_quantity']).to eq(product_record.stock_quantity - 3)
         end
       end
     end

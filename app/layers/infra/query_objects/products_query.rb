@@ -1,8 +1,8 @@
 module Infra
   module QueryObjects
-    class AutoPartsQuery < Domain::ServiceOrderItem::AutoPart
+    class ProductsQuery < Domain::ServiceOrderItem::Product
       class << self
-        def find_auto_parts_by_sku(skus)
+        def find_products_by_sku(skus)
           self.where(sku: skus)
         end
       end

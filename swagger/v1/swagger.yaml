@@ -37,16 +37,16 @@ paths:
               required:
               - email
               - password
-  "/auto_parts":
+  "/products":
     get:
-      summary: List all auto parts
+      summary: List all products
       tags:
-      - Auto Parts
+      - Product
       security:
       - bearerAuth: []
       responses:
         '200':
-          description: auto parts found
+          description: products found
           content:
             application/json:
               schema:
@@ -71,15 +71,15 @@ paths:
                   - stock_quantity
                   - base_price
     post:
-      summary: Create a new auto part
+      summary: Create a new product
       tags:
-      - Auto Parts
+      - Product
       security:
       - bearerAuth: []
       parameters: []
       responses:
         '201':
-          description: auto part created
+          description: product created
         '422':
           description: invalid request
       requestBody:
@@ -103,11 +103,11 @@ paths:
               - stock_quantity
               - base_price
               - sku
-  "/auto_parts/{id}":
+  "/products/{id}":
     get:
-      summary: Get auto part by id
+      summary: Get product by id
       tags:
-      - Auto Parts
+      - Product
       security:
       - bearerAuth: []
       parameters:
@@ -119,7 +119,7 @@ paths:
           type: integer
       responses:
         '200':
-          description: auto part found
+          description: product found
           content:
             application/json:
               schema:
@@ -142,11 +142,11 @@ paths:
                 - stock_quantity
                 - base_price
         '404':
-          description: auto part not found
+          description: product not found
     put:
-      summary: Update auto part by id
+      summary: Update product by id
       tags:
-      - Auto Parts
+      - Product
       security:
       - bearerAuth: []
       parameters:
@@ -157,7 +157,7 @@ paths:
           type: integer
       responses:
         '200':
-          description: auto part updated
+          description: product updated
         '422':
           description: invalid request
       requestBody:
@@ -182,9 +182,9 @@ paths:
               - stock_quantity
               - base_price
     delete:
-      summary: Delete auto part by id
+      summary: Delete product by id
       tags:
-      - Auto Parts
+      - Product
       security:
       - bearerAuth: []
       parameters:
@@ -195,14 +195,14 @@ paths:
           type: integer
       responses:
         '200':
-          description: auto part deleted
+          description: product deleted
         '404':
-          description: auto part not found
-  "/auto_parts/{id}/add":
+          description: product not found
+  "/products/{id}/add":
     post:
-      summary: Add stock quantity to auto part
+      summary: Add stock quantity to product
       tags:
-      - Auto Parts
+      - Product
       security:
       - bearerAuth: []
       parameters:
@@ -224,11 +224,11 @@ paths:
                   type: integer
               required:
               - stock_change
-  "/auto_parts/{id}/remove":
+  "/products/{id}/remove":
     post:
-      summary: Remove stock quantity from auto part
+      summary: Remove stock quantity from product
       tags:
-      - Auto Parts
+      - Product
       security:
       - bearerAuth: []
       parameters:
@@ -796,9 +796,9 @@ paths:
                     pattern: "^SVC.*"
               required:
               - services_codes
-  "/service_orders/{id}/add_auto_parts":
+  "/service_orders/{id}/add_products":
     post:
-      summary: Add auto parts to a service order
+      summary: Add products to a service order
       tags:
       - Service Orders
       security:
@@ -811,16 +811,16 @@ paths:
           type: integer
       responses:
         '200':
-          description: auto parts added
+          description: products added
         '422':
-          description: invalid auto parts
+          description: invalid products
       requestBody:
         content:
           application/json:
             schema:
               type: object
               properties:
-                auto_parts_params:
+                products_params:
                   type: array
                   items:
                     type: object
@@ -834,7 +834,7 @@ paths:
                     - sku
                     - quantity
               required:
-              - auto_parts_params
+              - products_params
   "/service_orders/{id}/start":
     post:
       summary: Start a service order

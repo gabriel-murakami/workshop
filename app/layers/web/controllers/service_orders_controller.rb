@@ -42,13 +42,13 @@ module Web
         head :ok
       end
 
-      def add_auto_parts
-        command = Application::ServiceOrder::Commands::AddAutoPartsCommand.new(
+      def add_products
+        command = Application::ServiceOrder::Commands::AddProductsCommand.new(
           service_order_id: permitted_params[:id],
-          auto_parts_params: permitted_params[:auto_parts_params]
+          products_params: permitted_params[:products_params]
         )
 
-        Application::ServiceOrder::ServiceOrderApplication.new.add_auto_parts(command)
+        Application::ServiceOrder::ServiceOrderApplication.new.add_products(command)
 
         head :ok
       end
@@ -85,7 +85,7 @@ module Web
           :status,
           :customer_id,
           services_codes: [],
-          auto_parts_params: [ :sku, :quantity ]
+          products_params: [ :sku, :quantity ]
         )
       end
     end

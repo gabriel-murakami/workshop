@@ -5,7 +5,7 @@ Domain::ServiceOrder::User.delete_all
 Domain::Customer::Vehicle.delete_all
 Domain::Customer::Customer.delete_all
 Domain::ServiceOrderItem::Service.delete_all
-Domain::ServiceOrderItem::AutoPart.delete_all
+Domain::ServiceOrderItem::Product.delete_all
 Domain::ServiceOrder::Metric.delete_all
 
 puts "Creating admin user"
@@ -39,12 +39,13 @@ services = [
   { code: "SVC003", name: "Engine Diagnostics", description: "Full engine system diagnostics", base_price: 150.00 }
 ].map { |attrs| Domain::ServiceOrderItem::Service.create!(attrs) }
 
-puts "Creating auto parts..."
-auto_parts = [
-  { sku: "AP001", name: "Oil Filter", description: "High quality oil filter", stock_quantity: 50, base_price: 30.00 },
-  { sku: "AP002", name: "Brake Pads", description: "Set of front brake pads", stock_quantity: 20, base_price: 90.00 },
-  { sku: "AP003", name: "Spark Plug", description: "Standard spark plug", stock_quantity: 100, base_price: 15.00 }
-].map { |attrs| Domain::ServiceOrderItem::AutoPart.create!(attrs) }
+puts "Creating products..."
+products = [
+  { sku: "AP001", name: "Oil Filter", description: "High quality oil filter", stock_quantity: 50, base_price: 30.99 },
+  { sku: "AP002", name: "Brake Pads", description: "Set of front brake pads", stock_quantity: 20, base_price: 92.89 },
+  { sku: "AP003", name: "Spark Plug", description: "Standard spark plug", stock_quantity: 100, base_price: 15.54 },
+  { sku: "AP004", name: "Engine Oil Bottle", description: "5W30 Engine Oil Bottle", stock_quantity: 250, base_price: 65.89 }
+].map { |attrs| Domain::ServiceOrderItem::Product.create!(attrs) }
 
 puts "Creating service orders with items and budgets..."
 
@@ -62,15 +63,15 @@ service_order1.service_order_items.create!(
 )
 
 service_order1.service_order_items.create!(
-  item: auto_parts[2],
+  item: products[2],
   quantity: 4,
-  total_value: auto_parts[2].base_price * 4
+  total_value: products[2].base_price * 4
 )
 
 Domain::ServiceOrder::Budget.create!(
   service_order: service_order1,
   date: Date.today - 4.days,
-  total_value: (services[2].base_price * 1 + auto_parts[2].base_price * 4),
+  total_value: (services[2].base_price * 1 + products[2].base_price * 4),
   status: :pending
 )
 
@@ -95,15 +96,15 @@ service_order2.service_order_items.create!(
 )
 
 service_order2.service_order_items.create!(
-  item: auto_parts[0],
+  item: products[0],
   quantity: 1,
-  total_value: auto_parts[0].base_price * 1
+  total_value: products[0].base_price * 1
 )
 
 service_order2.service_order_items.create!(
-  item: auto_parts[1],
+  item: products[1],
   quantity: 1,
-  total_value: auto_parts[1].base_price * 1
+  total_value: products[1].base_price * 1
 )
 
 service_order3 = Domain::ServiceOrder::ServiceOrder.create!(
@@ -120,9 +121,9 @@ service_order3.service_order_items.create!(
 )
 
 service_order3.service_order_items.create!(
-  item: auto_parts[2],
+  item: products[2],
   quantity: 2,
-  total_value: auto_parts[2].base_price * 2
+  total_value: products[2].base_price * 2
 )
 
 Domain::ServiceOrder::Budget.create!(
@@ -131,8 +132,8 @@ Domain::ServiceOrder::Budget.create!(
   total_value: (
     services[0].base_price * 1 +
     services[1].base_price * 1 +
-    auto_parts[0].base_price * 1 +
-    auto_parts[1].base_price * 1
+    products[0].base_price * 1 +
+    products[1].base_price * 1
   ),
   status: :approved
 )

@@ -189,8 +189,8 @@ RSpec.describe 'Service Orders', type: :request do
     end
   end
 
-  path '/service_orders/{id}/add_auto_parts' do
-    post 'Add auto parts to a service order' do
+  path '/service_orders/{id}/add_products' do
+    post 'Add products to a service order' do
       tags 'Service Orders'
       security [ bearerAuth: [] ]
       consumes 'application/json'
@@ -200,7 +200,7 @@ RSpec.describe 'Service Orders', type: :request do
       parameter name: :body, in: :body, schema: {
         type: :object,
         properties: {
-          auto_parts_params: {
+          products_params: {
             type: :array,
             items: {
               type: :object,
@@ -212,22 +212,22 @@ RSpec.describe 'Service Orders', type: :request do
             }
           }
         },
-        required: [ 'auto_parts_params' ]
+        required: [ 'products_params' ]
       }
 
-      response '200', 'auto parts added' do
-        let(:auto_part) { create(:auto_part) }
+      response '200', 'products added' do
+        let(:product) { create(:product) }
         let(:service_order) { create(:service_order) }
         let(:id) { service_order.id }
-        let(:body) { { auto_parts_params: [ { sku: auto_part.sku, quantity: 2 } ] } }
+        let(:body) { { products_params: [ { sku: product.sku, quantity: 2 } ] } }
 
         run_test!
       end
 
-      response '422', 'invalid auto parts' do
+      response '422', 'invalid products' do
         let(:service_order) { create(:service_order) }
         let(:id) { service_order.id }
-        let(:body) { { auto_parts_params: [ { sku: 'AP000', quantity: 2 } ] } }
+        let(:body) { { products_params: [ { sku: 'AP000', quantity: 2 } ] } }
 
         run_test!
       end

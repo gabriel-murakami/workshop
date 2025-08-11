@@ -24,10 +24,10 @@ Rails.application.routes.draw do
         resources :services, only: %i[index create update destroy show]
       end
 
-      scope controller: :auto_parts do
-        resources :auto_parts, only: %i[index create update destroy show]
-        post "auto_parts/:id/add", action: :add_auto_parts
-        post "auto_parts/:id/remove", action: :remove_auto_parts
+      scope controller: :products do
+        resources :products, only: %i[index create update destroy show]
+        post "products/:id/add", action: :add_products
+        post "products/:id/remove", action: :remove_products
       end
 
       scope controller: :metrics do
@@ -36,7 +36,7 @@ Rails.application.routes.draw do
 
       scope controller: :service_orders do
         resources :service_orders, only: %i[index show]
-        post "service_orders/:id/add_auto_parts", action: :add_auto_parts
+        post "service_orders/:id/add_products", action: :add_products
         post "service_orders/:id/add_services", action: :add_services
         post "service_orders/:id/finish", action: :finish
         post "service_orders/:id/start", action: :start

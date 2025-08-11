@@ -13,7 +13,7 @@ module Web
         render json: { error: e.message }, status: :unprocessable_entity
       end
 
-      rescue_from Exceptions::AutoPartException do |e|
+      rescue_from Exceptions::ProductException do |e|
         render json: { error: e.message }, status: :unprocessable_entity
       end
 

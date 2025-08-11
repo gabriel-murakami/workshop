@@ -11,9 +11,9 @@ module Domain
       has_many :services,
         class_name: "Domain::ServiceOrderItem::Service",
         through: :service_order_items, source: :item, source_type: "Domain::ServiceOrderItem::Service"
-      has_many :auto_parts,
-        class_name: "Domain::ServiceOrderItem::AutoPart",
-        through: :service_order_items, source: :item, source_type: "Domain::ServiceOrderItem::AutoPart"
+      has_many :products,
+        class_name: "Domain::ServiceOrderItem::Product",
+        through: :service_order_items, source: :item, source_type: "Domain::ServiceOrderItem::Product"
 
       enum status: {
         received: "received",
@@ -42,16 +42,16 @@ module Domain
         end
       end
 
-      def add_auto_parts(auto_parts)
-        auto_parts.each do |auto_part|
-          if self.service_order_items.auto_parts.any? { |soi| soi.item_id == auto_part[:item].id }
-            raise Exceptions::ServiceOrderException.new("Auto part #{auto_part[:item].sku} already added")
+      def add_products(products)
+        products.each do |product|
+          if self.service_order_items.products.any? { |soi| soi.item_id == product[:item].id }
+            raise Exceptions::ServiceOrderException.new("Auto part #{product[:item].sku} already added")
           end
 
           service_order_items.create(
-            item: auto_part[:item],
-            quantity: auto_part[:quantity],
-            total_value: auto_part[:item].base_price * auto_part[:quantity]
+            item: product[:item],
+            quantity: product[:quantity],
+            total_value: product[:item].base_price * product[:quantity]
           )
         end
       end

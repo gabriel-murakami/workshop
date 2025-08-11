@@ -59,27 +59,27 @@ RSpec.describe Application::ServiceOrder::ServiceOrderApplication do
     end
   end
 
-  describe "#add_auto_parts" do
-    it "adds auto parts to the service order and removes stock" do
+  describe "#add_products" do
+    it "adds products to the service order and removes stock" do
       service_order = create(:service_order)
-      auto_part1 = create(:auto_part, sku: "AP001", stock_quantity: 10)
-      auto_part2 = create(:auto_part, sku: "AP002", stock_quantity: 5)
+      product1 = create(:product, sku: "AP001", stock_quantity: 10)
+      product2 = create(:product, sku: "AP002", stock_quantity: 5)
 
-      auto_parts_params = [ { sku: auto_part1.sku, quantity: 2 }, { sku: auto_part2.sku, quantity: 1 } ]
+      products_params = [ { sku: product1.sku, quantity: 2 }, { sku: product2.sku, quantity: 1 } ]
 
-      command = Application::ServiceOrder::Commands::AddAutoPartsCommand.new(
+      command = Application::ServiceOrder::Commands::AddProductsCommand.new(
         service_order_id: service_order.id,
-        auto_parts_params: auto_parts_params
+        products_params: products_params
       )
 
-      application.add_auto_parts(command)
+      application.add_products(command)
 
       service_order.reload
       skus = service_order.service_order_items.map { |item| item.item.sku }
 
       expect(skus).to include("AP001", "AP002")
-      expect(auto_part1.reload.stock_quantity).to eq(8)
-      expect(auto_part2.reload.stock_quantity).to eq(4)
+      expect(product1.reload.stock_quantity).to eq(8)
+      expect(product2.reload.stock_quantity).to eq(4)
     end
   end
 
@@ -95,17 +95,17 @@ RSpec.describe Application::ServiceOrder::ServiceOrderApplication do
   end
 
   describe "#cancel_service_order" do
-    it "updates status to cancelled and replaces auto parts stock" do
+    it "updates status to cancelled and replaces products stock" do
       service_order = create(:service_order, status: "waiting_approval")
-      auto_part = create(:auto_part, stock_quantity: 5)
+      product = create(:product, stock_quantity: 5)
 
-      create(:service_order_item, service_order: service_order, quantity: 2, item: auto_part)
+      create(:service_order_item, service_order: service_order, quantity: 2, item: product)
       command = Application::ServiceOrder::Commands::CancelServiceOrderCommand.new(service_order_id: service_order.id)
 
       application.cancel_service_order(command)
 
       expect(service_order.reload.status).to eq("cancelled")
-      expect(auto_part.reload.stock_quantity).to eq(7)
+      expect(product.reload.stock_quantity).to eq(7)
     end
   end
 

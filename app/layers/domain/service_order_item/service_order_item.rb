@@ -6,7 +6,7 @@ module Domain
 
       validates :quantity, numericality: { only_integer: true, greater_than: 0 }
 
-      scope :auto_parts, -> { where(item_type: "Domain::ServiceOrderItem::AutoPart") }
+      scope :products, -> { where(item_type: "Domain::ServiceOrderItem::Product") }
       scope :services, -> { where(item_type: "Domain::ServiceOrderItem::Service") }
 
       def item_price
