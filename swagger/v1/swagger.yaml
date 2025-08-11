@@ -603,6 +603,119 @@ paths:
                   - average_time
                   - created_at
                   - updated_at
+  "/service_orders/{id}":
+    get:
+      summary: Get a service order by ID
+      tags:
+      - Service Orders
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: service order found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  customer_id:
+                    type: integer
+                  vehicle_id:
+                    type: integer
+                  status:
+                    type: string
+                  description:
+                    type: string
+                    nullable: true
+                  service_started_at:
+                    type: string
+                    format: date-time
+                    nullable: true
+                  service_finished_at:
+                    type: string
+                    format: date-time
+                    nullable: true
+                  created_at:
+                    type: string
+                    format: date-time
+                  updated_at:
+                    type: string
+                    format: date-time
+                  service_order_items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        quantity:
+                          type: integer
+                        total_value:
+                          type: string
+                        item_type:
+                          type: string
+                        item_id:
+                          type: integer
+                      required:
+                      - id
+                      - quantity
+                      - total_value
+                      - item_type
+                      - item_id
+                required:
+                - id
+                - customer_id
+                - vehicle_id
+                - status
+                - created_at
+                - updated_at
+                - service_order_items
+        '404':
+          description: service order not found
+  "/service_orders/{id}/send_to_diagnosis":
+    post:
+      summary: Send service order to diagnosis
+      tags:
+      - Service Orders
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: service order sent to diagnosis
+        '404':
+          description: service order not found
+  "/service_orders/{id}/send_to_approval":
+    post:
+      summary: Send service order to waiting approval
+      tags:
+      - Service Orders
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: service order sent to waiting approval
+        '404':
+          description: service order not found
   "/service_orders":
     get:
       summary: List all service orders
@@ -668,6 +781,8 @@ paths:
       responses:
         '200':
           description: services added
+        '422':
+          description: invalid services
       requestBody:
         content:
           application/json:
@@ -697,6 +812,8 @@ paths:
       responses:
         '200':
           description: auto parts added
+        '422':
+          description: invalid auto parts
       requestBody:
         content:
           application/json:

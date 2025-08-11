@@ -41,7 +41,11 @@ bundle:
 	$(MAKE) stop
 
 test:
-	docker compose run --rm -p 3000:3000 $(APP) bundle exec rspec ; \
+	docker compose run --rm -p 3000:3000 $(APP) bundle exec rspec; \
+	$(MAKE) stop
+
+raw-test:
+	docker compose run --rm -p 3000:3000 -e SIMPLECOV=false $(APP) bundle exec rspec; \
 	$(MAKE) stop
 
 seed:
@@ -53,5 +57,5 @@ bash:
 	$(MAKE) stop
 
 swagger:
-	docker compose run --rm -p 3000:3000 $(APP) bundle exec rake rswag:specs:swaggerize RAILS_ENV=test ; \
+	docker compose run --rm -p 3000:3000 -e SIMPLECOV=false $(APP) bundle exec rake rswag:specs:swaggerize RAILS_ENV=test ; \
 	$(MAKE) stop

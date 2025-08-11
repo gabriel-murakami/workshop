@@ -21,13 +21,13 @@ Esse comando rodará os testes e imprimirá no console o resultado.
 
 Ex:
 ```bash
-Finished in 0.62083 seconds (files took 2.3 seconds to load)
-48 examples, 0 failures
+Finished in 1.09 seconds (files took 2.35 seconds to load)
+76 examples, 0 failures
 
 Coverage report generated for RSpec to /app/coverage.
-Line Coverage: 97.14% (679 / 699)
+Line Coverage: 98.27% (910 / 926)
 
-COVERAGE:  97.14% -- 679/699 lines in 58 files
+COVERAGE:  98.27% -- 910/926 lines in 71 files
 
 ...
 ```

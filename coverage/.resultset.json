@@ -1166,8 +1166,6 @@
       },
       "/app/app/layers/web/controllers/application_controller.rb": {
         "lines": [
-          null,
-          null,
           1,
           1,
           1,
@@ -1221,8 +1219,6 @@
       },
       "/app/app/layers/web/controllers/auth_controller.rb": {
         "lines": [
-          null,
-          null,
           1,
           1,
           1,
@@ -2134,6 +2130,6 @@
         ]
       }
     },
-    "timestamp": 1754888040
+    "timestamp": 1754931748
   }
 }

@@ -1,17 +1,20 @@
 ENV['RAILS_ENV'] ||= 'test'
+ENV['SIMPLECOV'] ||= 'true'
 
 require 'simplecov'
 require 'simplecov-console'
 
-# SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
-#   SimpleCov::Formatter::HTMLFormatter,
-#   SimpleCov::Formatter::Console
-# ])
+if ENV['SIMPLECOV'] == 'true'
+  SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
+    SimpleCov::Formatter::HTMLFormatter,
+    SimpleCov::Formatter::Console
+  ])
 
-SimpleCov.start 'rails' do
-  add_filter '/spec/'
-  add_filter '/config/'
-  add_filter 'app/layers/web/channels/application_cable'
+  SimpleCov.start 'rails' do
+    add_filter '/spec/'
+    add_filter '/config/'
+    add_filter 'app/layers/web/channels/application_cable'
+  end
 end
 
 require File.expand_path('../config/environment', __dir__)

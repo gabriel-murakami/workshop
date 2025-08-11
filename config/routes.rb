@@ -7,58 +7,48 @@ Rails.application.routes.draw do
 
   scope module: "web" do
     scope module: "controllers" do
-      # ======================
-      # Auth
-      # ======================
       post "/login", to: "auth#login"
 
-      # ======================
-      # Customers
-      # ======================
-      resources :customers, only: %i[index create update destroy]
-      get "customers/:document_number", to: "customers#show"
-      patch "customers/:document_number/add_vehicle", to: "customers#add_vehicle"
+      scope controller: :customers do
+        resources :customers, only: %i[index create update destroy]
+        get "customers/:document_number", action: :show
+        patch "customers/:document_number/add_vehicle", action: :add_vehicle
+      end
 
-      # ======================
-      # Vehicles
-      # ======================
-      resources :vehicles, only: %i[index create update destroy]
-      get "vehicles/:license_plate", to: "vehicles#show"
+      scope controller: :vehicles do
+        resources :vehicles, only: %i[index create update destroy]
+        get "vehicles/:license_plate", action: :show
+      end
 
-      # ======================
-      # Services
-      # ======================
-      resources :services, only: %i[index create update destroy show]
+      scope controller: :services do
+        resources :services, only: %i[index create update destroy show]
+      end
 
-      # ======================
-      # Auto Parts
-      # ======================
-      resources :auto_parts, only: %i[index create update destroy show]
-      post "auto_parts/:id/add", to: "auto_parts#add_auto_parts"
-      post "auto_parts/:id/remove", to: "auto_parts#remove_auto_parts"
+      scope controller: :auto_parts do
+        resources :auto_parts, only: %i[index create update destroy show]
+        post "auto_parts/:id/add", action: :add_auto_parts
+        post "auto_parts/:id/remove", action: :remove_auto_parts
+      end
 
-      # ======================
-      # Metrics
-      # ======================
-      resources :metrics, only: %i[index]
+      scope controller: :metrics do
+        resources :metrics, only: %i[index]
+      end
 
-      # ======================
-      # SerivceOrders
-      # ======================
-      resources :service_orders, only: %i[index show]
-      post "service_orders/:id/add_auto_parts", to: "service_orders#add_auto_parts"
-      post "service_orders/:id/add_services", to: "service_orders#add_services"
-      post "service_orders/:id/finish", to: "service_orders#finish"
-      post "service_orders/:id/start", to: "service_orders#start"
-      post "service_orders/:id/send_to_diagnosis", to: "service_orders#send_to_diagnosis"
-      post "service_orders/:id/send_to_approval", to: "service_orders#send_to_approval"
+      scope controller: :service_orders do
+        resources :service_orders, only: %i[index show]
+        post "service_orders/:id/add_auto_parts", action: :add_auto_parts
+        post "service_orders/:id/add_services", action: :add_services
+        post "service_orders/:id/finish", action: :finish
+        post "service_orders/:id/start", action: :start
+        post "service_orders/:id/send_to_diagnosis", action: :send_to_diagnosis
+        post "service_orders/:id/send_to_approval", action: :send_to_approval
+      end
 
-      # ======================
-      # Budgets
-      # ======================
-      resources :budgets, only: %i[index show]
-      post "budgets/:id/approve", to: "budgets#approve"
-      post "budgets/:id/reject", to: "budgets#reject"
+      scope controller: :budgets do
+        resources :budgets, only: %i[index show]
+        post "budgets/:id/approve", action: :approve
+        post "budgets/:id/reject", action: :reject
+      end
     end
   end
 end
