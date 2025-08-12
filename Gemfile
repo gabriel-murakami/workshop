@@ -20,6 +20,7 @@ gem "cpf_cnpj"
 group :test do
   gem "simplecov", require: false
   gem "simplecov-console", require: false
+  gem "simplecov-json", require: false
   gem "rswag-specs"
   gem "rspec-rails"
   gem "factory_bot_rails"

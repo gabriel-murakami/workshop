@@ -3,9 +3,11 @@ ENV['SIMPLECOV'] ||= 'true'
 
 require 'simplecov'
 require 'simplecov-console'
+require 'simplecov-json'
 
 if ENV['SIMPLECOV'] == 'true'
   SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
+    SimpleCov::Formatter::JSONFormatter,
     SimpleCov::Formatter::HTMLFormatter,
     SimpleCov::Formatter::Console
   ])
