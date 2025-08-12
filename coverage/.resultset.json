@@ -2180,16 +2180,8 @@
           null,
           null
         ]
-      },
-      "/app/app/mailers/application_mailer.rb": {
-        "lines": [
-          1,
-          1,
-          1,
-          null
-        ]
       }
     },
-    "timestamp": 1754957597
+    "timestamp": 1755040515
   }
 }

@@ -51,7 +51,9 @@ jobs:
         options: --health-cmd="pg_isready" --health-interval=10s --health-timeout=5s --health-retries=3
 
     env:
+      RAILS_ENV: test
       JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432
 
     steps:
       - name: Install packages
@@ -67,10 +69,6 @@ jobs:
           bundler-cache: true
 
       - name: Prepare database and run tests
-        env:
-          RAILS_ENV: test
-          DATABASE_URL: postgres://postgres:postgres@localhost:5432
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
         run: |
           bin/rails db:test:prepare
           bundle exec rspec

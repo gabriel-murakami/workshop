@@ -1,8 +1,8 @@
 module Domain
   module ServiceOrder
     class ServiceOrder < Infra::Models::ApplicationRecord
-      belongs_to :customer, class_name: "Domain::Customer::Customer"
-      belongs_to :vehicle, class_name: "Domain::Customer::Vehicle"
+      belongs_to :customer, class_name: "Domain::Customer::Customer", required: true
+      belongs_to :vehicle, class_name: "Domain::Customer::Vehicle", required: true
 
       has_one :budget, dependent: :destroy
 
