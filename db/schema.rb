@@ -12,10 +12,11 @@
 
 ActiveRecord::Schema[7.2].define(version: 2025_08_09_214743) do
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
-  create_table "budgets", force: :cascade do |t|
-    t.bigint "service_order_id", null: false
+  create_table "budgets", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "service_order_id", null: false
     t.date "date", null: false
     t.decimal "total_value", precision: 12, scale: 2, default: "0.0", null: false
     t.string "status", default: "pending", null: false
@@ -24,7 +25,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_08_09_214743) do
     t.index ["service_order_id"], name: "index_budgets_on_service_order_id", unique: true
   end
 
-  create_table "customers", force: :cascade do |t|
+  create_table "customers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name", null: false
     t.string "document_number", null: false
     t.string "email"
@@ -34,14 +35,14 @@ ActiveRecord::Schema[7.2].define(version: 2025_08_09_214743) do
     t.index ["document_number"], name: "index_customers_on_document_number", unique: true
   end
 
-  create_table "metrics", force: :cascade do |t|
+  create_table "metrics", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.integer "service_order_count", default: 0
     t.decimal "average_time", default: "0.0"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "products", force: :cascade do |t|
+  create_table "products", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name", null: false
     t.text "description"
     t.integer "stock_quantity", default: 0, null: false
@@ -52,21 +53,21 @@ ActiveRecord::Schema[7.2].define(version: 2025_08_09_214743) do
     t.index ["sku"], name: "index_products_on_sku", unique: true
   end
 
-  create_table "service_order_items", force: :cascade do |t|
-    t.bigint "service_order_id", null: false
+  create_table "service_order_items", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "service_order_id", null: false
     t.integer "quantity", default: 1, null: false
     t.decimal "total_value", precision: 12, scale: 2, default: "0.0", null: false
     t.string "item_type", null: false
-    t.bigint "item_id", null: false
+    t.uuid "item_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["item_type", "item_id"], name: "index_service_order_items_on_item"
     t.index ["service_order_id"], name: "index_service_order_items_on_service_order_id"
   end
 
-  create_table "service_orders", force: :cascade do |t|
-    t.bigint "customer_id", null: false
-    t.bigint "vehicle_id", null: false
+  create_table "service_orders", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "customer_id", null: false
+    t.uuid "vehicle_id", null: false
     t.datetime "service_started_at"
     t.datetime "service_finished_at"
     t.string "status", default: "received", null: false
@@ -77,7 +78,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_08_09_214743) do
     t.index ["vehicle_id"], name: "index_service_orders_on_vehicle_id"
   end
 
-  create_table "services", force: :cascade do |t|
+  create_table "services", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name", null: false
     t.text "description"
     t.decimal "base_price", precision: 10, scale: 2, default: "0.0", null: false
@@ -87,7 +88,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_08_09_214743) do
     t.index ["code"], name: "index_services_on_code", unique: true
   end
 
-  create_table "users", force: :cascade do |t|
+  create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name", null: false
     t.string "email", null: false
     t.string "password_digest", null: false
@@ -96,8 +97,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_08_09_214743) do
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
-  create_table "vehicles", force: :cascade do |t|
-    t.bigint "customer_id"
+  create_table "vehicles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "customer_id"
     t.string "license_plate", null: false
     t.string "brand"
     t.string "model"

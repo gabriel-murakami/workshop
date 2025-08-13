@@ -21,16 +21,6 @@ module Domain
           average_time: new_average_time
         )
       end
-
-      def average_time_rounded
-        average_time.to_f.round(2)
-      end
-
-      def as_json(options = {})
-        super(options).merge(
-          "average_time" => average_time_rounded
-        )
-      end
     end
   end
 end

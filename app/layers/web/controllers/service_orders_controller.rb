@@ -2,13 +2,19 @@ module Web
   module Controllers
     class ServiceOrdersController < AuthController
       def index
-        render json: Application::ServiceOrder::ServiceOrderApplication.new.find_all(filter_params)
+        render json: Application::ServiceOrder::ServiceOrderApplication.new.find_all
       end
 
       def show
         service_order = Application::ServiceOrder::ServiceOrderApplication.new.find_by_id(params[:id])
 
         render json: service_order, include: :service_order_items
+      end
+
+      def current_status
+        service_order = Application::ServiceOrder::ServiceOrderApplication.new.find_by_id(params[:id])
+
+        render json: service_order, serializer: Domain::ServiceOrder::CurrentStatusSerializer
       end
 
       def create
@@ -85,10 +91,6 @@ module Web
       end
 
       private
-
-      def filter_params
-        permitted_params.slice(:status, :customer_id)
-      end
 
       def permitted_params
         params.permit(

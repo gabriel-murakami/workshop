@@ -5,20 +5,30 @@ RUN apt-get update -qq && apt-get install -y \
   libpq-dev \
   libyaml-dev \
   curl \
-  git
+  git \
+  nodejs \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /app
+ARG UID
+ARG GID
 
-COPY Gemfile Gemfile.lock ./
-
-RUN bundle install
-
-COPY . .
-
-EXPOSE 3000
+RUN addgroup --gid ${GID} appgroup \
+    && adduser --disabled-password --gecos "" --uid ${UID} --gid ${GID} appuser
 
 COPY entrypoint.sh /usr/bin/entrypoint.sh
 RUN chmod +x /usr/bin/entrypoint.sh
-ENTRYPOINT ["/usr/bin/entrypoint.sh"]
 
+USER appuser
+
+WORKDIR /app
+
+COPY --chown=appuser:appgroup Gemfile Gemfile.lock ./
+RUN bundle install --jobs=4 --retry=3
+
+COPY --chown=appuser:appgroup . .
+
+EXPOSE 3000
+
+ENTRYPOINT ["/usr/bin/entrypoint.sh"]
 CMD ["rails", "server", "-b", "0.0.0.0"]

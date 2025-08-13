@@ -34,5 +34,9 @@ module Workshop
 
     # Configura o Zeitwerk para também carregar app/layers
     Rails.autoloaders.main.push_dir(Rails.root.join("app/layers"))
+
+    config.generators do |generator|
+      generator.orm :active_record, primary_key_type: :uuid
+    end
   end
 end

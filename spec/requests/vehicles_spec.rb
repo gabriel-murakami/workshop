@@ -22,12 +22,12 @@ RSpec.describe 'Vehicles', type: :request do
           items: {
             type: :object,
             properties: {
-              id: { type: :integer },
+              id: { type: :string },
               license_plate: { type: :string },
               brand: { type: :string },
               model: { type: :string },
               year: { type: :integer },
-              customer_id: { type: :integer }
+              customer_id: { type: :string }
             },
             required: %w[id license_plate brand model year customer_id]
           }
@@ -52,7 +52,7 @@ RSpec.describe 'Vehicles', type: :request do
           brand: { type: :string },
           model: { type: :string },
           year: { type: :integer },
-          customer_id: { type: :integer }
+          customer_id: { type: :string }
         },
         required: %w[license_plate brand model year customer_id]
       }
@@ -95,12 +95,12 @@ RSpec.describe 'Vehicles', type: :request do
 
         schema type: :object,
           properties: {
-            id: { type: :integer },
+            id: { type: :string },
             license_plate: { type: :string },
             brand: { type: :string },
             model: { type: :string },
             year: { type: :integer },
-            customer_id: { type: :integer }
+            customer_id: { type: :string }
           },
           required: %w[id license_plate brand model year customer_id]
 
@@ -128,12 +128,12 @@ RSpec.describe 'Vehicles', type: :request do
       parameter name: :vehicle, in: :body, schema: {
         type: :object,
         properties: {
-          id: { type: :integer },
+          id: { type: :string },
           license_plate: { type: :string },
           brand: { type: :string },
           model: { type: :string },
           year: { type: :integer },
-          customer_id: { type: :integer }
+          customer_id: { type: :string }
         },
         required: %w[id license_plate brand model year customer_id]
       }

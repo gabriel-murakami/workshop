@@ -8,7 +8,7 @@ RSpec.describe Application::ServiceOrder::ServiceOrderApplication do
     it "returns filtered service orders" do
       so1 = create(:service_order, status: "received")
       so2 = create(:service_order, status: "cancelled")
-      result = application.find_all(status: "received")
+      result = application.find_all
 
       expect(result.map(&:id)).to include(so1.id)
       expect(result.map(&:id)).not_to include(so2.id)

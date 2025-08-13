@@ -22,7 +22,7 @@ RSpec.describe 'Products', type: :request do
           items: {
             type: :object,
             properties: {
-              id: { type: :integer },
+              id: { type: :string },
               name: { type: :string },
               description: { type: :string, nullable: true },
               stock_quantity: { type: :integer },
@@ -96,7 +96,7 @@ RSpec.describe 'Products', type: :request do
 
         schema type: :object,
           properties: {
-            id: { type: :integer },
+            id: { type: :string },
             name: { type: :string },
             description: { type: :string, nullable: true },
             stock_quantity: { type: :integer },
@@ -126,7 +126,7 @@ RSpec.describe 'Products', type: :request do
       parameter name: :product, in: :body, schema: {
         type: :object,
         properties: {
-          id: { type: :integer },
+          id: { type: :string },
           name: { type: :string },
           description: { type: :string },
           stock_quantity: { type: :integer },

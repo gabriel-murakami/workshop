@@ -5,8 +5,8 @@ module Application
         @service_order_repository = repositories.fetch(:service_order) { Infra::Repositories::ServiceOrderRepository.new }
       end
 
-      def find_all(filter_params)
-        Infra::QueryObjects::ServiceOrdersQuery.find_all(filter_params)
+      def find_all
+        Infra::QueryObjects::ServiceOrdersQuery.find_all
       end
 
       def find_by_id(service_order_id)

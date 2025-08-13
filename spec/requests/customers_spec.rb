@@ -22,11 +22,13 @@ RSpec.describe 'Customers', type: :request do
           items: {
             type: :object,
             properties: {
-              id: { type: :integer },
+              id: { type: :string },
               name: { type: :string },
               document_number: { type: :string },
               email: { type: :string },
-              phone: { type: :string }
+              phone: { type: :string },
+              vehicles_ids: { type: :array, items: { type: :string } },
+              service_orders_ids: { type: :array, items: { type: :string } }
             },
             required: %w[id name document_number email phone]
           }
@@ -50,7 +52,9 @@ RSpec.describe 'Customers', type: :request do
           name: { type: :string },
           document_number: { type: :string },
           email: { type: :string },
-          phone: { type: :string }
+          phone: { type: :string },
+          vehicles_ids: { type: :array, items: { type: :string } },
+          service_orders_ids: { type: :array, items: { type: :string } }
         },
         required: %w[name document_number email phone]
       }
@@ -93,28 +97,20 @@ RSpec.describe 'Customers', type: :request do
 
         schema type: :object,
           properties: {
-            id: { type: :integer },
+            id: { type: :string },
             name: { type: :string },
             document_number: { type: :string },
             email: { type: :string },
             phone: { type: :string },
-            vehicles: {
-              type: :array,
-              items: {
-                type: :object,
-                properties: {
-                  license_plate: { type: :string }
-                },
-                required: [ 'license_plate' ]
-              }
-            }
+            vehicles_ids: { type: :array, items: { type: :string } },
+            service_orders_ids: { type: :array, items: { type: :string } }
           },
-          required: %w[id name document_number email phone vehicles]
+          required: %w[id name document_number email phone]
 
         run_test! do |response|
           data = JSON.parse(response.body)
           expect(data['document_number']).to eq(document_number)
-          expect(data).to have_key('vehicles')
+          expect(data).to have_key('vehicles_ids')
         end
       end
 
@@ -136,7 +132,7 @@ RSpec.describe 'Customers', type: :request do
       parameter name: :customer, in: :body, schema: {
         type: :object,
         properties: {
-          id: { type: :integer },
+          id: { type: :string },
           name: { type: :string },
           document_number: { type: :string },
           email: { type: :string },

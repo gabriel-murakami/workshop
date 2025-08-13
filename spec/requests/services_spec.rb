@@ -22,7 +22,7 @@ RSpec.describe 'Services', type: :request do
           items: {
             type: :object,
             properties: {
-              id: { type: :integer },
+              id: { type: :string },
               name: { type: :string },
               description: { type: :string, nullable: true },
               base_price: { type: :string }
@@ -92,7 +92,7 @@ RSpec.describe 'Services', type: :request do
 
         schema type: :object,
           properties: {
-            id: { type: :integer },
+            id: { type: :string },
             name: { type: :string },
             description: { type: :string, nullable: true },
             base_price: { type: :string }
@@ -121,7 +121,7 @@ RSpec.describe 'Services', type: :request do
       parameter name: :service, in: :body, schema: {
         type: :object,
         properties: {
-          id: { type: :integer },
+          id: { type: :string },
           name: { type: :string },
           description: { type: :string },
           base_price: { type: :string }

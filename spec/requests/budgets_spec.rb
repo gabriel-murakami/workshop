@@ -15,8 +15,6 @@ RSpec.describe 'Budgets', type: :request do
       security [ bearerAuth: [] ]
       produces 'application/json'
 
-      # parameter name: :document_number, in: :query, type: :string, description: 'Customer document number to filter budgets'
-
       response '200', 'budgets found' do
         before { create_list(:budget, 3) }
 
@@ -24,13 +22,13 @@ RSpec.describe 'Budgets', type: :request do
           items: {
             type: :object,
             properties: {
-              id: { type: :integer },
-              service_order_id: { type: :integer },
+              id: { type: :string },
               date: { type: :string, format: :date },
               total_value: { type: :string },
-              status: { type: :string }
+              status: { type: :string },
+              service_order: { type: :object }
             },
-            required: %w[id service_order_id date total_value status]
+            required: %w[id date total_value status]
           }
 
         run_test! do |response|
@@ -59,13 +57,13 @@ RSpec.describe 'Budgets', type: :request do
           items: {
             type: :object,
             properties: {
-              id: { type: :integer },
-              service_order_id: { type: :integer },
+              id: { type: :string },
               date: { type: :string, format: :date },
               total_value: { type: :string },
-              status: { type: :string }
+              status: { type: :string },
+              service_order: { type: :object }
             },
-            required: %w[id service_order_id date total_value status]
+            required: %w[id date total_value status]
           }
 
         run_test! do |response|
@@ -91,13 +89,13 @@ RSpec.describe 'Budgets', type: :request do
 
         schema type: :object,
           properties: {
-            id: { type: :integer },
-            service_order_id: { type: :integer },
+            id: { type: :string },
             date: { type: :string, format: :date },
             total_value: { type: :string },
-            status: { type: :string }
+            status: { type: :string },
+            service_order: { type: :object }
           },
-          required: %w[id service_order_id date total_value status]
+          required: %w[id date total_value status]
 
         run_test! do |response|
           data = JSON.parse(response.body)

@@ -23,9 +23,9 @@ RSpec.describe 'Service Orders', type: :request do
 
         schema type: :object,
           properties: {
-            id: { type: :integer },
-            customer_id: { type: :integer },
-            vehicle_id: { type: :integer },
+            id: { type: :string },
+            customer_id: { type: :string },
+            vehicle_id: { type: :string },
             status: { type: :string },
             description: { type: :string, nullable: true },
             service_started_at: { type: :string, format: 'date-time', nullable: true },
@@ -37,11 +37,11 @@ RSpec.describe 'Service Orders', type: :request do
               items: {
                 type: :object,
                 properties: {
-                  id: { type: :integer },
+                  id: { type: :string },
                   quantity: { type: :integer },
                   total_value: { type: :string },
                   item_type: { type: :string },
-                  item_id: { type: :integer }
+                  item_id: { type: :string }
                 },
                 required: %w[id quantity total_value item_type item_id]
               }
@@ -130,9 +130,9 @@ RSpec.describe 'Service Orders', type: :request do
           items: {
             type: :object,
             properties: {
-              id: { type: :integer },
-              customer_id: { type: :integer },
-              vehicle_id: { type: :integer },
+              id: { type: :string },
+              customer_id: { type: :string },
+              vehicle_id: { type: :string },
               service_started_at: { type: :string, format: 'date-time', nullable: true },
               service_finished_at: { type: :string, format: 'date-time', nullable: true },
               status: { type: :string },
@@ -245,7 +245,7 @@ RSpec.describe 'Service Orders', type: :request do
       parameter name: :body, in: :body, schema: {
         type: :object,
         properties: {
-          id: { type: :integer }
+          id: { type: :string }
         },
         required: [ 'id' ]
       }
@@ -253,9 +253,9 @@ RSpec.describe 'Service Orders', type: :request do
       response '200', 'service order started' do
         schema type: :object,
           properties: {
-            id: { type: :integer },
-            customer_id: { type: :integer },
-            vehicle_id: { type: :integer },
+            id: { type: :string },
+            customer_id: { type: :string },
+            vehicle_id: { type: :string },
             service_started_at: { type: :string, format: 'date-time', nullable: true },
             service_finished_at: { type: :string, format: 'date-time', nullable: true },
             status: { type: :string },
@@ -290,9 +290,9 @@ RSpec.describe 'Service Orders', type: :request do
       response '200', 'service order finished' do
         schema type: :object,
           properties: {
-            id: { type: :integer },
-            customer_id: { type: :integer },
-            vehicle_id: { type: :integer },
+            id: { type: :string },
+            customer_id: { type: :string },
+            vehicle_id: { type: :string },
             service_started_at: { type: :string, format: 'date-time', nullable: true },
             service_finished_at: { type: :string, format: 'date-time', nullable: true },
             status: { type: :string },
@@ -326,8 +326,8 @@ RSpec.describe 'Service Orders', type: :request do
       parameter name: :service_order, in: :body, schema: {
         type: :object,
         properties: {
-          customer_id: { type: :integer },
-          vehicle_id: { type: :integer }
+          customer_id: { type: :string },
+          vehicle_id: { type: :string }
         },
         required: [ 'customer_id', 'vehicle_id' ]
       }
