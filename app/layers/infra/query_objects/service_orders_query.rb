@@ -18,6 +18,7 @@ module Infra
                 TXT
               )
             )
+            .order(created_at: :asc)
         end
       end
     end
