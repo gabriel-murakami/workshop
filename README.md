@@ -48,6 +48,7 @@ Este projeto implementa um sistema completo para gerenciamento de oficinas mecâ
 
 ## Execução e Documentação:
 ```bash
+ln -s .env.example .env
 make setup
 make server
 ```

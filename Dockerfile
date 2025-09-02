@@ -23,6 +23,8 @@ USER appuser
 
 WORKDIR /app
 
+RUN mkdir -p tmp/pids log
+
 COPY --chown=appuser:appgroup Gemfile Gemfile.lock ./
 RUN bundle install --jobs=4 --retry=3
 

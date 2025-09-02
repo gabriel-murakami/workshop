@@ -21,6 +21,8 @@ services:
     volumes:
       - .:/app
       - bundle_cache:/usr/local/bundle
+      - rails_log:/app/log
+      - rails_tmp:/app/tmp
     ports:
       - "3000:3000"
     depends_on:
@@ -38,6 +40,8 @@ services:
 volumes:
   pgdata:
   bundle_cache:
+  rails_log:
+  rails_tmp:
 
 networks:
   workshop_net:
