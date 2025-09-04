@@ -6,7 +6,7 @@ module Web
       end
 
       def show
-        vehicle = Application::Customer::VehicleApplication.new.find_vehicle_by_license_plate(
+        vehicle = Application::Customer::VehicleApplication.new.find_by_license_plate(
           vehicle_params[:license_plate]
         )
 

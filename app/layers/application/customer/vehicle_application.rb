@@ -9,7 +9,7 @@ module Application
         @vehicle_repository.find_all
       end
 
-      def find_vehicle_by_license_plate(license_plate)
+      def find_by_license_plate(license_plate)
         @vehicle_repository.find_vehicle_by_license_plate(license_plate)
       end
 

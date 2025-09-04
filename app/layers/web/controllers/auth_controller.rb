@@ -1,14 +1,16 @@
 module Web
   module Controllers
     class AuthController < ApplicationController
+      wrap_parameters false
+
       include ::Web::Controllers::Concerns::Authenticable
 
       skip_before_action :authenticate_request!, only: [ :login ]
 
       def login
-        user = Domain::ServiceOrder::User.find_by(email: params[:email])
+        user = Domain::ServiceOrder::User.find_by(email: permitted_params[:email])
 
-        if user&.authenticate(params[:password])
+        if user&.authenticate(permitted_params[:password])
           token = encode_jwt(user_id: user.id)
           render json: { token: token }, status: :ok
         else
@@ -23,6 +25,10 @@ module Web
       def encode_jwt(payload, exp = 24.hours.from_now)
         payload[:exp] = exp.to_i
         JWT.encode(payload, SECRET_KEY, "HS256")
+      end
+
+      def permitted_params
+        params.permit(:email, :password)
       end
     end
   end

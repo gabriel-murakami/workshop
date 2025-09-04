@@ -17,6 +17,10 @@ module Application
         customer = find_customer(open_service_order_command.document_number)
         vehicle = find_vehicle(open_service_order_command.license_plate)
 
+        if vehicle.customer != customer
+          raise Exceptions::ServiceOrderException.new("The vehicle does not belong to this customer")
+        end
+
         service_order = Domain::ServiceOrder::ServiceOrder.new(customer_id: customer.id, vehicle_id: vehicle.id)
 
         ActiveRecord::Base.transaction do
@@ -207,7 +211,7 @@ module Application
       end
 
       def find_vehicle(license_plate)
-        Customer::VehicleApplication.new.find_vehicle_by_license_plate(license_plate)
+        Customer::VehicleApplication.new.find_by_license_plate(license_plate)
       end
 
       def find_customer(document_number)
