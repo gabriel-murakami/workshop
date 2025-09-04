@@ -13,6 +13,23 @@ module Application
         @service_order_repository.find_by_id(service_order_id)
       end
 
+      def open_service_order(open_service_order_command)
+        customer = find_customer(open_service_order_command.document_number)
+        vehicle = find_vehicle(open_service_order_command.license_plate)
+
+        service_order = Domain::ServiceOrder::ServiceOrder.new(customer_id: customer.id, vehicle_id: vehicle.id)
+
+        ActiveRecord::Base.transaction do
+          @service_order_repository.save(service_order)
+
+          send_to_diagnosis(send_to_diagnosis_command(service_order))
+          add_services_and_products(service_order, open_service_order_command)
+          send_to_approval(send_to_approval_command(service_order))
+
+          service_order.reload
+        end
+      end
+
       def create_service_order(create_service_order_command)
         service_order = Domain::ServiceOrder::ServiceOrder.new(
           customer_id: create_service_order_command.customer_id,
@@ -26,8 +43,8 @@ module Application
         end
       end
 
-      def send_to_diagnosis(send_to_diagnosis_command)
-        service_order = @service_order_repository.find_by_id(send_to_diagnosis_command.service_order_id)
+      def send_to_diagnosis(send_to_diagnosis_command, service_order = nil)
+        service_order = service_order || @service_order_repository.find_by_id(send_to_diagnosis_command.service_order_id)
 
         ActiveRecord::Base.transaction do
           @service_order_repository.update(service_order, { status: "diagnosis" })
@@ -36,8 +53,8 @@ module Application
         service_order
       end
 
-      def send_to_approval(send_to_approval_command)
-        service_order = @service_order_repository.find_by_id(send_to_approval_command.service_order_id)
+      def send_to_approval(send_to_approval_command, service_order = nil)
+        service_order = service_order || @service_order_repository.find_by_id(send_to_approval_command.service_order_id)
 
         raise Exceptions::ServiceOrderException.new("The service order is not in diagnosis") unless service_order.diagnosis?
 
@@ -161,6 +178,41 @@ module Application
       end
 
       private
+
+      def send_to_diagnosis_command(service_order)
+        Commands::SendToDiagnosisCommand.new(service_order_id: service_order.id)
+      end
+
+      def send_to_approval_command(service_order)
+        Commands::SendToApprovalCommand.new(service_order_id: service_order.id)
+      end
+
+      def add_services_and_products(service_order, open_service_order_command)
+        add_services(add_services_command(service_order, open_service_order_command.services_codes))
+        add_products(add_products_command(service_order, open_service_order_command.products_params))
+      end
+
+      def add_services_command(service_order, services_codes)
+        Commands::AddServicesCommand.new(
+          service_order_id: service_order.id,
+          services_codes: services_codes
+        )
+      end
+
+      def add_products_command(service_order, products_params)
+        Commands::AddProductsCommand.new(
+          service_order_id: service_order.id,
+          products_params: products_params
+        )
+      end
+
+      def find_vehicle(license_plate)
+        Customer::VehicleApplication.new.find_vehicle_by_license_plate(license_plate)
+      end
+
+      def find_customer(document_number)
+        Customer::CustomerApplication.new.find_by_document_number(document_number)
+      end
 
       def create_new_budget(service_order)
         create_budget_command = Commands::CreateBudgetCommand.new(
