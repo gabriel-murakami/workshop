@@ -351,4 +351,78 @@ RSpec.describe 'Service Orders', type: :request do
       end
     end
   end
+
+  path '/service_orders/open' do
+    post 'Open (create) a service order with full details' do
+      tags 'Service Orders'
+      security [ bearerAuth: [] ]
+      consumes 'application/json'
+      produces 'application/json'
+
+      parameter name: :body, in: :body, schema: {
+        type: :object,
+        properties: {
+          document_number: { type: :string },
+          license_plate: { type: :string },
+          services_codes: {
+            type: :array,
+            items: { type: :string, pattern: '^SVC.*' }
+          },
+          products_params: {
+            type: :array,
+            items: {
+              type: :object,
+              properties: {
+                sku: { type: :string, pattern: '^AP.*' },
+                quantity: { type: :integer }
+              },
+              required: %w[sku quantity]
+            }
+          }
+        },
+        required: %w[document_number license_plate services_codes products_params]
+      }
+
+      response '201', 'service order opened successfully' do
+        let(:service1) { create(:service) }
+        let(:service2) { create(:service) }
+        let(:product)  { create(:product) }
+        let(:customer) { create(:customer) }
+        let(:vehicle) { create(:vehicle, customer: customer) }
+
+        let(:body) do
+          {
+            document_number: customer.document_number,
+            license_plate: vehicle.license_plate,
+            services_codes: [ service1.code, service2.code ],
+            products_params: [
+              { sku: product.sku, quantity: 2 }
+            ]
+          }
+        end
+
+        run_test! do |response|
+          json = JSON.parse(response.body)
+          expect(json['id']).to be_present
+          expect(json['customer_id']).to eq(customer.id)
+          expect(json['vehicle_id']).to eq(vehicle.id)
+          expect(json['service_order_items']).to be_an(Array)
+          expect(json['service_order_items'].size).to eq(3)
+        end
+      end
+
+      response '422', 'invalid parameters' do
+        let(:body) do
+          {
+            document_number: nil,
+            license_plate: nil,
+            services_codes: [],
+            products_params: []
+          }
+        end
+
+        run_test!
+      end
+    end
+  end
 end

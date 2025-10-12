@@ -3,7 +3,7 @@ module Domain
     class Budget < Infra::Models::ApplicationRecord
       belongs_to :service_order
 
-      enum status: {
+      enum :status, {
         pending: "pending",
         approved: "approved",
         rejected: "rejected"

@@ -14,6 +14,10 @@ module Application
       end
 
       def open_service_order(open_service_order_command)
+        if open_service_order_command.document_number.nil? || open_service_order_command.license_plate.nil?
+          raise Exceptions::ServiceOrderException.new("Document number and license plate is required")
+        end
+
         customer = find_customer(open_service_order_command.document_number)
         vehicle = find_vehicle(open_service_order_command.license_plate)
 

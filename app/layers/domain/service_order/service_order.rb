@@ -15,7 +15,7 @@ module Domain
         class_name: "Domain::ServiceOrderItem::Product",
         through: :service_order_items, source: :item, source_type: "Domain::ServiceOrderItem::Product"
 
-      enum status: {
+      enum :status, {
         received: "received",
         diagnosis: "diagnosis",
         waiting_approval: "waiting_approval",
