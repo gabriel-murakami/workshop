@@ -4,6 +4,8 @@ module Domain
       belongs_to :customer, class_name: "Domain::Customer::Customer", required: true
       belongs_to :vehicle, class_name: "Domain::Customer::Vehicle", required: true
 
+      after_update_commit :send_status_update_email, if: :saved_change_to_status?
+
       has_one :budget, dependent: :destroy
 
       has_many :service_order_items, class_name: "Domain::ServiceOrderItem::ServiceOrderItem", dependent: :destroy
@@ -54,6 +56,12 @@ module Domain
             total_value: product[:item].base_price * product[:quantity]
           )
         end
+      end
+
+      private
+
+      def send_status_update_email
+        ServiceOrderMailer.status_updated(self).deliver_later
       end
     end
   end

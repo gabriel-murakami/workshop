@@ -36,6 +36,8 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       UID: ${UID}
       GID: ${GID}
+      SMTP_USERNAME: ${SMTP_USERNAME}
+      SMTP_PASSWORD: ${SMTP_PASSWORD}
 
 volumes:
   pgdata:

@@ -639,17 +639,17 @@
           null,
           null,
           1,
-          89,
+          91,
           null,
-          89,
-          88,
+          91,
+          90,
           1,
           0,
           null,
           1,
           null,
           null,
-          89,
+          91,
           null,
           null,
           null,
@@ -681,11 +681,11 @@
           1,
           null,
           1,
+          50,
+          null,
           48,
           null,
-          46,
-          null,
-          46,
+          48,
           0,
           null,
           null,
@@ -763,6 +763,8 @@
           null,
           1,
           null,
+          1,
+          null,
           null,
           1,
           null,
@@ -807,6 +809,12 @@
           null,
           null,
           null,
+          null,
+          null,
+          1,
+          null,
+          1,
+          12,
           null,
           null,
           null,
@@ -2275,6 +2283,32 @@
           null
         ]
       },
+      "/app/app/mailers/application_mailer.rb": {
+        "lines": [
+          1,
+          1,
+          1,
+          null,
+          null
+        ]
+      },
+      "/app/app/mailers/service_order_mailer.rb": {
+        "lines": [
+          1,
+          1,
+          null,
+          1,
+          2,
+          2,
+          null,
+          2,
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
+      },
       "/app/app/serializers/domain/customer/customer_serializer.rb": {
         "lines": [
           1,
@@ -2345,6 +2379,6 @@
         ]
       }
     },
-    "timestamp": 1760308450
+    "timestamp": 1760314714
   }
 }

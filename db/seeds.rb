@@ -18,7 +18,7 @@ Domain::ServiceOrder::User.create!(
 
 puts "Criando clientes..."
 clientes = [
-  { name: "Luke Skywalker", document_number: "38830424048", email: "luke@rebellion.org", phone: "+55 (11) 91234-5678" },
+  { name: "Luke Skywalker", document_number: "38830424048", email: "gabriel.m.alves42@gmail.com", phone: "+55 (11) 91234-5678" },
   { name: "Leia Organa", document_number: "49859924023", email: "leia@rebellion.org", phone: "+55 (21) 99876-5432" },
   { name: "Han Solo", document_number: "93715993081", email: "han@falcon.space", phone: "+55 (31) 98765-4321" },
   { name: "Darth Vader", document_number: "10457656000", email: "vader@empire.gov", phone: "+55 (41) 99999-0000" }
