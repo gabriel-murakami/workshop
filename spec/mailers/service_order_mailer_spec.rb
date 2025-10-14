@@ -12,7 +12,7 @@ RSpec.describe ServiceOrderMailer, type: :mailer do
     it "renders the headers" do
       expect(mail.subject).to eq("Atualização da Ordem de Serviço")
       expect(mail.to).to eq([ customer.email ])
-      expect(mail.from).to eq([ ENV["SMTP_USERNAME"] ])
+      expect(mail.from).to eq(ENV["SMTP_USERNAME"])
     end
 
     it "renders the body with order info" do

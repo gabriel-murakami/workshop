@@ -1,0 +1,98 @@
+name: Deploy
+
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    name: Deploy via Terraform
+    runs-on: self-hosted
+
+    env:
+      IMAGE_NAME: ghcr.io/${{ github.repository }}/workshop
+      K8S_NAMESPACE: workshop
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.12.2
+
+      - name: Docker login
+        run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u "${{ secrets.GHCR_USERNAME }}" --password-stdin
+
+      - name: Build and push Docker image
+        run: |
+          docker build -t $IMAGE_NAME:latest .
+          docker push $IMAGE_NAME:latest
+
+      - name: Terraform Init
+        run: terraform -chdir=infra init -input=false
+
+      - name: Terraform Plan
+        run: terraform -chdir=infra plan -input=false
+
+      - name: Set up kubectl
+        run: |
+          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+          chmod +x kubectl
+          sudo mv kubectl /usr/local/bin/
+          kubectl version --client
+
+      - name: Ensure Namespace Exists
+        run: kubectl get namespace $K8S_NAMESPACE || kubectl create namespace $K8S_NAMESPACE
+
+      - name: Import existing resources
+        run: |
+          set -e
+          for res in web_secret db_secret web_config db_deployment web_deployment db_service web_service; do
+            case $res in
+              web_secret)
+                kubectl get secret web-secret -n $K8S_NAMESPACE &>/dev/null && \
+                  terraform -chdir=infra import kubernetes_manifest.web_secret "apiVersion=v1,kind=Secret,namespace=$K8S_NAMESPACE,name=web-secret" || true
+                ;;
+              db_secret)
+                kubectl get secret db-secret -n $K8S_NAMESPACE &>/dev/null && \
+                  terraform -chdir=infra import kubernetes_manifest.db_secret "apiVersion=v1,kind=Secret,namespace=$K8S_NAMESPACE,name=db-secret" || true
+                ;;
+              web_config)
+                kubectl get configmap app-config -n $K8S_NAMESPACE &>/dev/null && \
+                  terraform -chdir=infra import kubernetes_manifest.web_config "apiVersion=v1,kind=ConfigMap,namespace=$K8S_NAMESPACE,name=app-config" || true
+                ;;
+              db_deployment)
+                kubectl get deployment db-deployment -n $K8S_NAMESPACE &>/dev/null && \
+                  terraform -chdir=infra import kubernetes_manifest.db_deployment "apiVersion=apps/v1,kind=Deployment,namespace=$K8S_NAMESPACE,name=db-deployment" || true
+                ;;
+              web_deployment)
+                kubectl get deployment web-deployment -n $K8S_NAMESPACE &>/dev/null && \
+                  terraform -chdir=infra import kubernetes_manifest.web_deployment "apiVersion=apps/v1,kind=Deployment,namespace=$K8S_NAMESPACE,name=web-deployment" || true
+                ;;
+              db_service)
+                kubectl get svc db -n $K8S_NAMESPACE &>/dev/null && \
+                  terraform -chdir=infra import kubernetes_manifest.db_service "apiVersion=v1,kind=Service,namespace=$K8S_NAMESPACE,name=db" || true
+                ;;
+              web_service)
+                kubectl get svc web-service -n $K8S_NAMESPACE &>/dev/null && \
+                  terraform -chdir=infra import kubernetes_manifest.web_service "apiVersion=v1,kind=Service,namespace=$K8S_NAMESPACE,name=web-service" || true
+                ;;
+            esac
+          done
+
+      - name: Terraform Apply
+        run: terraform -chdir=infra apply -auto-approve -input=false
+
+      - name: Validate Deployment
+        run: |
+          kubectl get pods -n $K8S_NAMESPACE
+          kubectl get svc -n $K8S_NAMESPACE
+
+      - name: Test Application Response
+        run: |
+          URL=$(minikube service web-service -n $K8S_NAMESPACE --url | head -n 1)
+          sleep 5
+          curl -f $URL || (echo "App did not respond at $URL" && exit 1)
