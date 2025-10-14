@@ -2,11 +2,13 @@ module Web
   module Controllers
     class BudgetsController < AuthController
       def index
-        render json: Application::ServiceOrder::BudgetApplication.new.find_all(filter_params)
+        render json: Application::ServiceOrder::BudgetApplication.new.find_all(filter_params),
+          each_serializer: ::Serializers::Domain::ServiceOrder::BudgetSerializer
       end
 
       def show
-        render json: Application::ServiceOrder::BudgetApplication.new.find_by_id(budget_params[:id])
+        render json: Application::ServiceOrder::BudgetApplication.new.find_by_id(budget_params[:id]),
+          serializer: ::Serializers::Domain::ServiceOrder::BudgetSerializer
       end
 
       def approve

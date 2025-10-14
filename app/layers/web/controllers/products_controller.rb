@@ -5,11 +5,13 @@ module Web
       STOCK_CONTROL_FIELDS = %i[stock_change]
 
       def index
-        render json: Application::ServiceOrderItem::ProductApplication.new.find_all
+        render json: Application::ServiceOrderItem::ProductApplication.new.find_all,
+          each_serializer: ::Serializers::Domain::ServiceOrderItem::ProductSerializer
       end
 
       def show
-        render json: Application::ServiceOrderItem::ProductApplication.new.find_by_id(product_params[:id])
+        render json: Application::ServiceOrderItem::ProductApplication.new.find_by_id(product_params[:id]),
+          serializer: ::Serializers::Domain::ServiceOrderItem::ProductSerializer
       end
 
       def create
@@ -17,26 +19,26 @@ module Web
           Application::ServiceOrderItem::Commands::CreateProductCommand.new(product: product_params)
         )
 
-        render json: product, status: :created
+        render json: product, status: :created, serializer: ::Serializers::Domain::ServiceOrderItem::ProductSerializer
       end
 
       def update
         command = Application::ServiceOrderItem::Commands::UpdateProductCommand.new(product_attributes: update_params)
         product = Application::ServiceOrderItem::ProductApplication.new.update_product(command)
 
-        render json: product
+        render json: product, serializer: ::Serializers::Domain::ServiceOrderItem::ProductSerializer
       end
 
       def add_products
         product = Application::ServiceOrderItem::ProductApplication.new.add_product(stock_control_command)
 
-        render json: product
+        render json: product, serializer: ::Serializers::Domain::ServiceOrderItem::ProductSerializer
       end
 
       def remove_products
         product = Application::ServiceOrderItem::ProductApplication.new.remove_product(stock_control_command)
 
-        render json: product
+        render json: product, serializer: ::Serializers::Domain::ServiceOrderItem::ProductSerializer
       end
 
       def destroy

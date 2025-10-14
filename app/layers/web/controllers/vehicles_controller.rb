@@ -2,7 +2,8 @@ module Web
   module Controllers
     class VehiclesController < AuthController
       def index
-        render json: Application::Customer::VehicleApplication.new.find_all
+        render json: Application::Customer::VehicleApplication.new.find_all,
+          each_serializer: ::Serializers::Domain::Customer::VehicleSerializer
       end
 
       def show
@@ -10,7 +11,8 @@ module Web
           vehicle_params[:license_plate]
         )
 
-        render json: vehicle
+        render json: vehicle,
+          serializer: ::Serializers::Domain::Customer::VehicleSerializer
       end
 
       def create
@@ -18,14 +20,16 @@ module Web
           Application::Customer::Commands::CreateVehicleCommand.new(vehicle: vehicle_params)
         )
 
-        render json: vehicle, status: :created
+        render json: vehicle, status: :created,
+          serializer: ::Serializers::Domain::Customer::VehicleSerializer
       end
 
       def update
         command = Application::Customer::Commands::UpdateVehicleCommand.new(vehicle_attributes: vehicle_params)
         vehicle = Application::Customer::VehicleApplication.new.update_vehicle(command)
 
-        render json: vehicle
+        render json: vehicle,
+          serializer: ::Serializers::Domain::Customer::VehicleSerializer
       end
 
       def destroy

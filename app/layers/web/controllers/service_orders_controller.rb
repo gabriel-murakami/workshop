@@ -2,7 +2,8 @@ module Web
   module Controllers
     class ServiceOrdersController < AuthController
       def index
-        render json: Application::ServiceOrder::ServiceOrderApplication.new.find_all
+        render json: Application::ServiceOrder::ServiceOrderApplication.new.find_all,
+          each_serializer: ::Serializers::Domain::ServiceOrder::ServiceOrderSerializer
       end
 
       def show
@@ -14,13 +15,12 @@ module Web
       def current_status
         service_order = Application::ServiceOrder::ServiceOrderApplication.new.find_by_id(params[:id])
 
-        render json: service_order, serializer: Domain::ServiceOrder::CurrentStatusSerializer
+        render json: service_order, serializer: ::Serializers::Domain::ServiceOrder::CurrentStatusSerializer
       end
 
       def open
         service_order = Application::ServiceOrder::ServiceOrderApplication.new.open_service_order(
           Application::ServiceOrder::Commands::OpenServiceOrderCommand.new(
-            service_order_id: permitted_params[:id],
             document_number: permitted_params[:document_number],
             license_plate: permitted_params[:license_plate],
             services_codes: permitted_params[:services_codes],
@@ -28,7 +28,8 @@ module Web
           )
         )
 
-        render json: service_order, status: :created
+        render json: service_order, status: :created,
+          serializer: ::Serializers::Domain::ServiceOrder::ServiceOrderSerializer
       end
 
       def create
@@ -39,7 +40,8 @@ module Web
           )
         )
 
-        render json: service_order, status: :created
+        render json: service_order, status: :created,
+         serializer: ::Serializers::Domain::ServiceOrder::ServiceOrderSerializer
       end
 
       def send_to_diagnosis
@@ -49,7 +51,8 @@ module Web
 
         service_order = Application::ServiceOrder::ServiceOrderApplication.new.send_to_diagnosis(command)
 
-        render json: service_order, status: :ok
+        render json: service_order, status: :ok,
+          serializer: ::Serializers::Domain::ServiceOrder::ServiceOrderSerializer
       end
 
       def send_to_approval
@@ -59,7 +62,8 @@ module Web
 
         service_order = Application::ServiceOrder::ServiceOrderApplication.new.send_to_approval(command)
 
-        render json: service_order, status: :ok
+        render json: service_order, status: :ok,
+          serializer: ::Serializers::Domain::ServiceOrder::ServiceOrderSerializer
       end
 
       def add_services
@@ -70,7 +74,8 @@ module Web
 
         service_order = Application::ServiceOrder::ServiceOrderApplication.new.add_services(command)
 
-        render json: service_order, include: :service_order_items
+        render json: service_order, include: :service_order_items,
+          serializer: ::Serializers::Domain::ServiceOrder::ServiceOrderSerializer
       end
 
       def add_products
@@ -81,7 +86,8 @@ module Web
 
         service_order = Application::ServiceOrder::ServiceOrderApplication.new.add_products(command)
 
-        render json: service_order, include: :service_order_items
+        render json: service_order, include: :service_order_items,
+          serializer: ::Serializers::Domain::ServiceOrder::ServiceOrderSerializer
       end
 
       def start
@@ -91,7 +97,8 @@ module Web
 
         service_order = Application::ServiceOrder::ServiceOrderApplication.new.start_service_order(command)
 
-        render json: service_order, status: :ok
+        render json: service_order, status: :ok,
+          serializer: ::Serializers::Domain::ServiceOrder::ServiceOrderSerializer
       end
 
       def finish
@@ -101,7 +108,8 @@ module Web
 
         service_order = Application::ServiceOrder::ServiceOrderApplication.new.finish_service_order(command)
 
-        render json: service_order, status: :ok
+        render json: service_order, status: :ok,
+          serializer: ::Serializers::Domain::ServiceOrder::ServiceOrderSerializer
       end
 
       private

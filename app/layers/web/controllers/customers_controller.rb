@@ -5,13 +5,14 @@ module Web
       ADD_VEHICLE_FIELDS = %i[license_plate]
 
       def index
-        render json: Application::Customer::CustomerApplication.new.find_all
+        render json: Application::Customer::CustomerApplication.new.find_all,
+          each_serializer: ::Serializers::Domain::Customer::CustomerSerializer
       end
 
       def show
         customer = Application::Customer::CustomerApplication.new.find_by_document_number(customer_params[:document_number])
 
-        render json: customer, include: :vehicles
+        render json: customer, include: :vehicles, serializer: ::Serializers::Domain::Customer::CustomerSerializer
       end
 
       def create
@@ -19,14 +20,14 @@ module Web
           Application::Customer::Commands::CreateCustomerCommand.new(customer: customer_params)
         )
 
-        render json: customer, status: :created
+        render json: customer, status: :created, serializer: ::Serializers::Domain::Customer::CustomerSerializer
       end
 
       def update
         command = Application::Customer::Commands::UpdateCustomerCommand.new(customer_attributes: customer_params)
         customer = Application::Customer::CustomerApplication.new.update_customer(command)
 
-        render json: customer
+        render json: customer, serializer: ::Serializers::Domain::Customer::CustomerSerializer
       end
 
       def destroy

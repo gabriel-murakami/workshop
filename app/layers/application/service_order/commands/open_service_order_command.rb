@@ -2,10 +2,9 @@ module Application
   module ServiceOrder
     module Commands
       class OpenServiceOrderCommand
-        attr_accessor :service_order_id, :document_number, :license_plate, :services_codes, :products_params
+        attr_accessor :document_number, :license_plate, :services_codes, :products_params
 
-        def initialize(service_order_id:, document_number:, license_plate:, services_codes:, products_params:)
-          @service_order_id = service_order_id
+        def initialize(document_number:, license_plate:, services_codes:, products_params:)
           @document_number = document_number
           @license_plate = license_plate
           @services_codes = services_codes

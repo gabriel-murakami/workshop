@@ -41,9 +41,12 @@ Este projeto implementa um sistema completo para gerenciamento de oficinas mecâ
 │   │   ├── jobs                      # Processos assíncronos e background jobs
 │   │   └── ...
 │   │
-│   └── web             # Camada de apresentação (HTTP)
-│       ├── controllers # Controladores que processam requisições e delegam para application
-│       └── concerns    # Módulos reutilizáveis para controllers (Ex: autenticação)
+│   ├── web             # Camada de apresentação (HTTP)
+│   │   ├── controllers # Controladores que processam requisições e delegam para application
+│   │   └── concerns    # Módulos reutilizáveis para controllers (Ex: autenticação)
+│   └── serializers     # Camada de apresentação (Serialização)
+│       ├── <context_domain_1>
+│       └── <entidade>_serializer.rb # Classe contendo as regras de serialização da entidade
 ```
 
 ## Execução e Documentação:

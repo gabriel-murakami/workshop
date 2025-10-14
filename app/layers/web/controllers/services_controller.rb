@@ -2,11 +2,13 @@ module Web
   module Controllers
     class ServicesController < AuthController
       def index
-        render json: Application::ServiceOrderItem::ServiceApplication.new.find_all
+        render json: Application::ServiceOrderItem::ServiceApplication.new.find_all,
+          each_serializer: ::Serializers::Domain::ServiceOrderItem::ServiceSerializer
       end
 
       def show
-        render json: Application::ServiceOrderItem::ServiceApplication.new.find_by_id(service_params[:id])
+        render json: Application::ServiceOrderItem::ServiceApplication.new.find_by_id(service_params[:id]),
+          serializer: ::Serializers::Domain::ServiceOrderItem::ServiceSerializer
       end
 
       def create
@@ -14,14 +16,16 @@ module Web
           Application::ServiceOrderItem::Commands::CreateServiceCommand.new(service: service_params)
         )
 
-        render json: service, status: :created
+        render json: service, status: :created,
+          serializer: ::Serializers::Domain::ServiceOrderItem::ServiceSerializer
       end
 
       def update
         command = Application::ServiceOrderItem::Commands::UpdateServiceCommand.new(service_attributes: service_params)
         service = Application::ServiceOrderItem::ServiceApplication.new.update_service(command)
 
-        render json: service
+        render json: service,
+          serializer: ::Serializers::Domain::ServiceOrderItem::ServiceSerializer
       end
 
       def destroy
