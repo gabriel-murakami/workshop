@@ -80,3 +80,30 @@ COVERAGE:  98.27% -- 910/926 lines in 71 files
 ```
 
 Além disso, é gerado um arquivo em `/coverage/index.html` contendo o relatório completo. Esse arquivo também está disponível pós a execução da pipeline do Github Actions do repositório.
+
+## Kubernetes
+```shell
+# Opcional: limpar pods antigos
+kubectl delete deployments,services,secrets,configmaps --all
+
+### Aplicar as configurações:
+kubectl apply -f k8s/
+
+### Verificar pods
+kubectl get pods -w
+
+### Acessar o pod:
+kubectl exec -it deployment/web-deployment -- /bin/bash
+
+### Rodar as migrations:
+kubectl exec -it deployment/web-deployment -- bundle exec rake db:migrate
+
+### Criar os seeds:
+kubectl exec -it deployment/web-deployment -- bundle exec rake db:seed
+
+### Reiniciar pods:
+kubectl rollout restart deployment web-deployment
+
+### (Local) Disponibilizar External IP
+minikube tunnel
+```

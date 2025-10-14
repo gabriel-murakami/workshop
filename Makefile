@@ -46,3 +46,9 @@ bash:
 swagger:
 	docker compose run --rm -p 3000:3000 -e SIMPLECOV=false $(APP) bundle exec rake rswag:specs:swaggerize RAILS_ENV=test ; \
 	$(MAKE) stop
+export_vars:
+	export TF_VAR_database_username=$(grep DATABASE_USERNAME .env | cut -d '=' -f2)
+	export TF_VAR_database_password=$(grep DATABASE_PASSWORD .env | cut -d '=' -f2)
+	export TF_VAR_jwt_secret=$(grep JWT_SECRET .env | cut -d '=' -f2)
+	export TF_VAR_smtp_username=$(grep SMTP_USERNAME .env | cut -d '=' -f2)
+	export TF_VAR_smtp_password=$(grep SMTP_PASSWORD .env | cut -d '=' -f2)

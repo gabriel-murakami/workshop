@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: workshop
+data:
+  UID: "1000"
+  GID: "1000"

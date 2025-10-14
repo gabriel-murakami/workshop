@@ -19,7 +19,6 @@ services:
         GID: ${GID}
     user: "${UID}:${GID}"
     volumes:
-      - .:/app
       - bundle_cache:/usr/local/bundle
       - rails_log:/app/log
       - rails_tmp:/app/tmp

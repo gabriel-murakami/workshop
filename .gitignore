@@ -37,3 +37,6 @@
 
 # Ignore brakeman models
 /app/layers/infra/models/brakeman
+
+# Ignore terraform
+/infra/.terraform

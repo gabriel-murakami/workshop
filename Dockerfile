@@ -7,11 +7,12 @@ RUN apt-get update -qq && apt-get install -y \
   curl \
   git \
   nodejs \
+  postgresql-client \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
-ARG UID
-ARG GID
+ARG UID=1000
+ARG GID=1000
 
 RUN addgroup --gid ${GID} appgroup \
     && adduser --disabled-password --gecos "" --uid ${UID} --gid ${GID} appuser
@@ -33,4 +34,4 @@ COPY --chown=appuser:appgroup . .
 EXPOSE 3000
 
 ENTRYPOINT ["/usr/bin/entrypoint.sh"]
-CMD ["rails", "server", "-b", "0.0.0.0"]
+CMD ["bash", "-c", "bundle exec rails db:create && bundle exec rails db:migrate && bundle exec rails server -b 0.0.0.0"]
