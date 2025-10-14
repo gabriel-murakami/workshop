@@ -82,7 +82,7 @@ COVERAGE:  98.27% -- 910/926 lines in 71 files
 Além disso, é gerado um arquivo em `/coverage/index.html` contendo o relatório completo. Esse arquivo também está disponível pós a execução da pipeline do Github Actions do repositório.
 
 ## Kubernetes
-```shell
+```bash
 # Opcional: limpar pods antigos
 kubectl delete deployments,services,secrets,configmaps --all
 
@@ -110,7 +110,7 @@ minikube tunnel
 
 ## Terraform
 Antes de tudo é necessário iniciar o minikube com `minikube start`
-```shell
+```bash
 # Ir para o diretório de infra
 cd infra/
 
