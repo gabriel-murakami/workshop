@@ -11,7 +11,7 @@ collection:
     meta:
       id: req_71a93622beb1421c9c9c36f9d38e4ce0
       created: 1754692591199
-      modified: 1754949008049
+      modified: 1760405794298
       isPrivate: false
       description: ""
       sortKey: -1754692591199
@@ -61,7 +61,7 @@ collection:
     meta:
       id: req_8db7909be6164b468b91aa9722c72c2a
       created: 1754753411645
-      modified: 1756952686418
+      modified: 1760311730510
       isPrivate: false
       description: ""
       sortKey: -1754753411645
@@ -216,7 +216,7 @@ collection:
     meta:
       id: req_e98453586e9549ab9875b6886cd4b3fb
       created: 1754758992247
-      modified: 1754759555924
+      modified: 1760460537918
       isPrivate: false
       description: ""
       sortKey: -1754758992247
@@ -233,9 +233,6 @@ collection:
         value: application/json
       - name: User-Agent
         value: insomnia/11.4.0
-    scripts:
-      preRequest: ""
-      afterResponse: ""
     settings:
       renderRequestBody: true
       encodeUrl: true
@@ -824,7 +821,7 @@ collection:
     meta:
       id: req_e0cc457c72324beca8416992d8465dd3
       created: 1754778936755
-      modified: 1754778941990
+      modified: 1760405766373
       isPrivate: false
       description: ""
       sortKey: -1754700178231.5
@@ -940,7 +937,7 @@ collection:
     meta:
       id: req_c4e0f3b9a89042a1973b7e7d1c4573c9
       created: 1754881863837
-      modified: 1754948495318
+      modified: 1760474317123
       isPrivate: false
       description: ""
       sortKey: -1754755279713.5312
@@ -967,7 +964,7 @@ collection:
       rebuildPath: true
     pathParameters:
       - name: id
-        value: "4"
+        value: 0b6f671a-f502-4930-8889-130f5bf12971
   - url: localhost:3000/budgets/:id/reject
     name: reject budget
     meta:
@@ -1072,7 +1069,7 @@ collection:
     meta:
       id: req_b19db782963a4a7e98898a1db9699bd4
       created: 1754882531600
-      modified: 1755044600847
+      modified: 1760313899977
       isPrivate: false
       description: ""
       sortKey: -1754692591149
@@ -1094,7 +1091,7 @@ collection:
       rebuildPath: true
     pathParameters:
       - name: id
-        value: "4"
+        value: da976e5b-1026-45bd-aaf0-e51c4c59c866
   - url: localhost:3000/service_orders/:id/add_products
     name: add products- service orders
     meta:
@@ -1208,7 +1205,7 @@ collection:
     meta:
       id: req_342860e22932489e99636b8b680fce99
       created: 1755096468094
-      modified: 1755096518817
+      modified: 1760474291587
       isPrivate: false
       description: ""
       sortKey: -1754692591174
@@ -1230,7 +1227,7 @@ collection:
       rebuildPath: true
     pathParameters:
       - name: id
-        value: ed1addf0-52ba-471f-a8e8-bfcd55940de4
+        value: faccb49d-6d1c-46b8-999b-39bb7ff643e2
   - url: localhost:3000/service_orders/open
     name: open service order
     meta:
