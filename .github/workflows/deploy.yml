@@ -1,9 +1,9 @@
 name: Deploy
 
 on:
-  pull_request:
   push:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -41,11 +41,22 @@ jobs:
           docker push $IMAGE_URI
           echo "IMAGE_URI=$IMAGE_URI" >> $GITHUB_ENV
 
-      - name: Replace envs in Kubernetes manifests
+      - name: Replace secrets in Kubernetes manifests
         env:
           IMAGE_URI: ${{ env.IMAGE_URI }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          DATABASE_HOST: ${{ secrets.DATABASE_HOST }}
+          DATABASE_USERNAME: ${{ secrets.DATABASE_USERNAME }}
+          DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          SECRET_KEY_BASE: ${{ secrets.SECRET_KEY_BASE }}
         run: |
           envsubst < infra/k8s/web-deployment.tmpl.yaml > infra/k8s/web-deployment.yaml
+          envsubst < infra/k8s/web-secret.tmpl.yaml > infra/k8s/web-secret.yaml
+          envsubst < infra/k8s/db-secret.tmpl.yaml > infra/k8s/db-secret.yaml
 
       - name: Terraform Init
         run: terraform -chdir=infra init -input=false
