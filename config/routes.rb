@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
-  mount Rswag::Ui::Engine => "/api-docs"
-  mount Rswag::Api::Engine => "/api-docs"
+  unless Rails.env.production?
+    mount Rswag::Ui::Engine => "/api-docs"
+    mount Rswag::Api::Engine => "/api-docs"
+  end
 
   # Health Check
   get "up" => "rails/health#show", as: :rails_health_check
