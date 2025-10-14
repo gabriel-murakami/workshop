@@ -50,7 +50,7 @@ jobs:
       - name: Import existing resources
         run: |
           set -e
-          for res in web_secret db_secret web_config db_deployment web_deployment db_service web_service; do
+          for res in web_secret db_secret web_config db_deployment web_deployment db_service web_service web_hpa; do
             case $res in
               web_secret)
                 kubectl get secret web-secret -n $K8S_NAMESPACE &>/dev/null && \
@@ -80,6 +80,10 @@ jobs:
                 kubectl get svc web-service -n $K8S_NAMESPACE &>/dev/null && \
                   terraform -chdir=infra import kubernetes_manifest.web_service "apiVersion=v1,kind=Service,namespace=$K8S_NAMESPACE,name=web-service" || true
                 ;;
+              web_hpa)
+                kubectl get hpa web-hpa -n $K8S_NAMESPACE &>/dev/null && \
+                  terraform -chdir=infra import kubernetes_manifest.web_hpa "apiVersion=autoscaling/v2,kind=HorizontalPodAutoscaler,namespace=$K8S_NAMESPACE,name=web-hpa" || true
+                ;;
             esac
           done
 
@@ -90,6 +94,7 @@ jobs:
         run: |
           kubectl get pods -n $K8S_NAMESPACE
           kubectl get svc -n $K8S_NAMESPACE
+          kubectl get hpa -n $K8S_NAMESPACE
 
       - name: Test Application Response
         run: |

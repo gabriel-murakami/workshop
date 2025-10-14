@@ -107,3 +107,74 @@ kubectl rollout restart deployment web-deployment
 ### (Local) Disponibilizar External IP
 minikube tunnel
 ```
+
+## Terraform
+Antes de tudo é necessário iniciar o minikube com `minikube start`
+```shell
+# Ir para o diretório de infra
+cd infra/
+
+# Iniciar o terraform
+terraform init
+
+# Opcional: Destruir os recursos antigos
+terraform destroy
+
+# Visualizar o plano de criação dos recursos
+terraform plan
+
+# Aplicar as configurações dos recursos
+terraform apply
+
+# (Local) Disponibilizar External IP
+minikube tunnel
+```
+
+## Fluxo CI/CD e Provisionamento
+```mermaid
+flowchart TD
+    subgraph Dev["Desenvolvimento (GitHub)"]
+        A[Commit / Pull Request] --> B[GitHub Actions - Workflow]
+    end
+
+    subgraph CI["Continuous Integration (CI)"]
+        C1[Checkout do código]
+        C2[scan_ruby - Verificação de vulnerabilidades]
+        C3[lint - Análise estática]
+        C4[test - Execução de testes automatizados]
+        C1 --> C2 --> C3 --> C4
+    end
+
+    subgraph CD["Continuous Deployment (CD)"]
+        D1[Checkout do código]
+        D2[Build & Push da imagem Docker<br>para GitHub Container Registry]
+        D3[Terraform Init / Plan]
+        D4[Importa recursos Kubernetes existentes]
+        D5[Terraform Apply]
+        D6[Aplica Manifests via Terraform]
+        D7[Validação com kubectl e curl]
+        D1 --> D2 --> D3 --> D4 --> D5 --> D6 --> D7
+    end
+
+    subgraph Cloud["Infraestrutura Provisionada"]
+        I[Cluster Kubernetes]
+        J[Database - DB Deployment]
+        K[Web Application - Web Deployment]
+        L[web-service]
+        db[(db-service)]
+        I --> J
+        I --> K
+        J --> db
+        K --> L
+        db --> L
+    end
+
+    subgraph User["Usuário Final"]
+        M[Browser / Cliente HTTP]
+        M -->|Acesso via LoadBalancer| L
+    end
+
+    B -->|Executa em paralelo| C1
+    B -->|Executa em paralelo| D1
+    D6 -->|Aplica manifests| I
+```

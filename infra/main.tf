@@ -35,3 +35,18 @@ resource "kubernetes_manifest" "web_service" {
     kubernetes_manifest.web_deployment
   ]
 }
+
+resource "kubernetes_manifest" "web_hpa" {
+  manifest = yamldecode(file("${path.module}/k8s/web-hpa.yaml"))
+  depends_on = [
+    kubernetes_manifest.web_deployment,
+    kubernetes_manifest.web_service
+  ]
+
+  lifecycle {
+    ignore_changes = [
+      object.spec.behavior.scaleUp.selectPolicy,
+      object.spec.behavior.scaleDown.selectPolicy
+    ]
+  }
+}
