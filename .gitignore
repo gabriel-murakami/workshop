@@ -40,3 +40,5 @@
 
 # Ignore terraform
 /infra/.terraform
+/infra/terraform.tfstate
+/infra/terraform.tfstate.backup
