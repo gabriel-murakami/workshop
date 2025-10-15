@@ -27,7 +27,7 @@ jobs:
           echo "TAG=${APP_NAME}-${TIMESTAMP}-${COMMIT}" >> $GITHUB_ENV
 
       - name: Install Terraform
-        uses: hashicorp/setup-terraform@v2
+        uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.12.2
 
