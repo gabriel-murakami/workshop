@@ -15,7 +15,10 @@ ARG UID=1000
 ARG GID=1000
 
 RUN addgroup --gid ${GID} appgroup \
-    && adduser --disabled-password --gecos "" --uid ${UID} --gid ${GID} appuser
+ && adduser --disabled-password --gecos "" --uid ${UID} --gid ${GID} appuser
+
+RUN mkdir -p /usr/local/bundle \
+ && chown -R appuser:appgroup /usr/local/bundle
 
 COPY entrypoint.sh /usr/bin/entrypoint.sh
 RUN chmod +x /usr/bin/entrypoint.sh
