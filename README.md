@@ -181,3 +181,5 @@ flowchart TD
     B -->|Executa em paralelo| D1
     D6 -->|Aplica manifests| I
 ```
+
+Deploy
