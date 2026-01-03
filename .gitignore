@@ -39,6 +39,13 @@
 /app/layers/infra/models/brakeman
 
 # Ignore terraform
-/infra/.terraform
-/infra/terraform.tfstate
-/infra/terraform.tfstate.backup
+/infra/**/.terraform/
+/infra/**/terraform.tfstate
+/infra/**/terraform.tfstate.backup
+/infra/**/terraform.tfstate.*
+/infra/**/crash.log
+
+# Ignore generated manifests (rendered from *.tmpl.yaml during deploy)
+/infra/k8s/web-deployment.yaml
+/infra/k8s/web-secret.yaml
+/infra/k8s/db-secret.yaml

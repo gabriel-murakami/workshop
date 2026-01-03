@@ -6,14 +6,19 @@ on:
     types: [ closed ]
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   deploy:
-    if: github.event.pull_request.merged == true
-    name: Deploy via Terraform
-    runs-on: self-hosted
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true
+    name: Deploy to EKS
+    runs-on: ubuntu-latest
 
     env:
-      IMAGE_NAME: ghcr.io/${{ github.repository }}
+      AWS_REGION: ${{ vars.AWS_REGION }}
+      EKS_CLUSTER_NAME: ${{ vars.EKS_CLUSTER_NAME }}
+      ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}
       K8S_NAMESPACE: workshop
 
     steps:
@@ -28,43 +33,48 @@ jobs:
           COMMIT="${GITHUB_SHA::7}"
           echo "TAG=${APP_NAME}-${TIMESTAMP}-${COMMIT}" >> $GITHUB_ENV
 
-      - name: Install Terraform
-        uses: hashicorp/setup-terraform@v2
+      - name: Configure AWS credentials (Access Keys)
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          terraform_version: 1.12.2
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: ${{ env.AWS_REGION }}
 
-      - name: Docker login
-        run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u "${{ secrets.GHCR_USERNAME }}" --password-stdin
+      - name: Login to Amazon ECR
+        id: ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Ensure ECR repository exists
+        run: |
+          aws ecr describe-repositories --repository-names "${ECR_REPOSITORY}" >/dev/null 2>&1 || \
+            aws ecr create-repository --repository-name "${ECR_REPOSITORY}" >/dev/null
 
       - name: Build and push Docker image
+        env:
+          ECR_REGISTRY: ${{ steps.ecr.outputs.registry }}
         run: |
-          IMAGE_URI="$IMAGE_NAME:${{ env.TAG }}"
-          docker build -t $IMAGE_URI .
-          docker push $IMAGE_URI
-          echo "IMAGE_URI=$IMAGE_URI" >> $GITHUB_ENV
+          IMAGE_URI="${ECR_REGISTRY}/${ECR_REPOSITORY}:${TAG}"
+          docker build -t "${IMAGE_URI}" .
+          docker push "${IMAGE_URI}"
+          echo "IMAGE_URI=${IMAGE_URI}" >> $GITHUB_ENV
 
       - name: Replace secrets in Kubernetes manifests
         env:
           IMAGE_URI: ${{ env.IMAGE_URI }}
           SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
           DATABASE_HOST: ${{ secrets.DATABASE_HOST }}
+          DATABASE_PORT: ${{ secrets.DATABASE_PORT }}
+          DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
+          DATABASE_SSLMODE: ${{ secrets.DATABASE_SSLMODE }}
           DATABASE_USERNAME: ${{ secrets.DATABASE_USERNAME }}
           DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
-          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           SECRET_KEY_BASE: ${{ secrets.SECRET_KEY_BASE }}
         run: |
           envsubst < infra/k8s/web-deployment.tmpl.yaml > infra/k8s/web-deployment.yaml
           envsubst < infra/k8s/web-secret.tmpl.yaml > infra/k8s/web-secret.yaml
-          envsubst < infra/k8s/db-secret.tmpl.yaml > infra/k8s/db-secret.yaml
-
-      - name: Terraform Init
-        run: terraform -chdir=infra init -input=false
-
-      - name: Terraform Plan
-        run: terraform -chdir=infra plan -input=false
 
       - name: Set up kubectl
         run: |
@@ -73,64 +83,21 @@ jobs:
           sudo mv kubectl /usr/local/bin/
           kubectl version --client
 
+      - name: Configure kubeconfig for EKS
+        run: |
+          aws eks update-kubeconfig --name "${EKS_CLUSTER_NAME}" --region "${AWS_REGION}"
+          kubectl cluster-info
+
       - name: Ensure Namespace Exists
         run: kubectl get namespace $K8S_NAMESPACE || kubectl create namespace $K8S_NAMESPACE
 
-      - name: Create GHCR Secret if not exists
+      - name: Apply Kubernetes manifests
         run: |
-          if ! kubectl get secret ghcr-secret -n $K8S_NAMESPACE > /dev/null 2>&1; then
-            kubectl create secret docker-registry ghcr-secret \
-              --docker-server=ghcr.io \
-              --docker-username="${{ secrets.GHCR_USERNAME }}" \
-              --docker-password="${{ secrets.GHCR_TOKEN }}" \
-              --docker-email="${{ secrets.GHCR_EMAIL }}" \
-              -n $K8S_NAMESPACE
-          else
-            echo "Secret ghcr-secret already exists in namespace $K8S_NAMESPACE"
-          fi
-
-      - name: Import existing resources
-        run: |
-          set -e
-          for res in web_secret db_secret web_config db_deployment web_deployment db_service web_service web_hpa; do
-            case $res in
-              web_secret)
-                kubectl get secret web-secret -n $K8S_NAMESPACE &>/dev/null && \
-                  terraform -chdir=infra import kubernetes_manifest.web_secret "apiVersion=v1,kind=Secret,namespace=$K8S_NAMESPACE,name=web-secret" || true
-                ;;
-              db_secret)
-                kubectl get secret db-secret -n $K8S_NAMESPACE &>/dev/null && \
-                  terraform -chdir=infra import kubernetes_manifest.db_secret "apiVersion=v1,kind=Secret,namespace=$K8S_NAMESPACE,name=db-secret" || true
-                ;;
-              web_config)
-                kubectl get configmap app-config -n $K8S_NAMESPACE &>/dev/null && \
-                  terraform -chdir=infra import kubernetes_manifest.web_config "apiVersion=v1,kind=ConfigMap,namespace=$K8S_NAMESPACE,name=app-config" || true
-                ;;
-              db_deployment)
-                kubectl get deployment db-deployment -n $K8S_NAMESPACE &>/dev/null && \
-                  terraform -chdir=infra import kubernetes_manifest.db_deployment "apiVersion=apps/v1,kind=Deployment,namespace=$K8S_NAMESPACE,name=db-deployment" || true
-                ;;
-              web_deployment)
-                kubectl get deployment web-deployment -n $K8S_NAMESPACE &>/dev/null && \
-                  terraform -chdir=infra import kubernetes_manifest.web_deployment "apiVersion=apps/v1,kind=Deployment,namespace=$K8S_NAMESPACE,name=web-deployment" || true
-                ;;
-              db_service)
-                kubectl get svc db -n $K8S_NAMESPACE &>/dev/null && \
-                  terraform -chdir=infra import kubernetes_manifest.db_service "apiVersion=v1,kind=Service,namespace=$K8S_NAMESPACE,name=db" || true
-                ;;
-              web_service)
-                kubectl get svc web-service -n $K8S_NAMESPACE &>/dev/null && \
-                  terraform -chdir=infra import kubernetes_manifest.web_service "apiVersion=v1,kind=Service,namespace=$K8S_NAMESPACE,name=web-service" || true
-                ;;
-              web_hpa)
-                kubectl get hpa web-hpa -n $K8S_NAMESPACE &>/dev/null && \
-                  terraform -chdir=infra import kubernetes_manifest.web_hpa "apiVersion=autoscaling/v2,kind=HorizontalPodAutoscaler,namespace=$K8S_NAMESPACE,name=web-hpa" || true
-                ;;
-            esac
-          done
-
-      - name: Terraform Apply
-        run: terraform -chdir=infra apply -auto-approve -input=false
+          kubectl apply -n "${K8S_NAMESPACE}" -f infra/k8s/app-config.yaml
+          kubectl apply -n "${K8S_NAMESPACE}" -f infra/k8s/web-secret.yaml
+          kubectl apply -n "${K8S_NAMESPACE}" -f infra/k8s/web-deployment.yaml
+          kubectl apply -n "${K8S_NAMESPACE}" -f infra/k8s/web-service.yaml
+          kubectl apply -n "${K8S_NAMESPACE}" -f infra/k8s/web-hpa.yaml
 
       - name: Wait for deployment rollout
         run: |

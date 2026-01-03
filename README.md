@@ -112,7 +112,9 @@ minikube tunnel
 ```
 
 ## Terraform
-Antes de tudo é necessário iniciar o minikube com `minikube start`
+O diretório `infra/` provisiona recursos na **AWS** (incluindo **VPC** + **EKS**).
+Para ambiente local com minikube, use os comandos da seção **Kubernetes**.
+
 ```shell
 # Ir para o diretório de infra
 cd infra/
@@ -128,10 +130,32 @@ terraform plan
 
 # Aplicar as configurações dos recursos
 terraform apply
-
-# (Local) Disponibilizar External IP
-minikube tunnel
 ```
+
+## Deploy na AWS (EKS)
+O workflow de deploy foi ajustado para rodar em runner do GitHub (sem `self-hosted`) e fazer deploy no **Amazon EKS**, publicando a imagem no **Amazon ECR**.
+
+### Checklist AWS (o que precisa existir)
+- **EKS**: cluster e node group (provisionado via Terraform em `infra/`).
+- **ECR**: repositório para a imagem (provisionado via Terraform em `infra/` ou criado automaticamente no deploy).
+- **RDS (PostgreSQL)**: banco gerenciado (provisionado via Terraform em `infra/`).
+- **IAM OIDC + Role** para o GitHub Actions: role com trust do GitHub OIDC e permissões para push no ECR e `eks:DescribeCluster`.
+
+Para obter o endpoint do RDS: `terraform -chdir=infra output rds_address`.
+
+### Variáveis (GitHub Actions)
+Configure em **Settings → Secrets and variables → Actions → Variables**:
+- `AWS_REGION` (ex: `us-east-1`)
+- `EKS_CLUSTER_NAME`
+- `ECR_REPOSITORY` (ex: `workshop-api`)
+
+### Secret (GitHub Actions)
+Configure em **Settings → Secrets and variables → Actions → Secrets**:
+- `AWS_ROLE_TO_ASSUME`: ARN do IAM Role com trust de OIDC para o GitHub e permissões para ECR + EKS.
+
+Além disso, o deploy continua usando os secrets já existentes para popular os templates em `infra/k8s/*.tmpl.yaml` (ex: `DATABASE_*`, `JWT_SECRET`, `SECRET_KEY_BASE`, `SMTP_*`).
+
+Observação: os manifests atuais usam `Secret.data` (valores em base64). Garanta que os secrets no GitHub estejam no formato esperado.
 
 ## Fluxo CI/CD e Provisionamento
 ```mermaid

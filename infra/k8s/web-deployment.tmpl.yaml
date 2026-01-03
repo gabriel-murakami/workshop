@@ -12,8 +12,6 @@ spec:
       labels:
         app: web
     spec:
-      imagePullSecrets:
-        - name: ghcr-secret
       containers:
         - name: web
           image: "${IMAGE_URI}"
@@ -36,6 +34,21 @@ spec:
               secretKeyRef:
                 name: web-secret
                 key: DATABASE_HOST
+          - name: DATABASE_PORT
+            valueFrom:
+              secretKeyRef:
+                name: web-secret
+                key: DATABASE_PORT
+          - name: DATABASE_NAME
+            valueFrom:
+              secretKeyRef:
+                name: web-secret
+                key: DATABASE_NAME
+          - name: DATABASE_SSLMODE
+            valueFrom:
+              secretKeyRef:
+                name: web-secret
+                key: DATABASE_SSLMODE
           - name: DATABASE_USERNAME
             valueFrom:
               secretKeyRef:

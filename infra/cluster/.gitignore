@@ -1,0 +1,21 @@
+# Ignore terraform
+.terraform/
+
+# Terraform state (nunca versionar)
+*.tfstate
+*.tfstate.*
+
+# Variáveis locais (podem conter segredos)
+*.tfvars
+*.tfvars.json
+
+# Planos gerados localmente
+*.tfplan
+
+# Logs e overrides
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
