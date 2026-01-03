@@ -16,9 +16,9 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      AWS_REGION: ${{ vars.AWS_REGION }}
-      EKS_CLUSTER_NAME: ${{ vars.EKS_CLUSTER_NAME }}
-      ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}
+      AWS_REGION: us-east-1
+      EKS_CLUSTER_NAME: workshop-cluster
+      ECR_REPOSITORY: 295947598682.dkr.ecr.us-east-1.amazonaws.com/workshop
       K8S_NAMESPACE: workshop
 
     steps:
