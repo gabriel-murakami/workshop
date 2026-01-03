@@ -3,9 +3,17 @@ variable "aws_region" {
   default = "us-east-1"
 }
 
+# When true, Terraform will NOT create a new EKS cluster/VPC; it will instead
+# reference an existing cluster (by cluster_name) and create/manage only the
+# node group resources.
+variable "use_existing_cluster" {
+  type    = bool
+  default = false
+}
+
 variable "cluster_name" {
   type    = string
-  default = "workshop-eks"
+  default = "workshop-cluster"
 }
 
 variable "kubernetes_version" {
@@ -16,6 +24,24 @@ variable "kubernetes_version" {
 variable "vpc_name" {
   type    = string
   default = "workshop-vpc"
+}
+
+# If set, the configuration will reuse an existing VPC instead of creating a new one.
+variable "existing_vpc_id" {
+  type    = string
+  default = ""
+}
+
+# Private subnet IDs used by the EKS cluster/node groups when reusing an existing VPC.
+variable "existing_private_subnet_ids" {
+  type    = list(string)
+  default = []
+}
+
+# Optional public subnets (only needed if you want to output/validate them).
+variable "existing_public_subnet_ids" {
+  type    = list(string)
+  default = []
 }
 
 variable "vpc_cidr" {
@@ -35,7 +61,7 @@ variable "private_subnets" {
 
 variable "node_instance_types" {
   type    = list(string)
-  default = ["t3.medium"]
+  default = ["t3.small"]
 }
 
 variable "node_min_size" {
