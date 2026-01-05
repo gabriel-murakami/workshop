@@ -27,7 +27,7 @@ module Application
 
         service_order = Domain::ServiceOrder::ServiceOrder.new(customer_id: customer.id, vehicle_id: vehicle.id)
 
-        ActiveRecord::Base.transaction do
+        created_service_order = ActiveRecord::Base.transaction do
           @service_order_repository.save(service_order)
 
           send_to_diagnosis(send_to_diagnosis_command(service_order))
@@ -36,6 +36,12 @@ module Application
 
           service_order.reload
         end
+
+        Rails.logger.tagged("ServiceOrder", service_order_id: created_service_order.id) do
+          Rails.logger.info("Service order opened")
+        end
+
+        created_service_order
       end
 
       def create_service_order(create_service_order_command)
@@ -44,11 +50,17 @@ module Application
           vehicle_id: create_service_order_command.vehicle_id
         )
 
-        ActiveRecord::Base.transaction do
+        created_service_order = ActiveRecord::Base.transaction do
           @service_order_repository.save(service_order)
 
           service_order
         end
+
+        Rails.logger.tagged("ServiceOrder", service_order_id: created_service_order.id) do
+          Rails.logger.info("Service order created")
+        end
+
+        created_service_order
       end
 
       def send_to_diagnosis(send_to_diagnosis_command, service_order = nil)
@@ -56,6 +68,10 @@ module Application
 
         ActiveRecord::Base.transaction do
           @service_order_repository.update(service_order, { status: "diagnosis" })
+        end
+
+        Rails.logger.tagged("ServiceOrder", service_order_id: service_order.id) do
+          Rails.logger.info("Service order sent to diagnosis")
         end
 
         service_order
@@ -72,6 +88,10 @@ module Application
 
         create_new_budget(service_order)
 
+        Rails.logger.tagged("ServiceOrder", service_order_id: service_order.id) do
+          Rails.logger.info("Service order sent to approval")
+        end
+
         service_order
       end
 
@@ -86,12 +106,21 @@ module Application
 
         raise Exceptions::ServiceOrderException.new("Invalid services codes") if services.empty?
 
-        ActiveRecord::Base.transaction do
+        updated_service_order = ActiveRecord::Base.transaction do
           service_order.add_services(services)
           @service_order_repository.save(service_order)
 
           service_order
         end
+
+        Rails.logger.tagged(
+          "ServiceOrder",
+          service_order_id: updated_service_order.id
+        ) do
+          Rails.logger.info("Services added to service order")
+        end
+
+        updated_service_order
       end
 
       def add_products(add_products_command)
@@ -113,7 +142,7 @@ module Application
           }
         end
 
-        ActiveRecord::Base.transaction do
+        updated_service_order = ActiveRecord::Base.transaction do
           service_order.add_products(products_list)
           @service_order_repository.save(service_order)
 
@@ -121,6 +150,15 @@ module Application
 
           service_order
         end
+
+        Rails.logger.tagged(
+          "ServiceOrder",
+          service_order_id: updated_service_order.id
+        ) do
+          Rails.logger.info("Products added to service order")
+        end
+
+        updated_service_order
       end
 
       def approve_service_order(approve_service_order_command)
@@ -136,6 +174,12 @@ module Application
             { status: "approved" }
           )
         end
+
+        Rails.logger.tagged("ServiceOrder", service_order_id: service_order.id) do
+          Rails.logger.info("Service order approved")
+        end
+
+        service_order
       end
 
       def cancel_service_order(cancel_service_order_command)
@@ -149,6 +193,12 @@ module Application
             { status: "cancelled" }
           )
         end
+
+        Rails.logger.tagged("ServiceOrder", service_order_id: service_order.id) do
+          Rails.logger.info("Service order cancelled")
+        end
+
+        service_order
       end
 
       def start_service_order(start_service_order_command)
@@ -162,6 +212,10 @@ module Application
             service_order,
             { status: "in_progress", service_started_at: Time.zone.now }
           )
+        end
+
+        Rails.logger.tagged("ServiceOrder", service_order_id: service_order.id) do
+          Rails.logger.info("Service order started")
         end
 
         service_order
@@ -181,6 +235,10 @@ module Application
         end
 
         update_metric(service_order)
+
+        Rails.logger.tagged("ServiceOrder", service_order_id: service_order.id) do
+          Rails.logger.info("Service order finished")
+        end
 
         service_order
       end

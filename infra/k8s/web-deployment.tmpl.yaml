@@ -3,6 +3,11 @@ kind: Deployment
 metadata:
   name: web-deployment
   namespace: workshop
+  labels:
+    app: web
+    tags.datadoghq.com/service: workshop
+    tags.datadoghq.com/env: development
+    tags.datadoghq.com/version: "1.0.0"
 spec:
   selector:
     matchLabels:
@@ -11,6 +16,16 @@ spec:
     metadata:
       labels:
         app: web
+        tags.datadoghq.com/service: workshop
+        tags.datadoghq.com/env: development
+        tags.datadoghq.com/version: "1.0.0"
+      annotations:
+        ad.datadoghq.com/web.logs: |
+          [{
+            "source": "ruby",
+            "service": "workshop",
+            "env": "development"
+          }]
     spec:
       imagePullSecrets:
         - name: ghcr-secret

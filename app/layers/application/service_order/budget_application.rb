@@ -22,6 +22,10 @@ module Application
         end
 
         approve_service_order(budget)
+
+        Rails.logger.tagged("Budget", budget_id: budget.id) do
+          Rails.logger.info("Budget approved")
+        end
       end
 
       def reject_budget(reject_budget_command)
@@ -32,6 +36,10 @@ module Application
         end
 
         cancel_service_order(budget)
+
+        Rails.logger.tagged("Budget", budget_id: budget.id) do
+          Rails.logger.info("Budget rejected")
+        end
       end
 
       def create_budget(create_budget_command)
@@ -42,11 +50,21 @@ module Application
           service_order: service_order
         )
 
-        ActiveRecord::Base.transaction do
+        created_budget = ActiveRecord::Base.transaction do
           budget.calculate_total_value(service_order.service_order_items)
           @budget_repository.save(budget)
           budget
         end
+
+        Rails.logger.tagged(
+          "Budget",
+          budget_id: created_budget.id,
+          service_order_id: created_budget.service_order_id
+        ) do
+          Rails.logger.info("Budget created")
+        end
+
+        created_budget
       end
 
       private

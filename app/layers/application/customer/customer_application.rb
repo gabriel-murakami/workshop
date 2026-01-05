@@ -22,6 +22,12 @@ module Application
 
           customer
         end
+
+        Rails.logger.tagged("Customer", customer_id: customer.id) do
+          Rails.logger.info("Customer created")
+        end
+
+        customer
       end
 
       def delete_customer(delete_customer_command)
@@ -30,6 +36,12 @@ module Application
         ActiveRecord::Base.transaction do
           @customer_repository.delete(customer)
         end
+
+        Rails.logger.tagged("Customer", customer_id: customer.id) do
+          Rails.logger.info("Customer deleted")
+        end
+
+        customer
       end
 
       def update_customer(update_customer_command)
@@ -40,6 +52,12 @@ module Application
 
           customer
         end
+
+        Rails.logger.tagged("Customer", customer_id: customer.id) do
+          Rails.logger.info("Customer updated")
+        end
+
+        customer
       end
 
       def add_vehicle(add_vehicle_command)
@@ -49,6 +67,14 @@ module Application
         ActiveRecord::Base.transaction do
           customer.add_vehicle(vehicle)
           @customer_repository.save(customer)
+        end
+
+        Rails.logger.tagged(
+          "Customer",
+          customer_id: customer.id,
+          vehicle_id: vehicle.id
+        ) do
+          Rails.logger.info("Vehicle added to customer")
         end
       end
     end

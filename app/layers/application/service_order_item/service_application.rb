@@ -21,6 +21,12 @@ module Application
 
           service
         end
+
+        Rails.logger.tagged("Service", service_id: service.id) do
+          Rails.logger.info("Service created")
+        end
+
+        service
       end
 
       def delete_service(delete_service_command)
@@ -29,6 +35,12 @@ module Application
         ActiveRecord::Base.transaction do
           @service_repository.delete(service)
         end
+
+        Rails.logger.tagged("Service", service_id: service.id) do
+          Rails.logger.info("Service deleted")
+        end
+
+        service
       end
 
       def update_service(update_service_command)
@@ -39,6 +51,12 @@ module Application
 
           service
         end
+
+        Rails.logger.tagged("Service", service_id: service.id) do
+          Rails.logger.info("Service updated")
+        end
+
+        service
       end
 
       def find_services_by_codes(codes)

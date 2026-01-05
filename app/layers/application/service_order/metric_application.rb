@@ -13,9 +13,18 @@ module Application
         started_at = update_metric_command.service_started_at
         finished_at = update_metric_command.service_finished_at
 
+        metric = nil
+
         ActiveRecord::Base.transaction do
           metric = @metric_repository.find_last_with_lock
           metric.add_finished_order(started_at, finished_at)
+        end
+
+        Rails.logger.tagged(
+          "Metric",
+          metric_id: metric&.id
+        ) do
+          Rails.logger.info("Metric updated")
         end
       end
     end

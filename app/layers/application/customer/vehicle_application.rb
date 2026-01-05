@@ -21,6 +21,12 @@ module Application
 
           vehicle
         end
+
+        Rails.logger.tagged("Vehicle", vehicle_id: vehicle.id) do
+          Rails.logger.info("Vehicle created")
+        end
+
+        vehicle
       end
 
       def delete_vehicle(delete_vehicle_command)
@@ -29,6 +35,12 @@ module Application
         ActiveRecord::Base.transaction do
           @vehicle_repository.delete(vehicle)
         end
+
+        Rails.logger.tagged("Vehicle", vehicle_id: vehicle.id) do
+          Rails.logger.info("Vehicle deleted")
+        end
+
+        vehicle
       end
 
       def update_vehicle(update_vehicle_command)
@@ -39,6 +51,12 @@ module Application
 
           vehicle
         end
+
+        Rails.logger.tagged("Vehicle", vehicle_id: vehicle.id) do
+          Rails.logger.info("Vehicle updated")
+        end
+
+        vehicle
       end
     end
   end

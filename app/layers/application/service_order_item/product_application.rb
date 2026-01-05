@@ -22,6 +22,12 @@ module Application
 
           product
         end
+
+        Rails.logger.tagged("Product", product_id: product.id) do
+          Rails.logger.info("Product stock increased by #{stock_control_command.stock_change}")
+        end
+
+        product
       end
 
       def remove_product(stock_control_command)
@@ -33,6 +39,12 @@ module Application
 
           product
         end
+
+        Rails.logger.tagged("Product", product_id: product.id) do
+          Rails.logger.info("Product stock decreased by #{stock_control_command.stock_change}")
+        end
+
+        product
       end
 
       def create_product(create_product_command)
@@ -43,6 +55,12 @@ module Application
 
           product
         end
+
+        Rails.logger.tagged("Product", product_id: product.id) do
+          Rails.logger.info("Product created")
+        end
+
+        product
       end
 
       def delete_product(delete_product_command)
@@ -51,6 +69,12 @@ module Application
         ActiveRecord::Base.transaction do
           @product_repository.delete(product)
         end
+
+        Rails.logger.tagged("Product", product_id: product.id) do
+          Rails.logger.info("Product deleted")
+        end
+
+        product
       end
 
       def update_product(update_product_command)
@@ -61,6 +85,12 @@ module Application
 
           product
         end
+
+        Rails.logger.tagged("Product", product_id: product.id) do
+          Rails.logger.info("Product updated")
+        end
+
+        product
       end
 
       def find_products_by_skus(skus)
