@@ -91,7 +91,7 @@ jobs:
       - name: Import existing resources
         run: |
           set -e
-          for res in web_secret db_secret web_config db_deployment web_deployment db_service web_service web_hpa; do
+          for res in web_secret db_secret web_config db_deployment web_deployment db_service web_service web_hpa datadog_agent; do
             case $res in
               web_secret)
                 kubectl get secret web-secret -n $K8S_NAMESPACE &>/dev/null && \
@@ -124,6 +124,10 @@ jobs:
               web_hpa)
                 kubectl get hpa web-hpa -n $K8S_NAMESPACE &>/dev/null && \
                   terraform -chdir=infra import kubernetes_manifest.web_hpa "apiVersion=autoscaling/v2,kind=HorizontalPodAutoscaler,namespace=$K8S_NAMESPACE,name=web-hpa" || true
+                ;;
+              datadog_agent)
+                kubectl get datadogagent datadog -n $K8S_NAMESPACE &>/dev/null && \
+                  terraform -chdir=infra import kubernetes_manifest.datadog_agent "apiVersion=datadoghq.com/v2alpha1,kind=DatadogAgent,namespace=$K8S_NAMESPACE,name=datadog-agent" || true
                 ;;
             esac
           done

@@ -1,3 +1,7 @@
+resource "kubernetes_manifest" "datadog_agent" {
+  manifest = yamldecode(file("${path.module}/k8s/datadog-agent.yaml"))
+}
+
 resource "kubernetes_manifest" "web_secret" {
   manifest = yamldecode(file("${path.module}/k8s/web-secret.yaml"))
 }
@@ -23,6 +27,7 @@ resource "kubernetes_manifest" "db_service" {
 resource "kubernetes_manifest" "web_deployment" {
   manifest = yamldecode(file("${path.module}/k8s/web-deployment.yaml"))
   depends_on = [
+    kubernetes_manifest.datadog_agent,
     kubernetes_manifest.web_secret,
     kubernetes_manifest.web_config,
     kubernetes_manifest.db_service

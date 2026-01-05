@@ -21,51 +21,55 @@ spec:
           ports:
             - containerPort: 3000
           env:
-          - name: UID
-            valueFrom:
-              configMapKeyRef:
-                name: app-config
-                key: UID
-          - name: GID
-            valueFrom:
-              configMapKeyRef:
-                name: app-config
-                key: GID
-          - name: DATABASE_HOST
-            valueFrom:
-              secretKeyRef:
-                name: web-secret
-                key: DATABASE_HOST
-          - name: DATABASE_USERNAME
-            valueFrom:
-              secretKeyRef:
-                name: web-secret
-                key: DATABASE_USERNAME
-          - name: DATABASE_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: web-secret
-                key: DATABASE_PASSWORD
-          - name: JWT_SECRET
-            valueFrom:
-              secretKeyRef:
-                name: web-secret
-                key: JWT_SECRET
-          - name: SMTP_USERNAME
-            valueFrom:
-              secretKeyRef:
-                name: web-secret
-                key: SMTP_USERNAME
-          - name: SMTP_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: web-secret
-                key: SMTP_PASSWORD
-          - name: SECRET_KEY_BASE
-            valueFrom:
-              secretKeyRef:
-                name: web-secret
-                key: SECRET_KEY_BASE
+            - name: DD_AGENT_HOST
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: UID
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: UID
+            - name: GID
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: GID
+            - name: DATABASE_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: DATABASE_HOST
+            - name: DATABASE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: DATABASE_USERNAME
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: DATABASE_PASSWORD
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: JWT_SECRET
+            - name: SMTP_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: SMTP_USERNAME
+            - name: SMTP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: SMTP_PASSWORD
+            - name: SECRET_KEY_BASE
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: SECRET_KEY_BASE
           resources:
             requests:
               cpu: "250m"
