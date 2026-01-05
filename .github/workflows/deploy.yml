@@ -134,9 +134,9 @@ jobs:
                   "autoscaling/v2//HorizontalPodAutoscaler//web-hpa//$K8S_NAMESPACE" || true
                 ;;
               datadog_agent)
-                kubectl get datadogagent datadog-agent -n $K8S_NAMESPACE &>/dev/null && \
+                kubectl get datadogagent datadog -n $K8S_NAMESPACE &>/dev/null && \
                   terraform -chdir=infra import kubectl_manifest.datadog_agent \
-                  "datadoghq.com/v2alpha1//DatadogAgent//datadog-agent//$K8S_NAMESPACE" || true
+                  "datadoghq.com/v2alpha1//DatadogAgent//datadog//$K8S_NAMESPACE" || true
                 ;;
             esac
           done

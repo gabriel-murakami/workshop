@@ -21,11 +21,12 @@ spec:
         tags.datadoghq.com/version: "1.0.0"
       annotations:
         ad.datadoghq.com/web.logs: |
-          [{
-            "source": "ruby",
-            "service": "workshop",
-            "env": "development"
-          }]
+          [
+            {
+              "source": "ruby",
+              "service": "workshop"
+            }
+          ]
     spec:
       imagePullSecrets:
         - name: ghcr-secret
@@ -40,6 +41,8 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.hostIP
+            - name: RAILS_LOG_TO_STDOUT
+              value: "true"
             - name: UID
               valueFrom:
                 configMapKeyRef:
@@ -97,11 +100,11 @@ spec:
               path: /up
               port: 3000
             initialDelaySeconds: 5
-            periodSeconds: 5
+            periodSeconds: 60
           livenessProbe:
             httpGet:
               path: /up
               port: 3000
             initialDelaySeconds: 10
-            periodSeconds: 10
+            periodSeconds: 60
       restartPolicy: Always
