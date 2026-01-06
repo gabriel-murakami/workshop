@@ -1,4 +1,4 @@
-name: Deploy
+name: Deploy App
 
 on:
   pull_request:
@@ -8,141 +8,42 @@ on:
 
 jobs:
   deploy:
-    name: Deploy via Terraform
     runs-on: self-hosted
 
     env:
-      IMAGE_NAME: ghcr.io/${{ github.repository }}
       K8S_NAMESPACE: workshop
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Generate image tag (app + timestamp + commit)
-        id: metadata
+      - name: Build image
         run: |
-          APP_NAME="web-service"
-          TIMESTAMP="$(date +'%Y%m%d-%H%M%S')"
-          COMMIT="${GITHUB_SHA::7}"
-          echo "TAG=${APP_NAME}-${TIMESTAMP}-${COMMIT}" >> $GITHUB_ENV
+          TAG="$(date +'%Y%m%d-%H%M%S')-${GITHUB_SHA::7}"
+          IMAGE="ghcr.io/${{ github.repository }}:$TAG"
+          docker build -t $IMAGE .
+          docker push $IMAGE
+          echo "IMAGE_URI=$IMAGE" >> $GITHUB_ENV
 
-      - name: Install Terraform
-        uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: 1.12.2
-
-      - name: Docker login
-        run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u "${{ secrets.GHCR_USERNAME }}" --password-stdin
-
-      - name: Build and push Docker image
-        run: |
-          IMAGE_URI="$IMAGE_NAME:${{ env.TAG }}"
-          docker build -t $IMAGE_URI .
-          docker push $IMAGE_URI
-          echo "IMAGE_URI=$IMAGE_URI" >> $GITHUB_ENV
-
-      - name: Replace secrets in Kubernetes manifests
+      - name: Render manifests
         env:
           IMAGE_URI: ${{ env.IMAGE_URI }}
-          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
           DATABASE_HOST: ${{ secrets.DATABASE_HOST }}
           DATABASE_USERNAME: ${{ secrets.DATABASE_USERNAME }}
           DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
-          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
           SECRET_KEY_BASE: ${{ secrets.SECRET_KEY_BASE }}
         run: |
           envsubst < infra/k8s/web-deployment.tmpl.yaml > infra/k8s/web-deployment.yaml
           envsubst < infra/k8s/web-secret.tmpl.yaml > infra/k8s/web-secret.yaml
-          envsubst < infra/k8s/db-secret.tmpl.yaml > infra/k8s/db-secret.yaml
 
-      - name: Terraform Init
-        run: terraform -chdir=infra init -input=false
+      - uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.12.2
 
-      - name: Terraform Plan
-        run: terraform -chdir=infra plan -input=false
-
-      - name: Set up kubectl
-        run: |
-          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-          chmod +x kubectl
-          sudo mv kubectl /usr/local/bin/
-          kubectl version --client
-
-      - name: Ensure Namespace Exists
-        run: kubectl get namespace $K8S_NAMESPACE || kubectl create namespace $K8S_NAMESPACE
-
-      - name: Create GHCR Secret if not exists
-        run: |
-          if ! kubectl get secret ghcr-secret -n $K8S_NAMESPACE > /dev/null 2>&1; then
-            kubectl create secret docker-registry ghcr-secret \
-              --docker-server=ghcr.io \
-              --docker-username="${{ secrets.GHCR_USERNAME }}" \
-              --docker-password="${{ secrets.GHCR_TOKEN }}" \
-              --docker-email="${{ secrets.GHCR_EMAIL }}" \
-              -n $K8S_NAMESPACE
-          else
-            echo "Secret ghcr-secret already exists in namespace $K8S_NAMESPACE"
-          fi
-
-      - name: Import existing resources
-        run: |
-          set -e
-          for res in web_secret db_secret web_config db_deployment web_deployment db_service web_service web_hpa datadog_agent; do
-            case $res in
-              web_secret)
-                kubectl get secret web-secret -n $K8S_NAMESPACE &>/dev/null && \
-                  terraform -chdir=infra import kubectl_manifest.web_secret \
-                  "v1//Secret//web-secret//$K8S_NAMESPACE" || true
-                ;;
-              db_secret)
-                kubectl get secret db-secret -n $K8S_NAMESPACE &>/dev/null && \
-                  terraform -chdir=infra import kubectl_manifest.db_secret \
-                  "v1//Secret//db-secret//$K8S_NAMESPACE" || true
-                ;;
-              web_config)
-                kubectl get configmap app-config -n $K8S_NAMESPACE &>/dev/null && \
-                  terraform -chdir=infra import kubectl_manifest.web_config \
-                  "v1//ConfigMap//app-config//$K8S_NAMESPACE" || true
-                ;;
-              db_deployment)
-                kubectl get deployment db-deployment -n $K8S_NAMESPACE &>/dev/null && \
-                  terraform -chdir=infra import kubectl_manifest.db_deployment \
-                  "apps/v1//Deployment//db-deployment//$K8S_NAMESPACE" || true
-                ;;
-              web_deployment)
-                kubectl get deployment web-deployment -n $K8S_NAMESPACE &>/dev/null && \
-                  terraform -chdir=infra import kubectl_manifest.web_deployment \
-                  "apps/v1//Deployment//web-deployment//$K8S_NAMESPACE" || true
-                ;;
-              db_service)
-                kubectl get svc db -n $K8S_NAMESPACE &>/dev/null && \
-                  terraform -chdir=infra import kubectl_manifest.db_service \
-                  "v1//Service//db//$K8S_NAMESPACE" || true
-                ;;
-              web_service)
-                kubectl get svc web-service -n $K8S_NAMESPACE &>/dev/null && \
-                  terraform -chdir=infra import kubectl_manifest.web_service \
-                  "v1//Service//web-service//$K8S_NAMESPACE" || true
-                ;;
-              web_hpa)
-                kubectl get hpa web-hpa -n $K8S_NAMESPACE &>/dev/null && \
-                  terraform -chdir=infra import kubectl_manifest.web_hpa \
-                  "autoscaling/v2//HorizontalPodAutoscaler//web-hpa//$K8S_NAMESPACE" || true
-                ;;
-              datadog_agent)
-                kubectl get datadogagent datadog -n $K8S_NAMESPACE &>/dev/null && \
-                  terraform -chdir=infra import kubectl_manifest.datadog_agent \
-                  "datadoghq.com/v2alpha1//DatadogAgent//datadog//$K8S_NAMESPACE" || true
-                ;;
-            esac
-          done
-
-      - name: Terraform Apply
-        run: terraform -chdir=infra apply -auto-approve -input=false
+      - run: terraform -chdir=infra/terraform init -input=false
+      - run: terraform -chdir=infra/terraform apply -auto-approve
 
       - name: Wait for deployment rollout
         run: |
