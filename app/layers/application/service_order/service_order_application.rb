@@ -74,6 +74,8 @@ module Application
       def send_to_approval(send_to_approval_command, service_order = nil)
         service_order = service_order || @service_order_repository.find_by_id(send_to_approval_command.service_order_id)
 
+        datadog_statsd("diagnosis_time", service_order)
+
         raise Exceptions::ServiceOrderException.new("The service order is not in diagnosis") unless service_order.diagnosis?
 
         ActiveRecord::Base.transaction do
@@ -145,6 +147,8 @@ module Application
 
       def approve_service_order(approve_service_order_command)
         service_order = @service_order_repository.find_by_id(approve_service_order_command.service_order_id)
+
+        datadog_statsd("waiting_approval_time", service_order)
 
         unless service_order.waiting_approval?
           raise Exceptions::ServiceOrderException.new("The service order is not waiting approval")
@@ -218,6 +222,15 @@ module Application
       end
 
       private
+
+      def datadog_statsd(key, service_order)
+        DATADOG_STATS.histogram(
+          "service_order.#{key}",
+          (Time.zone.now - service_order.updated_at).to_i / 60.0
+        )
+
+        DATADOG_STATS.flush
+      end
 
       def send_to_diagnosis_command(service_order)
         Commands::SendToDiagnosisCommand.new(service_order_id: service_order.id)

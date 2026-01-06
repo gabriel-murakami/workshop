@@ -1,3 +1,5 @@
+require "datadog/statsd"
+
 Datadog.configure do |c|
   c.service = "workshop"
   c.env = Rails.env

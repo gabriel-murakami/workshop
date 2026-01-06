@@ -11,6 +11,7 @@ gem "cpf_cnpj"
 gem "active_model_serializers"
 gem "datadog", require: "datadog/auto_instrument"
 gem "lograge"
+gem "dogstatsd-ruby"
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"

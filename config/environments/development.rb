@@ -51,11 +51,10 @@ Rails.application.configure do
     }
 
     if msg.is_a?(Hash)
-      json_log[:message] = msg.delete(:message) || msg.delete("message") || "Structured log"
       json_log[:data] = msg
-    else
-      json_log[:message] = msg.is_a?(String) ? msg.strip : msg.inspect
     end
+
+    json_log[:message] = msg.is_a?(String) ? msg.strip : msg.inspect
 
     json_log.to_json + "\n"
   end

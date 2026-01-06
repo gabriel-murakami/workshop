@@ -12,6 +12,8 @@ spec:
         secretName: "datadog-secret"
         keyName: "api-key"
   features:
+    dogstatsd:
+      nonLocalTraffic: true
     clusterChecks:
       enabled: true
     orchestratorExplorer:
