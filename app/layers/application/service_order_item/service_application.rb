@@ -21,6 +21,10 @@ module Application
 
           service
         end
+
+        Rails.logger.info({ service_id: service.id, status: "created", timestamp: Time.current })
+
+        service
       end
 
       def delete_service(delete_service_command)
@@ -29,6 +33,10 @@ module Application
         ActiveRecord::Base.transaction do
           @service_repository.delete(service)
         end
+
+        Rails.logger.info({ service_id: service.id, status: "deleted", timestamp: Time.current })
+
+        service
       end
 
       def update_service(update_service_command)
@@ -39,6 +47,10 @@ module Application
 
           service
         end
+
+        Rails.logger.info({ service_id: service.id, status: "updated", timestamp: Time.current })
+
+        service
       end
 
       def find_services_by_codes(codes)

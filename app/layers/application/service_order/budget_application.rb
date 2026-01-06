@@ -22,6 +22,8 @@ module Application
         end
 
         approve_service_order(budget)
+
+        Rails.logger.info({ budget_id: budget.id, status: "approved", timestamp: Time.current })
       end
 
       def reject_budget(reject_budget_command)
@@ -32,6 +34,8 @@ module Application
         end
 
         cancel_service_order(budget)
+
+        Rails.logger.info({ budget_id: budget.id, status: "rejected", timestamp: Time.current })
       end
 
       def create_budget(create_budget_command)
@@ -42,11 +46,15 @@ module Application
           service_order: service_order
         )
 
-        ActiveRecord::Base.transaction do
+        created_budget = ActiveRecord::Base.transaction do
           budget.calculate_total_value(service_order.service_order_items)
           @budget_repository.save(budget)
           budget
         end
+
+        Rails.logger.info({ budget_id: created_budget.id, status: "created", timestamp: Time.current })
+
+        created_budget
       end
 
       private

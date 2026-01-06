@@ -3,6 +3,11 @@ kind: Deployment
 metadata:
   name: web-deployment
   namespace: workshop
+  labels:
+    app: web
+    tags.datadoghq.com/service: workshop
+    tags.datadoghq.com/env: development
+    tags.datadoghq.com/version: "1.0.0"
 spec:
   selector:
     matchLabels:
@@ -11,6 +16,17 @@ spec:
     metadata:
       labels:
         app: web
+        tags.datadoghq.com/service: workshop
+        tags.datadoghq.com/env: development
+        tags.datadoghq.com/version: "1.0.0"
+      annotations:
+        ad.datadoghq.com/web.logs: |
+          [
+            {
+              "source": "ruby",
+              "service": "workshop"
+            }
+          ]
     spec:
       imagePullSecrets:
         - name: ghcr-secret
@@ -21,51 +37,59 @@ spec:
           ports:
             - containerPort: 3000
           env:
-          - name: UID
-            valueFrom:
-              configMapKeyRef:
-                name: app-config
-                key: UID
-          - name: GID
-            valueFrom:
-              configMapKeyRef:
-                name: app-config
-                key: GID
-          - name: DATABASE_HOST
-            valueFrom:
-              secretKeyRef:
-                name: web-secret
-                key: DATABASE_HOST
-          - name: DATABASE_USERNAME
-            valueFrom:
-              secretKeyRef:
-                name: web-secret
-                key: DATABASE_USERNAME
-          - name: DATABASE_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: web-secret
-                key: DATABASE_PASSWORD
-          - name: JWT_SECRET
-            valueFrom:
-              secretKeyRef:
-                name: web-secret
-                key: JWT_SECRET
-          - name: SMTP_USERNAME
-            valueFrom:
-              secretKeyRef:
-                name: web-secret
-                key: SMTP_USERNAME
-          - name: SMTP_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: web-secret
-                key: SMTP_PASSWORD
-          - name: SECRET_KEY_BASE
-            valueFrom:
-              secretKeyRef:
-                name: web-secret
-                key: SECRET_KEY_BASE
+            - name: DD_TRACE_HTTP_CLIENT_IGNORE_URLS
+              value: "/up"
+            - name: DD_AGENT_HOST
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: RAILS_LOG_TO_STDOUT
+              value: "true"
+            - name: UID
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: UID
+            - name: GID
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: GID
+            - name: DATABASE_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: DATABASE_HOST
+            - name: DATABASE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: DATABASE_USERNAME
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: DATABASE_PASSWORD
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: JWT_SECRET
+            - name: SMTP_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: SMTP_USERNAME
+            - name: SMTP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: SMTP_PASSWORD
+            - name: SECRET_KEY_BASE
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: SECRET_KEY_BASE
           resources:
             requests:
               cpu: "250m"
@@ -78,11 +102,11 @@ spec:
               path: /up
               port: 3000
             initialDelaySeconds: 5
-            periodSeconds: 5
+            periodSeconds: 60
           livenessProbe:
             httpGet:
               path: /up
               port: 3000
             initialDelaySeconds: 10
-            periodSeconds: 10
+            periodSeconds: 60
       restartPolicy: Always

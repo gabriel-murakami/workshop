@@ -6,3 +6,7 @@ metadata:
 data:
   UID: "1000"
   GID: "1000"
+  DD_SERVICE: "rails-api"
+  DD_ENV: "production"
+  DD_VERSION: "1.0.0"
+  DD_TRACE_ENABLED: "true"

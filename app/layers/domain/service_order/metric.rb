@@ -8,6 +8,8 @@ module Domain
         elapsed_time = (finished_at - started_at).to_i / 60.0
         new_service_order_count = service_order_count + 1
 
+        datadog_statsd(elapsed_time)
+
         new_average_time = if service_order_count.zero?
           elapsed_time
         else
@@ -20,6 +22,15 @@ module Domain
           service_order_count: new_service_order_count,
           average_time: new_average_time
         )
+      end
+
+      def datadog_statsd(elapsed_time)
+        DATADOG_STATS.histogram(
+          "service_order.execution_time",
+          elapsed_time
+        )
+
+        DATADOG_STATS.flush
       end
     end
   end

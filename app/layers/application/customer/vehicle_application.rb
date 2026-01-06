@@ -21,6 +21,10 @@ module Application
 
           vehicle
         end
+
+        Rails.logger.info({ vehicle_id: vehicle.id, status: "created", timestamp: Time.current })
+
+        vehicle
       end
 
       def delete_vehicle(delete_vehicle_command)
@@ -29,6 +33,10 @@ module Application
         ActiveRecord::Base.transaction do
           @vehicle_repository.delete(vehicle)
         end
+
+        Rails.logger.info({ vehicle_id: vehicle.id, status: "deleted", timestamp: Time.current })
+
+        vehicle
       end
 
       def update_vehicle(update_vehicle_command)
@@ -39,6 +47,10 @@ module Application
 
           vehicle
         end
+
+        Rails.logger.info({ vehicle_id: vehicle.id, status: "updated", timestamp: Time.current })
+
+        vehicle
       end
     end
   end

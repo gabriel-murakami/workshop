@@ -27,7 +27,7 @@ module Application
 
         service_order = Domain::ServiceOrder::ServiceOrder.new(customer_id: customer.id, vehicle_id: vehicle.id)
 
-        ActiveRecord::Base.transaction do
+        created_service_order = ActiveRecord::Base.transaction do
           @service_order_repository.save(service_order)
 
           send_to_diagnosis(send_to_diagnosis_command(service_order))
@@ -36,6 +36,10 @@ module Application
 
           service_order.reload
         end
+
+        Rails.logger.info({ service_order_id: created_service_order.id, status: created_service_order.status, timestamp: Time.current })
+
+        created_service_order
       end
 
       def create_service_order(create_service_order_command)
@@ -44,11 +48,15 @@ module Application
           vehicle_id: create_service_order_command.vehicle_id
         )
 
-        ActiveRecord::Base.transaction do
+        created_service_order = ActiveRecord::Base.transaction do
           @service_order_repository.save(service_order)
 
           service_order
         end
+
+        Rails.logger.info({ service_order_id: created_service_order.id, status: created_service_order.status, timestamp: Time.current })
+
+        created_service_order
       end
 
       def send_to_diagnosis(send_to_diagnosis_command, service_order = nil)
@@ -58,11 +66,15 @@ module Application
           @service_order_repository.update(service_order, { status: "diagnosis" })
         end
 
+        Rails.logger.info({ service_order_id: service_order.id, status: "diagnosis", timestamp: Time.current })
+
         service_order
       end
 
       def send_to_approval(send_to_approval_command, service_order = nil)
         service_order = service_order || @service_order_repository.find_by_id(send_to_approval_command.service_order_id)
+
+        datadog_statsd("diagnosis_time", service_order)
 
         raise Exceptions::ServiceOrderException.new("The service order is not in diagnosis") unless service_order.diagnosis?
 
@@ -71,6 +83,8 @@ module Application
         end
 
         create_new_budget(service_order)
+
+        Rails.logger.info({ service_order_id: service_order.id, status: "waiting_approval", timestamp: Time.current })
 
         service_order
       end
@@ -86,12 +100,16 @@ module Application
 
         raise Exceptions::ServiceOrderException.new("Invalid services codes") if services.empty?
 
-        ActiveRecord::Base.transaction do
+        updated_service_order = ActiveRecord::Base.transaction do
           service_order.add_services(services)
           @service_order_repository.save(service_order)
 
           service_order
         end
+
+        Rails.logger.info({ service_order_id: updated_service_order.id, status: updated_service_order.status, timestamp: Time.current })
+
+        updated_service_order
       end
 
       def add_products(add_products_command)
@@ -113,7 +131,7 @@ module Application
           }
         end
 
-        ActiveRecord::Base.transaction do
+        updated_service_order = ActiveRecord::Base.transaction do
           service_order.add_products(products_list)
           @service_order_repository.save(service_order)
 
@@ -121,10 +139,16 @@ module Application
 
           service_order
         end
+
+        Rails.logger.info({ service_order_id: updated_service_order.id, status: updated_service_order.status, timestamp: Time.current })
+
+        updated_service_order
       end
 
       def approve_service_order(approve_service_order_command)
         service_order = @service_order_repository.find_by_id(approve_service_order_command.service_order_id)
+
+        datadog_statsd("waiting_approval_time", service_order)
 
         unless service_order.waiting_approval?
           raise Exceptions::ServiceOrderException.new("The service order is not waiting approval")
@@ -136,6 +160,10 @@ module Application
             { status: "approved" }
           )
         end
+
+        Rails.logger.info({ service_order_id: service_order.id, status: "approved", timestamp: Time.current })
+
+        service_order
       end
 
       def cancel_service_order(cancel_service_order_command)
@@ -149,6 +177,10 @@ module Application
             { status: "cancelled" }
           )
         end
+
+        Rails.logger.info({ service_order_id: service_order.id, status: "cancelled", timestamp: Time.current })
+
+        service_order
       end
 
       def start_service_order(start_service_order_command)
@@ -163,6 +195,8 @@ module Application
             { status: "in_progress", service_started_at: Time.zone.now }
           )
         end
+
+        Rails.logger.info({ service_order_id: service_order.id, status: "in_progress", timestamp: Time.current })
 
         service_order
       end
@@ -182,10 +216,21 @@ module Application
 
         update_metric(service_order)
 
+        Rails.logger.info({ service_order_id: service_order.id, status: "finished", timestamp: Time.current })
+
         service_order
       end
 
       private
+
+      def datadog_statsd(key, service_order)
+        DATADOG_STATS.histogram(
+          "service_order.#{key}",
+          (Time.zone.now - service_order.updated_at).to_i / 60.0
+        )
+
+        DATADOG_STATS.flush
+      end
 
       def send_to_diagnosis_command(service_order)
         Commands::SendToDiagnosisCommand.new(service_order_id: service_order.id)

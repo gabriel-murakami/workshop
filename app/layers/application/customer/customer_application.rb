@@ -22,6 +22,10 @@ module Application
 
           customer
         end
+
+        Rails.logger.info({ customer_id: customer.id, status: "created", timestamp: Time.current })
+
+        customer
       end
 
       def delete_customer(delete_customer_command)
@@ -30,6 +34,10 @@ module Application
         ActiveRecord::Base.transaction do
           @customer_repository.delete(customer)
         end
+
+        Rails.logger.info({ customer_id: customer.id, status: "deleted", timestamp: Time.current })
+
+        customer
       end
 
       def update_customer(update_customer_command)
@@ -40,6 +48,10 @@ module Application
 
           customer
         end
+
+        Rails.logger.info({ customer_id: customer.id, status: "updated", timestamp: Time.current })
+
+        customer
       end
 
       def add_vehicle(add_vehicle_command)
@@ -50,6 +62,8 @@ module Application
           customer.add_vehicle(vehicle)
           @customer_repository.save(customer)
         end
+
+        Rails.logger.info({ customer_id: customer.id, status: "vehicle_added", timestamp: Time.current })
       end
     end
   end

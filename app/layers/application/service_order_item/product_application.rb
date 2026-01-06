@@ -22,6 +22,10 @@ module Application
 
           product
         end
+
+        Rails.logger.info({ product_id: product.id, status: "stock_increased", timestamp: Time.current })
+
+        product
       end
 
       def remove_product(stock_control_command)
@@ -33,6 +37,10 @@ module Application
 
           product
         end
+
+        Rails.logger.info({ product_id: product.id, status: "stock_decreased", timestamp: Time.current })
+
+        product
       end
 
       def create_product(create_product_command)
@@ -43,6 +51,10 @@ module Application
 
           product
         end
+
+        Rails.logger.info({ product_id: product.id, status: "created", timestamp: Time.current })
+
+        product
       end
 
       def delete_product(delete_product_command)
@@ -51,6 +63,10 @@ module Application
         ActiveRecord::Base.transaction do
           @product_repository.delete(product)
         end
+
+        Rails.logger.info({ product_id: product.id, status: "deleted", timestamp: Time.current })
+
+        product
       end
 
       def update_product(update_product_command)
@@ -61,6 +77,10 @@ module Application
 
           product
         end
+
+        Rails.logger.info({ product_id: product.id, status: "updated", timestamp: Time.current })
+
+        product
       end
 
       def find_products_by_skus(skus)
