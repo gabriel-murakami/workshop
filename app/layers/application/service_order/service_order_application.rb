@@ -37,9 +37,7 @@ module Application
           service_order.reload
         end
 
-        Rails.logger.tagged("ServiceOrder", service_order_id: created_service_order.id) do
-          Rails.logger.info("Service order opened")
-        end
+        Rails.logger.info({ service_order_id: created_service_order.id, status: created_service_order.status, timestamp: Time.current })
 
         created_service_order
       end
@@ -56,9 +54,7 @@ module Application
           service_order
         end
 
-        Rails.logger.tagged("ServiceOrder", service_order_id: created_service_order.id) do
-          Rails.logger.info("Service order created")
-        end
+        Rails.logger.info({ service_order_id: created_service_order.id, status: created_service_order.status, timestamp: Time.current })
 
         created_service_order
       end
@@ -70,9 +66,7 @@ module Application
           @service_order_repository.update(service_order, { status: "diagnosis" })
         end
 
-        Rails.logger.tagged("ServiceOrder", service_order_id: service_order.id) do
-          Rails.logger.info("Service order sent to diagnosis")
-        end
+        Rails.logger.info({ service_order_id: service_order.id, status: "diagnosis", timestamp: Time.current })
 
         service_order
       end
@@ -88,9 +82,7 @@ module Application
 
         create_new_budget(service_order)
 
-        Rails.logger.tagged("ServiceOrder", service_order_id: service_order.id) do
-          Rails.logger.info("Service order sent to approval")
-        end
+        Rails.logger.info({ service_order_id: service_order.id, status: "waiting_approval", timestamp: Time.current })
 
         service_order
       end
@@ -113,12 +105,7 @@ module Application
           service_order
         end
 
-        Rails.logger.tagged(
-          "ServiceOrder",
-          service_order_id: updated_service_order.id
-        ) do
-          Rails.logger.info("Services added to service order")
-        end
+        Rails.logger.info({ service_order_id: updated_service_order.id, status: updated_service_order.status, timestamp: Time.current })
 
         updated_service_order
       end
@@ -151,12 +138,7 @@ module Application
           service_order
         end
 
-        Rails.logger.tagged(
-          "ServiceOrder",
-          service_order_id: updated_service_order.id
-        ) do
-          Rails.logger.info("Products added to service order")
-        end
+        Rails.logger.info({ service_order_id: updated_service_order.id, status: updated_service_order.status, timestamp: Time.current })
 
         updated_service_order
       end
@@ -175,9 +157,7 @@ module Application
           )
         end
 
-        Rails.logger.tagged("ServiceOrder", service_order_id: service_order.id) do
-          Rails.logger.info("Service order approved")
-        end
+        Rails.logger.info({ service_order_id: service_order.id, status: "approved", timestamp: Time.current })
 
         service_order
       end
@@ -194,9 +174,7 @@ module Application
           )
         end
 
-        Rails.logger.tagged("ServiceOrder", service_order_id: service_order.id) do
-          Rails.logger.info("Service order cancelled")
-        end
+        Rails.logger.info({ service_order_id: service_order.id, status: "cancelled", timestamp: Time.current })
 
         service_order
       end
@@ -214,9 +192,7 @@ module Application
           )
         end
 
-        Rails.logger.tagged("ServiceOrder", service_order_id: service_order.id) do
-          Rails.logger.info("Service order started")
-        end
+        Rails.logger.info({ service_order_id: service_order.id, status: "in_progress", timestamp: Time.current })
 
         service_order
       end
@@ -236,9 +212,7 @@ module Application
 
         update_metric(service_order)
 
-        Rails.logger.tagged("ServiceOrder", service_order_id: service_order.id) do
-          Rails.logger.info("Service order finished")
-        end
+        Rails.logger.info({ service_order_id: service_order.id, status: "finished", timestamp: Time.current })
 
         service_order
       end

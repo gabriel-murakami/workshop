@@ -37,6 +37,8 @@ spec:
           ports:
             - containerPort: 3000
           env:
+            - name: DD_TRACE_HTTP_CLIENT_IGNORE_URLS
+              value: "/up"
             - name: DD_AGENT_HOST
               valueFrom:
                 fieldRef:

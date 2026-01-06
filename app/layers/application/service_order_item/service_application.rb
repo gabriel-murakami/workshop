@@ -22,9 +22,7 @@ module Application
           service
         end
 
-        Rails.logger.tagged("Service", service_id: service.id) do
-          Rails.logger.info("Service created")
-        end
+        Rails.logger.info({ service_id: service.id, status: "created", timestamp: Time.current })
 
         service
       end
@@ -36,9 +34,7 @@ module Application
           @service_repository.delete(service)
         end
 
-        Rails.logger.tagged("Service", service_id: service.id) do
-          Rails.logger.info("Service deleted")
-        end
+        Rails.logger.info({ service_id: service.id, status: "deleted", timestamp: Time.current })
 
         service
       end
@@ -52,9 +48,7 @@ module Application
           service
         end
 
-        Rails.logger.tagged("Service", service_id: service.id) do
-          Rails.logger.info("Service updated")
-        end
+        Rails.logger.info({ service_id: service.id, status: "updated", timestamp: Time.current })
 
         service
       end

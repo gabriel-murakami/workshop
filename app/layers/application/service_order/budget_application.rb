@@ -23,9 +23,7 @@ module Application
 
         approve_service_order(budget)
 
-        Rails.logger.tagged("Budget", budget_id: budget.id) do
-          Rails.logger.info("Budget approved")
-        end
+        Rails.logger.info({ budget_id: budget.id, status: "approved", timestamp: Time.current })
       end
 
       def reject_budget(reject_budget_command)
@@ -37,9 +35,7 @@ module Application
 
         cancel_service_order(budget)
 
-        Rails.logger.tagged("Budget", budget_id: budget.id) do
-          Rails.logger.info("Budget rejected")
-        end
+        Rails.logger.info({ budget_id: budget.id, status: "rejected", timestamp: Time.current })
       end
 
       def create_budget(create_budget_command)
@@ -56,13 +52,7 @@ module Application
           budget
         end
 
-        Rails.logger.tagged(
-          "Budget",
-          budget_id: created_budget.id,
-          service_order_id: created_budget.service_order_id
-        ) do
-          Rails.logger.info("Budget created")
-        end
+        Rails.logger.info({ budget_id: created_budget.id, status: "created", timestamp: Time.current })
 
         created_budget
       end

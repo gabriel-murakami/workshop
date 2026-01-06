@@ -23,9 +23,7 @@ module Application
           product
         end
 
-        Rails.logger.tagged("Product", product_id: product.id) do
-          Rails.logger.info("Product stock increased by #{stock_control_command.stock_change}")
-        end
+        Rails.logger.info({ product_id: product.id, status: "stock_increased", timestamp: Time.current })
 
         product
       end
@@ -40,9 +38,7 @@ module Application
           product
         end
 
-        Rails.logger.tagged("Product", product_id: product.id) do
-          Rails.logger.info("Product stock decreased by #{stock_control_command.stock_change}")
-        end
+        Rails.logger.info({ product_id: product.id, status: "stock_decreased", timestamp: Time.current })
 
         product
       end
@@ -56,9 +52,7 @@ module Application
           product
         end
 
-        Rails.logger.tagged("Product", product_id: product.id) do
-          Rails.logger.info("Product created")
-        end
+        Rails.logger.info({ product_id: product.id, status: "created", timestamp: Time.current })
 
         product
       end
@@ -70,9 +64,7 @@ module Application
           @product_repository.delete(product)
         end
 
-        Rails.logger.tagged("Product", product_id: product.id) do
-          Rails.logger.info("Product deleted")
-        end
+        Rails.logger.info({ product_id: product.id, status: "deleted", timestamp: Time.current })
 
         product
       end
@@ -86,9 +78,7 @@ module Application
           product
         end
 
-        Rails.logger.tagged("Product", product_id: product.id) do
-          Rails.logger.info("Product updated")
-        end
+        Rails.logger.info({ product_id: product.id, status: "updated", timestamp: Time.current })
 
         product
       end

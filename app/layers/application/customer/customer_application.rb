@@ -23,9 +23,7 @@ module Application
           customer
         end
 
-        Rails.logger.tagged("Customer", customer_id: customer.id) do
-          Rails.logger.info("Customer created")
-        end
+        Rails.logger.info({ customer_id: customer.id, status: "created", timestamp: Time.current })
 
         customer
       end
@@ -37,9 +35,7 @@ module Application
           @customer_repository.delete(customer)
         end
 
-        Rails.logger.tagged("Customer", customer_id: customer.id) do
-          Rails.logger.info("Customer deleted")
-        end
+        Rails.logger.info({ customer_id: customer.id, status: "deleted", timestamp: Time.current })
 
         customer
       end
@@ -53,9 +49,7 @@ module Application
           customer
         end
 
-        Rails.logger.tagged("Customer", customer_id: customer.id) do
-          Rails.logger.info("Customer updated")
-        end
+        Rails.logger.info({ customer_id: customer.id, status: "updated", timestamp: Time.current })
 
         customer
       end
@@ -69,13 +63,7 @@ module Application
           @customer_repository.save(customer)
         end
 
-        Rails.logger.tagged(
-          "Customer",
-          customer_id: customer.id,
-          vehicle_id: vehicle.id
-        ) do
-          Rails.logger.info("Vehicle added to customer")
-        end
+        Rails.logger.info({ customer_id: customer.id, status: "vehicle_added", timestamp: Time.current })
       end
     end
   end

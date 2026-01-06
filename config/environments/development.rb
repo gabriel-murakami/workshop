@@ -1,8 +1,6 @@
 require "active_support/core_ext/integer/time"
 
 Rails.application.configure do
-  # Settings specified here will take precedence over those in config/application.rb.
-
   config.enable_reloading = true
   config.eager_load = false
   config.cache_classes = false
@@ -22,21 +20,6 @@ Rails.application.configure do
   config.action_mailer.perform_caching = false
   config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
   config.active_support.deprecation = :log
-
-  config.logger = ActiveSupport::Logger.new(STDOUT)
-  config.logger.formatter = proc do |severity, datetime, progname, msg|
-    correlation = Datadog::Tracing.correlation
-    "[#{datetime.iso8601}] #{severity} -- [dd.trace_id=#{correlation.trace_id} dd.span_id=#{correlation.span_id}] #{progname}: #{msg}\n"
-  end
-
-  config.logger = ActiveSupport::TaggedLogging.new(config.logger)
-
-  Datadog.configure do |c|
-    c.tracing.log_injection = true
-  end
-
-  config.log_tags = [ :request_id ]
-  config.log_level = ENV.fetch("RAILS_LOG_LEVEL", "info")
   config.active_support.disallowed_deprecation = :raise
   config.active_support.disallowed_deprecation_warnings = []
   config.active_record.migration_error = :page_load
@@ -44,6 +27,38 @@ Rails.application.configure do
   config.active_job.verbose_enqueue_logs = true
   config.action_view.annotate_rendered_view_with_filenames = true
   config.action_controller.raise_on_missing_callback_actions = true
+
+  config.logger = ActiveSupport::Logger.new(STDOUT)
+  config.log_level = ENV.fetch("RAILS_LOG_LEVEL", "info")
+
+  config.log_tags = []
+
+  config.logger.formatter = proc do |severity, datetime, progname, msg|
+    correlation = Datadog::Tracing.correlation
+
+    # Estrutura base (Metadados do Sistema)
+    json_log = {
+      timestamp: datetime.iso8601,
+      level: severity,
+      progname: progname,
+      dd: {
+        trace_id: correlation.trace_id.to_s,
+        span_id:  correlation.span_id.to_s,
+        env:      Rails.env,
+        service:  "workshop"
+      },
+      ddsource: "ruby"
+    }
+
+    if msg.is_a?(Hash)
+      json_log[:message] = msg.delete(:message) || msg.delete("message") || "Structured log"
+      json_log[:data] = msg
+    else
+      json_log[:message] = msg.is_a?(String) ? msg.strip : msg.inspect
+    end
+
+    json_log.to_json + "\n"
+  end
 
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.perform_deliveries = true

@@ -22,9 +22,7 @@ module Application
           vehicle
         end
 
-        Rails.logger.tagged("Vehicle", vehicle_id: vehicle.id) do
-          Rails.logger.info("Vehicle created")
-        end
+        Rails.logger.info({ vehicle_id: vehicle.id, status: "created", timestamp: Time.current })
 
         vehicle
       end
@@ -36,9 +34,7 @@ module Application
           @vehicle_repository.delete(vehicle)
         end
 
-        Rails.logger.tagged("Vehicle", vehicle_id: vehicle.id) do
-          Rails.logger.info("Vehicle deleted")
-        end
+        Rails.logger.info({ vehicle_id: vehicle.id, status: "deleted", timestamp: Time.current })
 
         vehicle
       end
@@ -52,9 +48,7 @@ module Application
           vehicle
         end
 
-        Rails.logger.tagged("Vehicle", vehicle_id: vehicle.id) do
-          Rails.logger.info("Vehicle updated")
-        end
+        Rails.logger.info({ vehicle_id: vehicle.id, status: "updated", timestamp: Time.current })
 
         vehicle
       end

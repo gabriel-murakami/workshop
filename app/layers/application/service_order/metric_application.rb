@@ -20,12 +20,7 @@ module Application
           metric.add_finished_order(started_at, finished_at)
         end
 
-        Rails.logger.tagged(
-          "Metric",
-          metric_id: metric&.id
-        ) do
-          Rails.logger.info("Metric updated")
-        end
+        Rails.logger.info({ metric_id: metric&.id, status: "updated", timestamp: Time.current })
       end
     end
   end
