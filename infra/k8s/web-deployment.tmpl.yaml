@@ -39,6 +39,11 @@ spec:
           env:
             - name: DD_TRACE_HTTP_CLIENT_IGNORE_URLS
               value: "/up"
+            - name: INTERNAL_AUTH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: internal-auth-secret
+                  key: token
             - name: DD_AGENT_HOST
               valueFrom:
                 fieldRef:
