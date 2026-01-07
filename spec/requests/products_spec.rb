@@ -4,12 +4,12 @@ RSpec.describe 'Products', type: :request do
   let(:user) { create(:user) }
   let(:token) do
     secret_key = Rails.application.credentials.jwt_secret || ENV["JWT_SECRET"]
-    payload = { user_id: user.id, exp: 24.hours.from_now.to_i }
+    payload = { user_id: user.id, exp: 24.hours.from_now.to_i, cpf: user.document_number, iss: 'auth.local', aud: 'api.local' }
     JWT.encode(payload, secret_key, 'HS256')
   end
   let(:Authorization) { "Bearer #{token}" }
 
-  path '/products' do
+  path '/api/products' do
     get 'List all products' do
       tags 'Products'
       security [ bearerAuth: [] ]
@@ -82,7 +82,7 @@ RSpec.describe 'Products', type: :request do
     end
   end
 
-  path '/products/{id}' do
+  path '/api/products/{id}' do
     get 'Get product by id' do
       tags 'Products'
       security [ bearerAuth: [] ]
@@ -178,7 +178,7 @@ RSpec.describe 'Products', type: :request do
     end
   end
 
-  path '/products/{id}/add' do
+  path '/api/products/{id}/add' do
     post 'Add stock quantity to product' do
       tags 'Products'
       security [ bearerAuth: [] ]
@@ -207,7 +207,7 @@ RSpec.describe 'Products', type: :request do
     end
   end
 
-  path '/products/{id}/remove' do
+  path '/api/products/{id}/remove' do
     post 'Remove stock quantity from product' do
       tags 'Products'
       security [ bearerAuth: [] ]

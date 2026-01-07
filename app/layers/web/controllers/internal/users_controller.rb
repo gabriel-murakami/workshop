@@ -1,13 +1,13 @@
 module Web
   module Controllers
     module Internal
-      class CustomersController < Web::Controllers::ApplicationController
+      class UsersController < Web::Controllers::ApplicationController
         before_action :internal_auth!
 
         def show
-          customer = Application::Customer::CustomerApplication.new.find_by_document_number(customer_params[:document_number])
+          user = Domain::ServiceOrder::User.find_by!(document_number: params[:document_number])
 
-          head :ok if customer.present?
+          head :ok if user.present?
         end
 
         private

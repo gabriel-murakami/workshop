@@ -4,5 +4,6 @@ FactoryBot.define do
     sequence(:email) { |n| "user#{n}@example.com" }
     password { "password123" }
     password_confirmation { "password123" }
+    document_number { Faker::IdNumber.brazilian_cpf }
   end
 end

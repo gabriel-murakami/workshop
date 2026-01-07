@@ -9,13 +9,13 @@ Rails.application.routes.draw do
 
   scope module: "web" do
     scope module: "controllers" do
-      scope internal: "auth" do
-        scope controller: :customers do
-          get "internal/customers/:document_number", action: :show
+      namespace :internal do
+        scope controller: :users do
+          get "users/:document_number", action: :show
         end
       end
 
-      post "/login", to: "auth#login"
+      post "/login", to: "api/auth#login"
 
       namespace :api do
         scope controller: :customers do

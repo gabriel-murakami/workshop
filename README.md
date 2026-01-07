@@ -133,51 +133,145 @@ terraform apply
 minikube tunnel
 ```
 
-## Fluxo CI/CD e Provisionamento
+## Provisionamento por Repositório
 ```mermaid
-flowchart TD
-    subgraph Dev["Desenvolvimento (GitHub)"]
-        A[Commit / Pull Request] --> B[GitHub Actions - Workflow]
+flowchart LR
+    %% =====================
+    %% REPOSITÓRIOS
+    %% =====================
+    subgraph INFRA["workshop-infra"]
+        I1["Infra Pull Request"]
+        I2["Terraform Apply
+        (NGINX, Ingress, Datadog)"]
     end
 
-    subgraph CI["Continuous Integration (CI)"]
-        C1[Checkout do código]
-        C2[scan_ruby - Verificação de vulnerabilidades]
-        C3[lint - Análise estática]
-        C4[test - Execução de testes automatizados]
-        C1 --> C2 --> C3 --> C4
+    subgraph DB["workshop-db"]
+        D1["DB Pull Request"]
+        D2["Terraform Apply
+        (Postgres, Secrets)"]
     end
 
-    subgraph CD["Continuous Deployment (CD)"]
-        D1[Checkout do código]
-        D2[Build & Push da imagem Docker<br>para GitHub Container Registry]
-        D3[Terraform Init / Plan]
-        D4[Importa recursos Kubernetes existentes]
-        D5[Terraform Apply]
-        D6[Aplica Manifests via Terraform]
-        D7[Validação com kubectl e curl]
-        D1 --> D2 --> D3 --> D4 --> D5 --> D6 --> D7
+    subgraph AUTH["workshop-auth-lambda"]
+        A1["Auth Pull Request"]
+        A2["Build Image"]
+        A3["Push GHCR"]
+        A4["Deploy Knative Service"]
     end
 
-    subgraph Cloud["Infraestrutura Provisionada"]
-        I[Cluster Kubernetes]
-        J[Database - DB Deployment]
-        K[Web Application - Web Deployment]
-        L[web-service]
-        db[(db-service)]
-        I --> J
-        I --> K
-        J --> db
-        K --> L
-        db --> L
+    subgraph API["workshop (Rails API)"]
+        R1["API Pull Request"]
+        R2["Build Image"]
+        R3["Push GHCR"]
+        R4["Deploy Deployment + Service + HPA"]
     end
 
-    subgraph User["Usuário Final"]
-        M[Browser / Cliente HTTP]
-        M -->|Acesso via LoadBalancer| L
+    %% =====================
+    %% FLUXO POR REPO
+    %% =====================
+    I1 --> I2
+    D1 --> D2
+    A1 --> A2 --> A3 --> A4
+    R1 --> R2 --> R3 --> R4
+
+    %% =====================
+    %% CLUSTER
+    %% =====================
+    subgraph CLUSTER["Kubernetes Cluster"]
+        G["NGINX Gateway"]
+        DD["Datadog Agent"]
+        AUTHRT["Auth Function (Knative)"]
+        APIRT["Rails API"]
+        DBRT["PostgreSQL"]
     end
 
-    B -->|Executa em paralelo| C1
-    B -->|Executa em paralelo| D1
-    D6 -->|Aplica manifests| I
+    %% =====================
+    %% CONVERGÊNCIA NO CLUSTER
+    %% =====================
+    I2 --> G
+    I2 --> DD
+    A4 --> AUTHRT
+    R4 --> APIRT
+    D2 --> DBRT
+
+```
+
+## Diagrama de Componentes
+```mermaid
+flowchart LR
+    subgraph Cloud["Cloud / Infraestrutura"]
+        subgraph K8s["Kubernetes Cluster (Minikube)"]
+            NGINX["NGINX Ingress Gateway"]
+
+            subgraph Auth["Auth Serverless"]
+                AUTH["auth-function (Knative)"]
+            end
+
+            subgraph API["Aplicação"]
+                WEB["Rails API"]
+                HPA["HPA"]
+                HPA --> WEB
+            end
+
+            subgraph DB["Persistência"]
+                POSTGRES["PostgreSQL"]
+            end
+
+            subgraph Obs["Observabilidade"]
+                DD["Datadog Agent"]
+            end
+        end
+    end
+
+    Client["Cliente / Frontend / HTTP Client"]
+
+    Client --> NGINX
+    NGINX --> AUTH
+    AUTH --> NGINX
+    NGINX --> WEB
+    WEB --> POSTGRES
+
+    DD --> NGINX
+    DD --> AUTH
+    DD --> WEB
+    DD --> POSTGRES
+```
+
+## Diagrama de Sequência
+```mermaid
+sequenceDiagram
+    participant Client as Cliente
+    participant NGINX as NGINX Ingress
+    participant AUTH as Auth Function (Knative)
+    participant API as Rails API
+    participant DB as PostgreSQL
+
+    %% =====================
+    %% ETAPA 1 - AUTENTICAÇÃO
+    %% =====================
+    Client->>NGINX: POST /auth (CPF)
+    NGINX->>AUTH: Forward /auth
+
+    AUTH->>API: GET /internal/users?cpf
+    API->>DB: Busca usuário por CPF
+    DB-->>API: Usuário encontrado e ativo
+    API-->>AUTH: Status OK
+
+    AUTH-->>NGINX: 200 OK + JWT
+    NGINX-->>Client: 200 OK + JWT
+
+    %% =====================
+    %% ETAPA 2 - USO DA API
+    %% =====================
+    Client->>NGINX: POST /service_orders/open (Authorization: Bearer JWT)
+    NGINX->>AUTH: auth_request (/auth/validate)
+
+    AUTH-->>NGINX: 200 OK + Headers (X-User-Id, X-User-CPF)
+    NGINX->>API: Forward request autorizado
+
+    API->>DB: Cria ordem de serviço
+    DB-->>API: Ordem persistida
+
+    API-->>NGINX: 201 Created
+    NGINX-->>Client: 201 Created + Payload
+
 ```

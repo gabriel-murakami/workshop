@@ -4,12 +4,12 @@ RSpec.describe 'Budgets', type: :request do
   let(:user) { create(:user) }
   let(:token) do
     secret_key = Rails.application.credentials.jwt_secret || ENV["JWT_SECRET"]
-    payload = { user_id: user.id, exp: 24.hours.from_now.to_i }
+    payload = { user_id: user.id, exp: 24.hours.from_now.to_i, cpf: user.document_number, iss: 'auth.local', aud: 'api.local' }
     JWT.encode(payload, secret_key, 'HS256')
   end
   let(:Authorization) { "Bearer #{token}" }
 
-  path '/budgets' do
+  path '/api/budgets' do
     get 'List all budgets' do
       tags 'Budgets'
       security [ bearerAuth: [] ]
@@ -75,7 +75,7 @@ RSpec.describe 'Budgets', type: :request do
     end
   end
 
-  path '/budgets/{id}' do
+  path '/api/budgets/{id}' do
     get 'Get budget by id' do
       tags 'Budgets'
       security [ bearerAuth: [] ]
@@ -111,7 +111,7 @@ RSpec.describe 'Budgets', type: :request do
     end
   end
 
-  path '/budgets/{id}/approve' do
+  path '/api/budgets/{id}/approve' do
     post 'Approve a budget' do
       tags 'Budgets'
       security [ bearerAuth: [] ]
@@ -133,7 +133,7 @@ RSpec.describe 'Budgets', type: :request do
     end
   end
 
-  path '/budgets/{id}/reject' do
+  path '/api/budgets/{id}/reject' do
     post 'Reject a budget' do
       tags 'Budgets'
       security [ bearerAuth: [] ]

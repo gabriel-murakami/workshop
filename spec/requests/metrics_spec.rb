@@ -4,12 +4,12 @@ RSpec.describe 'Metrics', type: :request do
   let(:user) { create(:user) }
   let(:token) do
     secret_key = Rails.application.credentials.jwt_secret || ENV["JWT_SECRET"]
-    payload = { user_id: user.id, exp: 24.hours.from_now.to_i }
+    payload = { user_id: user.id, exp: 24.hours.from_now.to_i, cpf: user.document_number, iss: 'auth.local', aud: 'api.local' }
     JWT.encode(payload, secret_key, 'HS256')
   end
   let(:Authorization) { "Bearer #{token}" }
 
-  path '/metrics' do
+  path '/api/metrics' do
     get 'List all metrics' do
       tags 'Metrics'
       security [ bearerAuth: [] ]

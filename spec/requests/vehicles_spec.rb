@@ -4,12 +4,13 @@ RSpec.describe 'Vehicles', type: :request do
   let(:user) { create(:user) }
   let(:token) do
     secret_key = Rails.application.credentials.jwt_secret || ENV["JWT_SECRET"]
-    payload = { user_id: user.id, exp: 24.hours.from_now.to_i }
+    payload = { user_id: user.id, exp: 24.hours.from_now.to_i, cpf: user.document_number, iss: 'auth.local', aud: 'api.local' }
     JWT.encode(payload, secret_key, 'HS256')
   end
+
   let(:Authorization) { "Bearer #{token}" }
 
-  path '/vehicles' do
+  path '/api/vehicles' do
     get 'List all vehicles' do
       tags 'Vehicles'
       security [ bearerAuth: [] ]
@@ -81,7 +82,7 @@ RSpec.describe 'Vehicles', type: :request do
     end
   end
 
-  path '/vehicles/{license_plate}' do
+  path '/api/vehicles/{license_plate}' do
     get 'Get vehicle by license plate' do
       tags 'Vehicles'
       security [ bearerAuth: [] ]
@@ -117,7 +118,7 @@ RSpec.describe 'Vehicles', type: :request do
     end
   end
 
-  path '/vehicles/{id}' do
+  path '/api/vehicles/{id}' do
     put 'Update vehicle by id' do
       tags 'Vehicles'
       security [ bearerAuth: [] ]
