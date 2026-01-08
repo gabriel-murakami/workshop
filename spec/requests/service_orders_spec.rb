@@ -3,13 +3,13 @@ require 'swagger_helper'
 RSpec.describe 'Service Orders', type: :request do
   let(:user) { create(:user) }
   let(:token) do
-    secret_key = Rails.application.credentials.jwt_secret || ENV["JWT_SECRET"] || "test_secret"
-    payload = { user_id: user.id, exp: 24.hours.from_now.to_i }
-    JWT.encode(payload, secret_key, "HS256")
+    secret_key = Rails.application.credentials.jwt_secret || ENV["JWT_SECRET"]
+    payload = { user_id: user.id, exp: 24.hours.from_now.to_i, cpf: user.document_number, iss: 'auth.local', aud: 'api.local' }
+    JWT.encode(payload, secret_key, 'HS256')
   end
   let(:Authorization) { "Bearer #{token}" }
 
-  path '/service_orders/{id}' do
+  path '/api/service_orders/{id}' do
     get 'Get a service order by ID' do
       tags 'Service Orders'
       security [ bearerAuth: [] ]
@@ -63,7 +63,7 @@ RSpec.describe 'Service Orders', type: :request do
     end
   end
 
-  path '/service_orders/{id}/send_to_diagnosis' do
+  path '/api/service_orders/{id}/send_to_diagnosis' do
     post 'Send service order to diagnosis' do
       tags 'Service Orders'
       security [ bearerAuth: [] ]
@@ -90,7 +90,7 @@ RSpec.describe 'Service Orders', type: :request do
     end
   end
 
-  path '/service_orders/{id}/send_to_approval' do
+  path '/api/service_orders/{id}/send_to_approval' do
     post 'Send service order to waiting approval' do
       tags 'Service Orders'
       security [ bearerAuth: [] ]
@@ -117,7 +117,7 @@ RSpec.describe 'Service Orders', type: :request do
     end
   end
 
-  path '/service_orders' do
+  path '/api/service_orders' do
     get 'List all service orders' do
       tags 'Service Orders'
       security [ bearerAuth: [] ]
@@ -152,7 +152,7 @@ RSpec.describe 'Service Orders', type: :request do
     end
   end
 
-  path '/service_orders/{id}/add_services' do
+  path '/api/service_orders/{id}/add_services' do
     post 'Add services to a service order' do
       tags 'Service Orders'
       security [ bearerAuth: [] ]
@@ -189,7 +189,7 @@ RSpec.describe 'Service Orders', type: :request do
     end
   end
 
-  path '/service_orders/{id}/add_products' do
+  path '/api/service_orders/{id}/add_products' do
     post 'Add products to a service order' do
       tags 'Service Orders'
       security [ bearerAuth: [] ]
@@ -234,7 +234,7 @@ RSpec.describe 'Service Orders', type: :request do
     end
   end
 
-  path '/service_orders/{id}/start' do
+  path '/api/service_orders/{id}/start' do
     post 'Start a service order' do
       tags 'Service Orders'
       security [ bearerAuth: [] ]
@@ -278,7 +278,7 @@ RSpec.describe 'Service Orders', type: :request do
     end
   end
 
-  path '/service_orders/{id}/finish' do
+  path '/api/service_orders/{id}/finish' do
     post 'Finish a service order' do
       tags 'Service Orders'
       security [ bearerAuth: [] ]
@@ -316,7 +316,7 @@ RSpec.describe 'Service Orders', type: :request do
     end
   end
 
-  path '/service_orders' do
+  path '/api/service_orders' do
     post 'Create a new service order' do
       tags 'Service Orders'
       security [ bearerAuth: [] ]
@@ -352,7 +352,7 @@ RSpec.describe 'Service Orders', type: :request do
     end
   end
 
-  path '/service_orders/open' do
+  path '/api/service_orders/open' do
     post 'Open (create) a service order with full details' do
       tags 'Service Orders'
       security [ bearerAuth: [] ]

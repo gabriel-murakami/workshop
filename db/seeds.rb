@@ -13,7 +13,8 @@ Domain::ServiceOrder::User.create!(
   name: "Administrador",
   email: 'admin@admin.com',
   password: 'password123',
-  password_confirmation: 'password123'
+  password_confirmation: 'password123',
+  document_number: '44433647810'
 )
 
 puts "Criando clientes..."

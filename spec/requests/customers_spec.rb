@@ -4,12 +4,12 @@ RSpec.describe 'Customers', type: :request do
   let(:user) { create(:user) }
   let(:token) do
     secret_key = Rails.application.credentials.jwt_secret || ENV["JWT_SECRET"]
-    payload = { user_id: user.id, exp: 24.hours.from_now.to_i }
+    payload = { user_id: user.id, exp: 24.hours.from_now.to_i, cpf: user.document_number, iss: 'auth.local', aud: 'api.local' }
     JWT.encode(payload, secret_key, 'HS256')
   end
   let(:Authorization) { "Bearer #{token}" }
 
-  path '/customers' do
+  path '/api/customers' do
     get 'List all customers' do
       tags 'Customers'
       security [ bearerAuth: [] ]
@@ -83,7 +83,7 @@ RSpec.describe 'Customers', type: :request do
     end
   end
 
-  path '/customers/{document_number}' do
+  path '/api/customers/{document_number}' do
     get 'Get customer by document number' do
       tags 'Customers'
       security [ bearerAuth: [] ]
@@ -121,7 +121,7 @@ RSpec.describe 'Customers', type: :request do
     end
   end
 
-  path '/customers/{id}' do
+  path '/api/customers/{id}' do
     put 'Update customer by id' do
       tags 'Customers'
       security [ bearerAuth: [] ]
@@ -184,7 +184,7 @@ RSpec.describe 'Customers', type: :request do
     end
   end
 
-  path '/customers/{document_number}/add_vehicle' do
+  path '/api/customers/{document_number}/add_vehicle' do
     patch 'Add vehicle to customer' do
       tags 'Customers'
       security [ bearerAuth: [] ]

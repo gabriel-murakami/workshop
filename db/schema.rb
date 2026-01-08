@@ -92,8 +92,10 @@ ActiveRecord::Schema[7.2].define(version: 2025_08_09_214743) do
     t.string "name", null: false
     t.string "email", null: false
     t.string "password_digest", null: false
+    t.string "document_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["document_number"], name: "index_users_on_document_number", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
