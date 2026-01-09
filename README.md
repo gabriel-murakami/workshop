@@ -275,3 +275,6 @@ sequenceDiagram
     NGINX-->>Client: 201 Created + Payload
 
 ```
+
+## Diagrama das Tabelas do Banco
+![Diagrama ER](docs/diagram.svg)
