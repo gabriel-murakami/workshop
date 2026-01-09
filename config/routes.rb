@@ -11,7 +11,7 @@ Rails.application.routes.draw do
     scope module: "controllers" do
       namespace :internal do
         scope controller: :users do
-          get "users/:document_number", action: :show
+          post "users/:document_number", action: :create
         end
       end
 
