@@ -4,10 +4,14 @@ module Web
       class UsersController < Web::Controllers::ApplicationController
         before_action :internal_auth!
 
-        def show
-          user = Domain::ServiceOrder::User.find_by!(document_number: params[:document_number])
+        def create
+          user = Domain::ServiceOrder::User.find_by(document_number: params[:document_number])
 
-          head :ok if user.present?
+          if user&.authenticate(params[:password])
+            head :ok
+          else
+            head :unauthorized
+          end
         end
 
         private
