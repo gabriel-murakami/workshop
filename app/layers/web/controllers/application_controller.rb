@@ -2,23 +2,30 @@ module Web
   module Controllers
     class ApplicationController < ActionController::API
       rescue_from ActiveRecord::RecordInvalid do |e|
-        render json: { error: e.message }, status: :unprocessable_entity
+        render_and_log_error(:unprocessable_entity, e.message, e.record.class.name)
       end
 
       rescue_from ActiveRecord::RecordNotFound do |e|
-        render json: { error: e.message }, status: :not_found
+        render_and_log_error(:not_found, e.message)
       end
 
       rescue_from Exceptions::CustomerException do |e|
-        render json: { error: e.message }, status: :unprocessable_entity
+        render_and_log_error(:unprocessable_entity, e.message, "Customer")
       end
 
       rescue_from Exceptions::ProductException do |e|
-        render json: { error: e.message }, status: :unprocessable_entity
+        render_and_log_error(:unprocessable_entity, e.message, "Product")
       end
 
       rescue_from Exceptions::ServiceOrderException do |e|
-        render json: { error: e.message }, status: :unprocessable_entity
+        render_and_log_error(:unprocessable_entity, e.message, "ServiceOrder")
+      end
+
+      private
+
+      def render_and_log_error(status, message, resource = nil)
+        Rails.logger.info(error: message, status: status, resource: resource)
+        render json: { message: message }, status: status
       end
     end
   end
