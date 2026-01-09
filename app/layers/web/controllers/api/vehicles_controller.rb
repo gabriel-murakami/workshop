@@ -1,7 +1,7 @@
 module Web
   module Controllers
     module Api
-      class VehiclesController < AuthController
+      class VehiclesController < Web::Controllers::ApplicationController
         def index
           render json: Application::Customer::VehicleApplication.new.find_all,
             each_serializer: ::Serializers::Domain::Customer::VehicleSerializer

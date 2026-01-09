@@ -1,4 +1,5 @@
 type: collection.insomnia.rest/5.0
+schema_version: "5.1"
 name: Workshop
 meta:
   id: wrk_a8c0d91339de471680a78c7aeb2bb0b7
@@ -6,12 +7,12 @@ meta:
   modified: 1755043217122
   description: ""
 collection:
-  - url: localhost:3000/service_orders
+  - url: http://127.0.0.1/api/service_orders
     name: list service orders
     meta:
       id: req_71a93622beb1421c9c9c36f9d38e4ce0
       created: 1754692591199
-      modified: 1760405794298
+      modified: 1767928439875
       isPrivate: false
       description: ""
       sortKey: -1754692591199
@@ -21,8 +22,9 @@ collection:
         value: insomnia/11.4.0
     authentication:
       type: bearer
+      disabled: false
       token: "{% response 'body', 'req_e98453586e9549ab9875b6886cd4b3fb',
-        'b64::JC50b2tlbg==::46b', 'always', 60 %}"
+        'b64::JC50b2tlbg==::46b', 'when-expired', 900 %}"
     settings:
       renderRequestBody: true
       encodeUrl: true
@@ -31,12 +33,12 @@ collection:
         send: true
         store: true
       rebuildPath: true
-  - url: localhost:3000/customers
+  - url: http://127.0.0.1/api/customers
     name: list customers
     meta:
       id: req_c5fe8ec9a5e549bf86117ed2c14ca9bf
       created: 1754753287459
-      modified: 1754769358818
+      modified: 1767762983436
       isPrivate: false
       description: ""
       sortKey: -1754753287459
@@ -56,12 +58,12 @@ collection:
         send: true
         store: true
       rebuildPath: true
-  - url: localhost:3000/customers/:document_number
+  - url: http://127.0.0.1/api/customers/:document_number
     name: customer by document number
     meta:
       id: req_8db7909be6164b468b91aa9722c72c2a
       created: 1754753411645
-      modified: 1760311730510
+      modified: 1767762980624
       isPrivate: false
       description: ""
       sortKey: -1754753411645
@@ -84,12 +86,12 @@ collection:
     pathParameters:
       - name: document_number
         value: "38830424048"
-  - url: localhost:3000/vehicles
+  - url: http://127.0.0.1/api/vehicles
     name: list vehicles
     meta:
       id: req_52b21ff643264ed3bfd56cd6411d2789
       created: 1754755246573
-      modified: 1754769352082
+      modified: 1767762977674
       isPrivate: false
       description: ""
       sortKey: -1754755246573
@@ -97,12 +99,11 @@ collection:
     headers:
       - name: User-Agent
         value: insomnia/11.4.0
-        id: pair_716dcbbf84be45a3a40af9a3095f8075
     authentication:
       type: bearer
+      disabled: false
       token: "{% response 'body', 'req_e98453586e9549ab9875b6886cd4b3fb',
         'b64::JC50b2tlbg==::46b', 'always', 60 %}"
-      disabled: false
     settings:
       renderRequestBody: true
       encodeUrl: true
@@ -111,12 +112,12 @@ collection:
         send: true
         store: true
       rebuildPath: true
-  - url: localhost:3000/vehicles/:license_plate
+  - url: http://127.0.0.1/api/vehicles/:license_plate
     name: vehicle by license plate
     meta:
       id: req_9c6dadf1efaa4394bfc601dd62dba7d3
       created: 1754755264299
-      modified: 1754760348061
+      modified: 1767762965120
       isPrivate: false
       description: ""
       sortKey: -1754755264299
@@ -139,12 +140,12 @@ collection:
     pathParameters:
       - name: license_plate
         value: ABC-1234
-  - url: localhost:3000/customers
+  - url: http://127.0.0.1/api/customers
     name: create customer
     meta:
       id: req_55a1e6957dab4b4b923ca9c17e5b9bff
       created: 1754755658911
-      modified: 1755043348980
+      modified: 1767762915660
       isPrivate: false
       description: ""
       sortKey: -1754755658911
@@ -175,12 +176,12 @@ collection:
         send: true
         store: true
       rebuildPath: true
-  - url: localhost:3000/customers/:document_number/add_vehicle
+  - url: http://127.0.0.1/api/customers/:document_number/add_vehicle
     name: add vehicle to customer
     meta:
       id: req_936c5c5758e8445db8f88c3924c02cd0
       created: 1754755815768
-      modified: 1755043383928
+      modified: 1767762911584
       isPrivate: false
       description: ""
       sortKey: -1754755815768
@@ -211,21 +212,23 @@ collection:
     pathParameters:
       - name: document_number
         value: "12345670088"
-  - url: localhost:3000/login
+  - url: http://127.0.0.1/auth
     name: auth
     meta:
       id: req_e98453586e9549ab9875b6886cd4b3fb
       created: 1754758992247
-      modified: 1760460537918
+      modified: 1767981684443
       isPrivate: false
       description: ""
       sortKey: -1754758992247
     method: POST
     body:
       mimeType: application/json
-      text: |-
+      text: |
         {
-        	"email": "admin@admin.com",
+        	"_cpf": "19673003050",
+        	"_cpf": "84311213001",
+        	"cpf": "54367578046",
         	"password": "password123"
         }
     headers:
@@ -241,12 +244,12 @@ collection:
         send: true
         store: true
       rebuildPath: true
-  - url: localhost:3000/customers/:id
+  - url: http://127.0.0.1/api/customers/:id
     name: update customer
     meta:
       id: req_6213e64f05934e09af748753ba489872
       created: 1754765270311
-      modified: 1754765465090
+      modified: 1767762872390
       isPrivate: false
       description: ""
       sortKey: -1754765270311
@@ -277,12 +280,12 @@ collection:
     pathParameters:
       - name: id
         value: "10"
-  - url: localhost:3000/vehicles/:id
+  - url: http://127.0.0.1/api/vehicles/:id
     name: update vehicle
     meta:
       id: req_719e829695a541829fb33a35c6314704
       created: 1754766000966
-      modified: 1754770700530
+      modified: 1767762895793
       isPrivate: false
       description: ""
       sortKey: -1754762131279
@@ -313,12 +316,12 @@ collection:
     pathParameters:
       - name: id
         value: "11"
-  - url: localhost:3000/vehicles
+  - url: http://127.0.0.1/api/vehicles
     name: create vehicle
     meta:
       id: req_0e3f205a997a423497316f42a6db391a
       created: 1754766070191
-      modified: 1755043371942
+      modified: 1767762918653
       isPrivate: false
       description: ""
       sortKey: -1754755461605
@@ -349,12 +352,12 @@ collection:
         send: true
         store: true
       rebuildPath: true
-  - url: localhost:3000/vehicles/:id
+  - url: http://127.0.0.1/api/vehicles/:id
     name: delete vehicle
     meta:
       id: req_4dc31ee20cce47cdb69a24655e1c008e
       created: 1754766895837
-      modified: 1754766940051
+      modified: 1767762898555
       isPrivate: false
       description: ""
       sortKey: -1754760561763
@@ -385,12 +388,12 @@ collection:
     pathParameters:
       - name: id
         value: "10"
-  - url: localhost:3000/customers/:id
+  - url: http://127.0.0.1/api/customers/:id
     name: delete customer
     meta:
       id: req_672b51acf2ae418494b709ba3cda66d4
       created: 1754767291175
-      modified: 1754767297495
+      modified: 1767762901331
       isPrivate: false
       description: ""
       sortKey: -1754759777005
@@ -421,12 +424,12 @@ collection:
     pathParameters:
       - name: id
         value: "14"
-  - url: localhost:3000/products
+  - url: http://127.0.0.1/api/products
     name: list products
     meta:
       id: req_0c8f06a3b47c446aaa7028bedef302f7
       created: 1754768800021
-      modified: 1754947137665
+      modified: 1767762989476
       isPrivate: false
       description: ""
       sortKey: -1754715352296.5
@@ -446,12 +449,12 @@ collection:
         send: true
         store: true
       rebuildPath: true
-  - url: localhost:3000/services
+  - url: http://127.0.0.1/api/services
     name: list services
     meta:
       id: req_512f15e0902c450f861d2cb6a89b0a06
       created: 1754768817002
-      modified: 1754849309633
+      modified: 1767762994215
       isPrivate: false
       description: ""
       sortKey: -1754707765264
@@ -461,9 +464,9 @@ collection:
         value: insomnia/11.4.0
     authentication:
       type: bearer
+      disabled: false
       token: "{% response 'body', 'req_e98453586e9549ab9875b6886cd4b3fb',
         'b64::JC50b2tlbg==::46b', 'always', 60 %}"
-      disabled: false
     settings:
       renderRequestBody: true
       encodeUrl: true
@@ -472,12 +475,12 @@ collection:
         send: true
         store: true
       rebuildPath: true
-  - url: localhost:3000/products/:id
+  - url: http://127.0.0.1/api/products/:id
     name: update product
     meta:
       id: req_890e000c379148b09b70ccf6465aaf4c
       created: 1754768933411
-      modified: 1754933071444
+      modified: 1767762876400
       isPrivate: false
       description: ""
       sortKey: -1754763700795
@@ -511,12 +514,12 @@ collection:
     pathParameters:
       - name: id
         value: "1"
-  - url: localhost:3000/services/:id
+  - url: http://127.0.0.1/api/services/:id
     name: update service
     meta:
       id: req_518935b120ad424286d5d003e06940e7
       created: 1754769298593
-      modified: 1754769306525
+      modified: 1767762880869
       isPrivate: false
       description: ""
       sortKey: -1754762916037
@@ -550,12 +553,12 @@ collection:
     pathParameters:
       - name: id
         value: "10"
-  - url: localhost:3000/products/:id
+  - url: http://127.0.0.1/api/products/:id
     name: find product
     meta:
       id: req_b2af1da77ce7444986e04cb49fd40b8b
       created: 1754769385425
-      modified: 1754948693983
+      modified: 1767762968592
       isPrivate: false
       description: ""
       sortKey: -1754755255436
@@ -578,12 +581,12 @@ collection:
     pathParameters:
       - name: id
         value: "3"
-  - url: localhost:3000/services/:id
+  - url: http://127.0.0.1/api/services/:id
     name: find service
     meta:
       id: req_c099b93a65964ae8894cfd36df73d017
       created: 1754769409510
-      modified: 1754769415087
+      modified: 1767762973330
       isPrivate: false
       description: ""
       sortKey: -1754755251004.5
@@ -606,12 +609,12 @@ collection:
     pathParameters:
       - name: id
         value: "9"
-  - url: localhost:3000/products
+  - url: http://127.0.0.1/api/products
     name: create product
     meta:
       id: req_417222e383e84f7184776b70327f12e3
       created: 1754771089284
-      modified: 1754933045022
+      modified: 1767762924168
       isPrivate: false
       description: ""
       sortKey: -1754755362952
@@ -643,12 +646,12 @@ collection:
         send: true
         store: true
       rebuildPath: true
-  - url: localhost:3000/services
+  - url: http://127.0.0.1/api/services
     name: create service
     meta:
       id: req_73ba8631c86f40b4983ece6bcfe0c93d
       created: 1754771421241
-      modified: 1754771442719
+      modified: 1767762942734
       isPrivate: false
       description: ""
       sortKey: -1754755313625.5
@@ -678,12 +681,12 @@ collection:
         send: true
         store: true
       rebuildPath: true
-  - url: localhost:3000/services/:id
+  - url: http://127.0.0.1/api/services/:id
     name: delete service
     meta:
       id: req_8c6359db688f4d009cbbe436a6b72b76
       created: 1754771459614
-      modified: 1754771469830
+      modified: 1767762904111
       isPrivate: false
       description: ""
       sortKey: -1754759384626
@@ -711,12 +714,12 @@ collection:
     pathParameters:
       - name: id
         value: "10"
-  - url: localhost:3000/products/:id
+  - url: http://127.0.0.1/api/products/:id
     name: delete product
     meta:
       id: req_84d409622b6344c5b937b1ac5a016998
       created: 1754771489652
-      modified: 1754932983628
+      modified: 1767762906838
       isPrivate: false
       description: ""
       sortKey: -1754759188436.5
@@ -744,12 +747,12 @@ collection:
     pathParameters:
       - name: id
         value: "1"
-  - url: localhost:3000/products/:id/add
+  - url: http://127.0.0.1/api/products/:id/add
     name: add product
     meta:
       id: req_c00f3757a34544f6ac50e43d8e2ecfab
       created: 1754772283665
-      modified: 1754932960517
+      modified: 1767762927322
       isPrivate: false
       description: ""
       sortKey: -1754755338288.75
@@ -780,12 +783,12 @@ collection:
     pathParameters:
       - name: id
         value: "1"
-  - url: localhost:3000/products/:id/remove
+  - url: http://127.0.0.1/api/products/:id/remove
     name: remove products
     meta:
       id: req_2566f1f2fbfb4efb9b1eaa75a3ad2d96
       created: 1754772458161
-      modified: 1754933010691
+      modified: 1767762940182
       isPrivate: false
       description: ""
       sortKey: -1754755325957.125
@@ -816,12 +819,12 @@ collection:
     pathParameters:
       - name: id
         value: "1"
-  - url: localhost:3000/metrics
+  - url: http://127.0.0.1/api/metrics
     name: list metrics
     meta:
       id: req_e0cc457c72324beca8416992d8465dd3
       created: 1754778936755
-      modified: 1760405766373
+      modified: 1767762999771
       isPrivate: false
       description: ""
       sortKey: -1754700178231.5
@@ -841,12 +844,12 @@ collection:
         send: true
         store: true
       rebuildPath: true
-  - url: localhost:3000/service_orders/:id/start
+  - url: http://127.0.0.1/api/service_orders/:id/start
     name: start service order
     meta:
       id: req_935420210f864a7c8b9b6ed6f505b26a
       created: 1754867111577
-      modified: 1754958810175
+      modified: 1767762949937
       isPrivate: false
       description: ""
       sortKey: -1754755288962.25
@@ -873,13 +876,13 @@ collection:
       rebuildPath: true
     pathParameters:
       - name: id
-        value: "5"
-  - url: localhost:3000/service_orders/:id/finish
+        value: 7e914928-79a0-49c8-893f-f4755c53aba8
+  - url: http://127.0.0.1/api/service_orders/:id/finish
     name: finish service order
     meta:
       id: req_b2e99a9449c74ef29a2e7f84350328a6
       created: 1754867132847
-      modified: 1755096300069
+      modified: 1767905731301
       isPrivate: false
       description: ""
       sortKey: -1754755276630.625
@@ -906,13 +909,13 @@ collection:
       rebuildPath: true
     pathParameters:
       - name: id
-        value: 791eff71-bebf-4d73-ad61-2667d3eba241
-  - url: localhost:3000/budgets
+        value: d30f4fe9-3b03-4ec8-939d-0931458fb4c2
+  - url: http://127.0.0.1/api/budgets
     name: list budgets
     meta:
       id: req_0eb64cc4041c4623b3be2c7e13ea077b
       created: 1754877456320
-      modified: 1755098729112
+      modified: 1767762849494
       isPrivate: false
       description: ""
       sortKey: -1754696384715.25
@@ -932,12 +935,12 @@ collection:
         send: true
         store: true
       rebuildPath: true
-  - url: localhost:3000/budgets/:id/approve
+  - url: http://127.0.0.1/api/budgets/:id/approve
     name: approve budget
     meta:
       id: req_c4e0f3b9a89042a1973b7e7d1c4573c9
       created: 1754881863837
-      modified: 1760474317123
+      modified: 1767905527646
       isPrivate: false
       description: ""
       sortKey: -1754755279713.5312
@@ -964,13 +967,13 @@ collection:
       rebuildPath: true
     pathParameters:
       - name: id
-        value: 0b6f671a-f502-4930-8889-130f5bf12971
-  - url: localhost:3000/budgets/:id/reject
+        value: 60657d97-bd3b-4e7d-94e4-ce9d396ca82b
+  - url: http://127.0.0.1/api/budgets/:id/reject
     name: reject budget
     meta:
       id: req_a17700b81668491ead6c1efcc7f53ecb
       created: 1754881926548
-      modified: 1756952901143
+      modified: 1767762954704
       isPrivate: false
       description: ""
       sortKey: -1754755278172.0781
@@ -998,12 +1001,12 @@ collection:
     pathParameters:
       - name: id
         value: cbb9499c-de83-424d-9847-ae498bfb83a7
-  - url: localhost:3000/service_orders/:id/send_to_diagnosis
+  - url: http://127.0.0.1/api/service_orders/:id/send_to_diagnosis
     name: send to diagnosis - service order
     meta:
       id: req_13b0db53ea7a42d9a72cddacdc442c3b
       created: 1754881958391
-      modified: 1755371112774
+      modified: 1767906368630
       isPrivate: false
       description: ""
       sortKey: -1754755270464.8125
@@ -1030,13 +1033,13 @@ collection:
       rebuildPath: true
     pathParameters:
       - name: id
-        value: 83ca10b3-f4ef-4eab-9f79-d4e0642d48fc
-  - url: localhost:3000/service_orders/:id/send_to_approval
+        value: a254b9bc-6f77-4e3c-8670-84783d4f4e77
+  - url: http://127.0.0.1/api/service_orders/:id/send_to_approval
     name: send to approval - service order
     meta:
       id: req_c045d451d50f4d75850dc3237c41eb0c
       created: 1754881965241
-      modified: 1754948375628
+      modified: 1767906885084
       isPrivate: false
       description: ""
       sortKey: -1754755267381.9062
@@ -1063,13 +1066,13 @@ collection:
       rebuildPath: true
     pathParameters:
       - name: id
-        value: "5"
-  - url: localhost:3000/service_orders/:id
+        value: a254b9bc-6f77-4e3c-8670-84783d4f4e77
+  - url: http://127.0.0.1/api/service_orders/:id
     name: find service orders
     meta:
       id: req_b19db782963a4a7e98898a1db9699bd4
       created: 1754882531600
-      modified: 1760313899977
+      modified: 1767763019984
       isPrivate: false
       description: ""
       sortKey: -1754692591149
@@ -1091,13 +1094,13 @@ collection:
       rebuildPath: true
     pathParameters:
       - name: id
-        value: da976e5b-1026-45bd-aaf0-e51c4c59c866
-  - url: localhost:3000/service_orders/:id/add_products
+        value: 32fe0c97-5c4d-4c60-bc3c-63472abd561a
+  - url: http://127.0.0.1/api/service_orders/:id/add_products
     name: add products- service orders
     meta:
       id: req_64e816aa2e754ae5af6c068b9c788aff
       created: 1754884672581
-      modified: 1755043509252
+      modified: 1767762931887
       isPrivate: false
       description: ""
       sortKey: -1754755332122.9375
@@ -1129,13 +1132,13 @@ collection:
       rebuildPath: true
     pathParameters:
       - name: id
-        value: "5"
-  - url: localhost:3000/service_orders/:id/add_services
+        value: ccb8533e-648e-426d-82d2-0a5c9af734e4
+  - url: http://127.0.0.1/api/service_orders/:id/add_services
     name: add services- service orders
     meta:
       id: req_e1cc75b1681741afa3cbfc2276e0066b
       created: 1754884759080
-      modified: 1755043550700
+      modified: 1767905196708
       isPrivate: false
       description: ""
       sortKey: -1754755329040.0312
@@ -1165,13 +1168,13 @@ collection:
       rebuildPath: true
     pathParameters:
       - name: id
-        value: "5"
-  - url: localhost:3000/service_orders
+        value: c8bd5c56-4c7f-4279-9fda-ca684dd1aa35
+  - url: http://127.0.0.1/api/service_orders
     name: create service order
     meta:
       id: req_070f4fe19f4f4a4682a92e20738c829f
       created: 1754947995423
-      modified: 1755371038191
+      modified: 1767906353505
       isPrivate: false
       description: ""
       sortKey: -1754755301293.875
@@ -1180,8 +1183,8 @@ collection:
       mimeType: application/json
       text: |-
         {
-        	"customer_id": "1930f018-c867-4ef6-abfc-a78f750b00df",
-        	"vehicle_id": "0a6bd062-ee66-4717-a312-47a408bfb58b"
+        	"customer_id": "918fcc19-a48f-4db3-b974-f901c497334c",
+        	"vehicle_id": "8573a17d-2c31-450b-8acf-dbf6751a8006"
         }
     headers:
       - name: Content-Type
@@ -1200,12 +1203,12 @@ collection:
         send: true
         store: true
       rebuildPath: true
-  - url: localhost:3000/service_orders/:id/current_status
+  - url: http://127.0.0.1/api/service_orders/:id/current_status
     name: service order current status
     meta:
       id: req_342860e22932489e99636b8b680fce99
       created: 1755096468094
-      modified: 1760474291587
+      modified: 1767925274504
       isPrivate: false
       description: ""
       sortKey: -1754692591174
@@ -1227,27 +1230,27 @@ collection:
       rebuildPath: true
     pathParameters:
       - name: id
-        value: faccb49d-6d1c-46b8-999b-39bb7ff643e2
-  - url: localhost:3000/service_orders/open
+        value: e99cca4a-0b84-41ef-878e-950b78e9eada
+  - url: http://127.0.0.1/api/service_orders/open
     name: open service order
     meta:
       id: req_63e705f161a342eab23d951116fd5f22
       created: 1756951459475
-      modified: 1756952944319
+      modified: 1767920903538
       isPrivate: false
       description: ""
       sortKey: -1754755330581.4844
     method: POST
     body:
       mimeType: application/json
-      text: |-
+      text: |
         {
         	"document_number": "38830424048",
-        	"license_plate": "DEF5678",
-        	"services_codes": ["SVC002", "SVC001"],
+        	"license_plate": "JKL3456",
+        	"services_codes": ["SVC002", "SVC001", "SVC003"],
         	"products_params": [
         		{ "sku": "AP003", "quantity": 15 },
-        		{ "sku": "AP002", "quantity": 2 }
+        		{ "sku": "AP004", "quantity": 2 }
         	]
         }
     headers:
@@ -1259,6 +1262,29 @@ collection:
       type: bearer
       token: "{% response 'body', 'req_e98453586e9549ab9875b6886cd4b3fb',
         'b64::JC50b2tlbg==::46b', 'always', 60 %}"
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://127.0.0.1/up
+    name: health check
+    meta:
+      id: req_00276625b049471186b4b316b41a3c1f
+      created: 1767924388067
+      modified: 1767928360396
+      isPrivate: false
+      description: ""
+      sortKey: -1767924388067
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/12.2.0
+        description: ""
+        disabled: false
     settings:
       renderRequestBody: true
       encodeUrl: true

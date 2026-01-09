@@ -1,7 +1,7 @@
 module Web
   module Controllers
     module Api
-      class CustomersController < AuthController
+      class CustomersController < Web::Controllers::ApplicationController
         BASE_FIELDS = %i[id name document_number email phone]
         ADD_VEHICLE_FIELDS = %i[license_plate]
 

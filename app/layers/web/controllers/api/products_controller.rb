@@ -1,7 +1,7 @@
 module Web
   module Controllers
     module Api
-      class ProductsController < AuthController
+      class ProductsController < Web::Controllers::ApplicationController
         PRODUCTS_FIELDS = %i[id name description stock_quantity base_price sku]
         STOCK_CONTROL_FIELDS = %i[stock_change]
 
