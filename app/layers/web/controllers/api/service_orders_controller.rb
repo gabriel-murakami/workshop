@@ -1,7 +1,7 @@
 module Web
   module Controllers
     module Api
-      class ServiceOrdersController < AuthController
+      class ServiceOrdersController < Web::Controllers::ApplicationController
         def index
           render json: Application::ServiceOrder::ServiceOrderApplication.new.find_all,
             each_serializer: ::Serializers::Domain::ServiceOrder::ServiceOrderSerializer

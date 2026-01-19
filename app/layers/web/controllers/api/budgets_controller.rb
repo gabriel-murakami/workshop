@@ -1,7 +1,7 @@
 module Web
   module Controllers
     module Api
-      class BudgetsController < AuthController
+      class BudgetsController < Web::Controllers::ApplicationController
         def index
           render json: Application::ServiceOrder::BudgetApplication.new.find_all(filter_params),
             each_serializer: ::Serializers::Domain::ServiceOrder::BudgetSerializer
