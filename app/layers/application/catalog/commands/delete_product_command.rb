@@ -1,5 +1,5 @@
 module Application
-  module ServiceOrderItem
+  module Catalog
     module Commands
       class DeleteProductCommand
         attr_accessor :product_id

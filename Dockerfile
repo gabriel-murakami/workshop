@@ -11,8 +11,8 @@ RUN apt-get update -qq && apt-get install -y \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
-ARG UID=1000
-ARG GID=1000
+ARG UID=1001
+ARG GID=1001
 
 RUN addgroup --gid ${GID} appgroup \
  && adduser --disabled-password --gecos "" --uid ${UID} --gid ${GID} appuser

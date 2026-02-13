@@ -1,6 +1,6 @@
 module Infra
   module QueryObjects
-    class ServicesQuery < Domain::ServiceOrderItem::Service
+    class ServicesQuery < Domain::Catalog::Service
       class << self
         def find_services_by_codes(codes)
           self.where(code: codes)

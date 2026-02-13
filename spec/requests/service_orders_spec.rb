@@ -40,10 +40,10 @@ RSpec.describe 'Service Orders', type: :request do
                   id: { type: :string },
                   quantity: { type: :integer },
                   total_value: { type: :string },
-                  item_type: { type: :string },
+                  item_kind: { type: :string },
                   item_id: { type: :string }
                 },
-                required: %w[id quantity total_value item_type item_id]
+                required: %w[id quantity total_value item_kind item_id]
               }
             }
           },

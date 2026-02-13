@@ -94,7 +94,7 @@ module Application
 
         raise Exceptions::ServiceOrderException.new("The service order is not in diagnosis") unless service_order.diagnosis?
 
-        services = Application::ServiceOrderItem::ServiceApplication.new.find_services_by_codes(
+        services = Application::Catalog::ServiceApplication.new.find_services_by_codes(
           add_services_command.services_codes
         )
 
@@ -118,7 +118,7 @@ module Application
         raise Exceptions::ServiceOrderException.new("The service order is not in diagnosis") unless service_order.diagnosis?
 
         products_params = add_products_command.products_params
-        products = Application::ServiceOrderItem::ProductApplication.new.find_products_by_skus(
+        products = Application::Catalog::ProductApplication.new.find_products_by_skus(
           products_params.map { |param| param[:sku] }
         )
 
@@ -277,23 +277,23 @@ module Application
 
       def replace_products(service_order)
         service_order.service_order_items.products.each do |service_order_item|
-          stock_control_command = Application::ServiceOrderItem::Commands::StockControlCommand.new(
+          stock_control_command = Application::Catalog::Commands::StockControlCommand.new(
             product_id: service_order_item.item_id,
             stock_change: service_order_item.quantity
           )
 
-          Application::ServiceOrderItem::ProductApplication.new.add_product(stock_control_command)
+          Application::Catalog::ProductApplication.new.add_product(stock_control_command)
         end
       end
 
       def remove_products(products)
         products.each do |product|
-          stock_control_command = Application::ServiceOrderItem::Commands::StockControlCommand.new(
+          stock_control_command = Application::Catalog::Commands::StockControlCommand.new(
             product_id: product[:item].id,
             stock_change: product[:quantity]
           )
 
-          Application::ServiceOrderItem::ProductApplication.new.remove_product(stock_control_command)
+          Application::Catalog::ProductApplication.new.remove_product(stock_control_command)
         end
       end
 

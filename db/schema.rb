@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_08_09_214743) do
+ActiveRecord::Schema[7.2].define(version: 2026_01_27_142912) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -43,25 +43,27 @@ ActiveRecord::Schema[7.2].define(version: 2025_08_09_214743) do
   end
 
   create_table "products", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "sku", null: false
     t.string "name", null: false
     t.text "description"
     t.integer "stock_quantity", default: 0, null: false
     t.decimal "base_price", precision: 10, scale: 2, default: "0.0", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "sku", null: false
     t.index ["sku"], name: "index_products_on_sku", unique: true
   end
 
   create_table "service_order_items", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "service_order_id", null: false
     t.integer "quantity", default: 1, null: false
-    t.decimal "total_value", precision: 12, scale: 2, default: "0.0", null: false
-    t.string "item_type", null: false
+    t.string "item_kind", null: false
     t.uuid "item_id", null: false
+    t.string "item_name", null: false
+    t.decimal "unit_price", precision: 12, scale: 2, default: "0.0", null: false
+    t.decimal "total_value", precision: 12, scale: 2, default: "0.0", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["item_type", "item_id"], name: "index_service_order_items_on_item"
+    t.index ["item_kind", "item_id"], name: "index_service_order_items_on_item_kind_and_item_id"
     t.index ["service_order_id"], name: "index_service_order_items_on_service_order_id"
   end
 
@@ -79,12 +81,12 @@ ActiveRecord::Schema[7.2].define(version: 2025_08_09_214743) do
   end
 
   create_table "services", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "code", null: false
     t.string "name", null: false
     t.text "description"
     t.decimal "base_price", precision: 10, scale: 2, default: "0.0", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "code", null: false
     t.index ["code"], name: "index_services_on_code", unique: true
   end
 
@@ -100,7 +102,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_08_09_214743) do
   end
 
   create_table "vehicles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "customer_id"
+    t.uuid "customer_id", null: false
     t.string "license_plate", null: false
     t.string "brand"
     t.string "model"
@@ -113,7 +115,5 @@ ActiveRecord::Schema[7.2].define(version: 2025_08_09_214743) do
 
   add_foreign_key "budgets", "service_orders"
   add_foreign_key "service_order_items", "service_orders"
-  add_foreign_key "service_orders", "customers"
-  add_foreign_key "service_orders", "vehicles"
   add_foreign_key "vehicles", "customers"
 end

@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :product, class: "Domain::ServiceOrderItem::Product" do
+  factory :product, class: "Domain::Catalog::Product" do
     name { "Oil Filter" }
     description { "Engine oil filter" }
     stock_quantity { 10 }
