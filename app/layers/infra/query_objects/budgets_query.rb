@@ -11,9 +11,9 @@ module Infra
             next if value.blank?
 
             case key.to_sym
-            when :document_number
-              query = query.joins(service_order: :customer).where(
-                customers: { document_number: value }
+            when :customer_id
+              query = query.joins(:service_order).where(
+                customer_id: value
               )
             end
           end

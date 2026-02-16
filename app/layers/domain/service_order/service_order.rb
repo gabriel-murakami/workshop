@@ -1,8 +1,8 @@
 module Domain
   module ServiceOrder
     class ServiceOrder < Infra::Models::ApplicationRecord
-      belongs_to :customer, class_name: "Domain::Customer::Customer", required: true
-      belongs_to :vehicle, class_name: "Domain::Customer::Vehicle", required: true
+      # belongs_to :customer, class_name: "Domain::Customer::Customer", required: true
+      # belongs_to :vehicle, class_name: "Domain::Customer::Vehicle", required: true
 
       after_update_commit :send_status_update_email, if: :saved_change_to_status?
 
@@ -22,32 +22,44 @@ module Domain
 
       validates :status, presence: true
 
-      def add_services(services)
-        services.each do |service|
-          if self.service_order_items.services.any? { |soi| soi.item_id == service.dig(:item, :id) }
-            raise Exceptions::ServiceOrderException.new("Service #{service.dig(:item, :code)} already added")
+      def services
+        service_order_items.services
+      end
+
+      def products
+        service_order_items.products
+      end
+
+      def add_services(services_to_add)
+        services_to_add.each do |service|
+          if self.service_order_items.services.any? { |soi| soi.item_id == service.id }
+            raise ::Exceptions::ServiceOrderException.new("Service #{service.code} already added")
           end
 
           service_order_items.create(
-            item_id: service.dig(:item, :id),
+            item_id: service.id,
+            item_name: service.name,
+            item_code: service.code,
             item_kind: ServiceOrderItem::ITEM_KINDS[:service],
             quantity: 1,
-            total_value: service.dig(:item, :base_price)
+            total_value: service.base_price
           )
         end
       end
 
-      def add_products(products)
-        products.each do |product|
-          if self.service_order_items.products.any? { |soi| soi.item_id == product.dig(:item, :id) }
-            raise Exceptions::ServiceOrderException.new("Auto part #{product.dig(:item, :sku)} already added")
+      def add_products(products_to_add)
+        products_to_add.each do |product|
+          if self.service_order_items.products.any? { |soi| soi.item_id == product[:item].id }
+            raise Exceptions::ServiceOrderException.new("Auto part #{product[:item].sku} already added")
           end
 
           service_order_items.create(
-            item_id: product.dig(:item, :id),
+            item_id: product[:item].id,
+            item_name: product[:item].name,
+            item_code: product[:item].sku,
             item_kind: ServiceOrderItem::ITEM_KINDS[:product],
             quantity: product[:quantity],
-            total_value: product.dig(:item, :base_price) * product[:quantity]
+            total_value: product[:item].base_price * product[:quantity]
           )
         end
       end
@@ -55,7 +67,15 @@ module Domain
       private
 
       def send_status_update_email
-        ServiceOrderMailer.status_updated(self).deliver_later
+        ServiceOrderMailer.status_updated(self, customer, vehicle).deliver_later
+      end
+
+      def customer
+        Application::Customer::CustomerApplication.new.find_by_id(customer_id)
+      end
+
+      def vehicle
+        Application::Customer::VehicleApplication.new.find_by_id(vehicle_id)
       end
     end
   end

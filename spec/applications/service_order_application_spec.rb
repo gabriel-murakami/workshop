@@ -4,6 +4,29 @@ RSpec.describe Application::ServiceOrder::ServiceOrderApplication do
   let(:service_order_repository) { Infra::Repositories::ServiceOrderRepository.new }
   let(:application) { described_class.new(service_order: service_order_repository) }
 
+  let(:customer_payload) do
+    {
+      id: '123',
+      email: "customer@gmail.com"
+    }
+  end
+
+  let(:vehicle_payload) do
+    {
+      license_plate: 'XYZ-0000'
+    }
+  end
+
+  before do
+    allow_any_instance_of(
+      Application::Customer::CustomerApplication
+    ).to receive(:find_by_id).and_return(customer_payload)
+
+    allow_any_instance_of(
+      Application::Customer::VehicleApplication
+    ).to receive(:find_by_id).and_return(vehicle_payload)
+  end
+
   describe "#find_all" do
     it "returns filtered service orders" do
       so1 = create(:service_order, status: "received")
@@ -54,7 +77,7 @@ RSpec.describe Application::ServiceOrder::ServiceOrderApplication do
       application.add_services(command)
 
       service_order.reload
-      codes = service_order.service_order_items.map { |item| item.item.code }
+      codes = service_order.service_order_items.map { |item| item.item_code }
       expect(codes).to include("SVC001", "SVC002")
     end
   end
@@ -75,7 +98,7 @@ RSpec.describe Application::ServiceOrder::ServiceOrderApplication do
       application.add_products(command)
 
       service_order.reload
-      skus = service_order.service_order_items.map { |item| item.item.sku }
+      skus = service_order.service_order_items.map { |item| item.item_code }
 
       expect(skus).to include("AP001", "AP002")
       expect(product1.reload.stock_quantity).to eq(8)
@@ -99,7 +122,14 @@ RSpec.describe Application::ServiceOrder::ServiceOrderApplication do
       service_order = create(:service_order, status: "waiting_approval")
       product = create(:product, stock_quantity: 5)
 
-      create(:service_order_item, service_order: service_order, quantity: 2, item: product)
+      create(
+        :service_order_item,
+        service_order: service_order,
+        quantity: 2,
+        item_kind: "product",
+        item_id: product.id
+      )
+
       command = Application::ServiceOrder::Commands::CancelServiceOrderCommand.new(service_order_id: service_order.id)
 
       application.cancel_service_order(command)
@@ -125,7 +155,7 @@ RSpec.describe Application::ServiceOrder::ServiceOrderApplication do
 
       expect {
         application.start_service_order(command)
-      }.to raise_error(Exceptions::ServiceOrderException, "Service order already started")
+      }.to raise_error(::Exceptions::ServiceOrderException, "Service order already started")
     end
   end
 
@@ -146,7 +176,7 @@ RSpec.describe Application::ServiceOrder::ServiceOrderApplication do
 
       expect {
         application.finish_service_order(command)
-      }.to raise_error(Exceptions::ServiceOrderException, "Service order already finished")
+      }.to raise_error(::Exceptions::ServiceOrderException, "Service order already finished")
     end
   end
 end

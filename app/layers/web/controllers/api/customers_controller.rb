@@ -39,17 +39,6 @@ module Web
           head :ok
         end
 
-        def add_vehicle
-          command = Application::Customer::Commands::AddVehicleCommand.new(
-            customer_document_number: customer_params[:document_number],
-            vehicle_license_plate: permitted_params[:license_plate]
-          )
-
-          Application::Customer::CustomerApplication.new.add_vehicle(command)
-
-          head :ok
-        end
-
         private
 
         def permitted_params

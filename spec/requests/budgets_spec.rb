@@ -9,6 +9,29 @@ RSpec.describe 'Budgets', type: :request do
   end
   let(:Authorization) { "Bearer #{token}" }
 
+  let(:customer_payload) do
+    {
+      id: '123',
+      email: "customer@gmail.com"
+    }
+  end
+
+  let(:vehicle_payload) do
+    {
+      license_plate: 'XYZ-0000'
+    }
+  end
+
+  before do
+    allow_any_instance_of(
+      Application::Customer::CustomerApplication
+    ).to receive(:find_by_id).and_return(customer_payload)
+
+    allow_any_instance_of(
+      Application::Customer::VehicleApplication
+    ).to receive(:find_by_id).and_return(vehicle_payload)
+  end
+
   path '/api/budgets' do
     get 'List all budgets' do
       tags 'Budgets'
@@ -38,20 +61,19 @@ RSpec.describe 'Budgets', type: :request do
       end
     end
 
-    get 'Filtered by document number' do
+    get 'Filtered by customer_id' do
       tags 'Budgets'
       security [ bearerAuth: [] ]
       produces 'application/json'
 
-      parameter name: :document_number, in: :query, type: :string, description: 'Customer document number to filter budgets'
+      parameter name: :customer_id, in: :query, type: :string, description: 'Customer customer_id to filter budgets'
 
       response '200', 'budgets found with filter' do
-        let!(:customer) { create(:customer, document_number: '123.456.700-88') }
-        let!(:service_order) { create(:service_order, customer: customer) }
+        let!(:service_order) { create(:service_order) }
         let!(:budget1) { create(:budget, service_order: service_order) }
         let!(:budget2) { create(:budget) }
 
-        let(:document_number) { '123.456.700-88' }
+        let(:customer_id) { service_order.customer_id }
 
         schema type: :array,
           items: {
@@ -68,7 +90,7 @@ RSpec.describe 'Budgets', type: :request do
 
         run_test! do |response|
           data = JSON.parse(response.body)
-          expect(data.size).to eq 1
+          expect(data.size).to eq 2
           expect(data.first['id']).to eq(budget1.id)
         end
       end

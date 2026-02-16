@@ -9,6 +9,29 @@ RSpec.describe 'Service Orders', type: :request do
   end
   let(:Authorization) { "Bearer #{token}" }
 
+  let(:customer_payload) do
+    {
+      id: '123',
+      email: "customer@gmail.com"
+    }
+  end
+
+  let(:vehicle_payload) do
+    {
+      license_plate: 'XYZ-0000'
+    }
+  end
+
+  before do
+    allow_any_instance_of(
+      Application::Customer::CustomerApplication
+    ).to receive(:find_by_id).and_return(customer_payload)
+
+    allow_any_instance_of(
+      Application::Customer::VehicleApplication
+    ).to receive(:find_by_id).and_return(vehicle_payload)
+  end
+
   path '/api/service_orders/{id}' do
     get 'Get a service order by ID' do
       tags 'Service Orders'

@@ -59,6 +59,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_27_142912) do
     t.string "item_kind", null: false
     t.uuid "item_id", null: false
     t.string "item_name", null: false
+    t.string "item_code", null: false
     t.decimal "unit_price", precision: 12, scale: 2, default: "0.0", null: false
     t.decimal "total_value", precision: 12, scale: 2, default: "0.0", null: false
     t.datetime "created_at", null: false

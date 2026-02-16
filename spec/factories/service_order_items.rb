@@ -3,6 +3,8 @@ FactoryBot.define do
     association :service_order
     quantity { 1 }
     item_kind { "service" }
-    item_id { create(:service).id }
+    item_id { Faker::Internet.uuid }
+    item_code { "SVC007" }
+    item_name { "Fake Service" }
   end
 end

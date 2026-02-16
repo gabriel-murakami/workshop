@@ -20,14 +20,6 @@ class SeparateServices < ActiveRecord::Migration[7.2]
       t.timestamps
     end
 
-    create_table :users, id: :uuid, default: -> { "gen_random_uuid()" } do |t|
-      t.string :name, null: false
-      t.string :email, null: false, index: { unique: true }
-      t.string :password_digest, null: false
-      t.string :document_number, null: false, index: { unique: true }
-      t.timestamps
-    end
-
     # --- Catalog service ---
     create_table :services, id: :uuid, default: -> { "gen_random_uuid()" } do |t|
       t.string :code, null: false, index: { unique: true }
@@ -53,6 +45,14 @@ class SeparateServices < ActiveRecord::Migration[7.2]
     end
 
     # --- Service Orders service ---
+    create_table :users, id: :uuid, default: -> { "gen_random_uuid()" } do |t|
+      t.string :name, null: false
+      t.string :email, null: false, index: { unique: true }
+      t.string :password_digest, null: false
+      t.string :document_number, null: false, index: { unique: true }
+      t.timestamps
+    end
+
     create_table :service_orders, id: :uuid, default: -> { "gen_random_uuid()" } do |t|
       t.uuid :customer_id, null: false
       t.uuid :vehicle_id, null: false
@@ -82,12 +82,13 @@ class SeparateServices < ActiveRecord::Migration[7.2]
       t.string :item_kind, null: false
       t.uuid :item_id, null: false
       t.string :item_name, null: false
+      t.string :item_code, null: false
       t.decimal :unit_price, precision: 12, scale: 2, null: false, default: 0
       t.decimal :total_value, precision: 12, scale: 2, null: false, default: 0
 
       t.timestamps
 
-      t.index [:item_kind, :item_id]
+      t.index [ :item_kind, :item_id ]
     end
   end
 end

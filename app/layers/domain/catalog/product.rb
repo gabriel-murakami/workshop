@@ -13,7 +13,7 @@ module Domain
 
       def remove_product(stock_change)
         if stock_change > self.stock_quantity
-          raise Exceptions::ProductException.new("The amount removed cannot be greater than the total in stock")
+          raise ::Exceptions::ProductException.new("The amount removed cannot be greater than the total in stock")
         end
 
         self.stock_quantity -= stock_change

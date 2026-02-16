@@ -183,36 +183,4 @@ RSpec.describe 'Customers', type: :request do
       end
     end
   end
-
-  path '/api/customers/{document_number}/add_vehicle' do
-    patch 'Add vehicle to customer' do
-      tags 'Customers'
-      security [ bearerAuth: [] ]
-      consumes 'application/json'
-
-      parameter name: :document_number, in: :path, type: :string
-      parameter name: :vehicle, in: :body, schema: {
-        type: :object,
-        properties: {
-          license_plate: { type: :string }
-        },
-        required: [ 'license_plate' ]
-      }
-
-      response '200', 'vehicle added' do
-        let(:vehicle_record) { create(:vehicle, license_plate: "XYZ9999", customer: nil) }
-        let(:customer_record) { create(:customer) }
-        let(:document_number) { customer_record.document_number }
-        let(:vehicle) { { license_plate: vehicle_record.license_plate } }
-
-        run_test!
-      end
-
-      response '404', 'customer not found' do
-        let(:document_number) { 'nonexistent' }
-        let(:vehicle) { { license_plate: 'XYZ9876' } }
-        run_test!
-      end
-    end
-  end
 end

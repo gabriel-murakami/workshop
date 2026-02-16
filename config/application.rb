@@ -8,32 +8,14 @@ Bundler.require(*Rails.groups)
 
 module Workshop
   class Application < Rails::Application
-    # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.2
 
-    # Please, add to the `ignore` list any other `lib` subdirectories that do
-    # not contain `.rb` files, or that should not be reloaded or eager loaded.
-    # Common ones are `templates`, `generators`, or `middleware`, for example.
-    config.autoload_lib(ignore: %w[assets tasks])
-
-    # Configuration for the application, engines, and railties goes here.
-    #
-    # These settings can be overridden in specific environments using the files
-    # in config/environments, which are processed later.
-    #
-    # config.time_zone = "Central Time (US & Canada)"
     config.time_zone = "America/Sao_Paulo"
 
-    # Ajuste para autoload correto da pasta app/layers
-    config.eager_load_paths << Rails.root.join("app/layers")
+    # Forma correta no Rails 7.2
+    # config.paths.add "app/layers", eager_load: true
 
-    # Only loads a smaller set of middleware suitable for API only apps.
-    # Middleware like session, flash, cookies can be added back manually.
-    # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
-
-    # Configura o Zeitwerk para também carregar app/layers
-    Rails.autoloaders.main.push_dir(Rails.root.join("app/layers"))
 
     config.generators do |generator|
       generator.orm :active_record, primary_key_type: :uuid

@@ -1,4 +1,4 @@
-<h2>Olá, <%= @customer.name %>!</h2>
+<h2>Olá, <%= @customer[:name] %>!</h2>
 
 <p>
   Sua ordem de serviço <strong><%= @service_order.id %></strong> teve o status atualizado para:
@@ -7,13 +7,13 @@
 
 <p>Resumo da ordem de serviço:</p>
 <ul>
-  <li>Veículo: <%= @service_order.vehicle.license_plate %></li>
+  <li>Veículo: <%= @vehicle[:license_plate] %></li>
   <% if @service_order.services.any? %>
     <li>
       Serviços:
       <ul>
         <% @service_order.services.each do |service| %>
-          <li><%= service.name %></li>
+          <li><%= service.item_name %></li>
         <% end %>
       </ul>
     </li>
@@ -23,7 +23,7 @@
       Produtos/Peças:
       <ul>
         <% @service_order.products.each do |product| %>
-          <li><%= product.name %></li>
+          <li><%= product.item_name %></li>
         <% end %>
       </ul>
     </li>
