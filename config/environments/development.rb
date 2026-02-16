@@ -15,7 +15,7 @@ Rails.application.configure do
     config.cache_store = :null_store
   end
 
-  config.hosts << "web-service.workshop.svc.cluster.local"
+  config.hosts << "order-service.order-service.svc.cluster.local"
 
   config.active_storage.service = :local
   config.action_mailer.raise_delivery_errors = true
@@ -47,7 +47,7 @@ Rails.application.configure do
         trace_id: correlation.trace_id.to_s,
         span_id:  correlation.span_id.to_s,
         env:      Rails.env,
-        service:  "workshop"
+        service:  "order-service"
       },
       ddsource: "ruby"
     }

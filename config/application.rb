@@ -12,9 +12,6 @@ module Workshop
 
     config.time_zone = "America/Sao_Paulo"
 
-    # Forma correta no Rails 7.2
-    # config.paths.add "app/layers", eager_load: true
-
     config.api_only = true
 
     config.generators do |generator|

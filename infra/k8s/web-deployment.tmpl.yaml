@@ -5,7 +5,7 @@ metadata:
   namespace: workshop
   labels:
     app: web
-    tags.datadoghq.com/service: workshop
+    tags.datadoghq.com/service: order-service
     tags.datadoghq.com/env: development
     tags.datadoghq.com/version: "1.0.0"
 spec:
@@ -16,7 +16,7 @@ spec:
     metadata:
       labels:
         app: web
-        tags.datadoghq.com/service: workshop
+        tags.datadoghq.com/service: order-service
         tags.datadoghq.com/env: development
         tags.datadoghq.com/version: "1.0.0"
       annotations:
@@ -24,7 +24,7 @@ spec:
           [
             {
               "source": "ruby",
-              "service": "workshop"
+              "service": "order-service"
             }
           ]
     spec:
