@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: web-deployment
+  name: order-service-deployment
   namespace: workshop
   labels:
     app: order-service
