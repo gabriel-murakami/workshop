@@ -39,4 +39,4 @@ RUN chown -R appuser:appgroup /app/coverage
 EXPOSE 3000
 
 ENTRYPOINT ["/usr/bin/entrypoint.sh"]
-CMD ["bash", "-c", "bundle exec rails db:create && bundle exec rails db:migrate && bundle exec rails server -b 0.0.0.0"]
+CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0"]
