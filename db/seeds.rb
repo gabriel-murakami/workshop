@@ -24,11 +24,11 @@ clientes = [
 ].map { |attrs| Domain::Customer::Customer.create!(attrs) }
 
 veiculos = []
-veiculos << Domain::Customer::Vehicle.create!(customer: clientes[0], license_plate: "ABC1234", brand: "Toyota", model: "Corolla", year: 2020)
-veiculos << Domain::Customer::Vehicle.create!(customer: clientes[0], license_plate: "DEF5678", brand: "Ford", model: "Mustang", year: 2018)
-veiculos << Domain::Customer::Vehicle.create!(customer: clientes[1], license_plate: "GHI9012", brand: "Honda", model: "Civic", year: 2019)
-veiculos << Domain::Customer::Vehicle.create!(customer: clientes[2], license_plate: "JKL3456", brand: "Chevrolet", model: "Camaro", year: 2021)
-veiculos << Domain::Customer::Vehicle.create!(customer: clientes[3], license_plate: "EMP0001", brand: "Imperial", model: "Destroyer", year: 2022)
+veiculos << Domain::Customer::Vehicle.create!(customer_id: clientes[0].id, license_plate: "ABC1234", brand: "Toyota", model: "Corolla", year: 2020)
+veiculos << Domain::Customer::Vehicle.create!(customer_id: clientes[0].id, license_plate: "DEF5678", brand: "Ford", model: "Mustang", year: 2018)
+veiculos << Domain::Customer::Vehicle.create!(customer_id: clientes[1].id, license_plate: "GHI9012", brand: "Honda", model: "Civic", year: 2019)
+veiculos << Domain::Customer::Vehicle.create!(customer_id: clientes[2].id, license_plate: "JKL3456", brand: "Chevrolet", model: "Camaro", year: 2021)
+veiculos << Domain::Customer::Vehicle.create!(customer_id: clientes[3].id, license_plate: "EMP0001", brand: "Imperial", model: "Destroyer", year: 2022)
 
 servicos = [
   { code: "SVC001", name: "Troca de Óleo", description: "Substituir óleo do motor e filtro", base_price: 120.00 },
@@ -56,8 +56,8 @@ def add_item(order:, item:, kind:, quantity:)
 end
 
 os1 = Domain::ServiceOrder::ServiceOrder.create!(
-  customer: clientes[0],
-  vehicle: veiculos[0],
+  customer_id: clientes[0].id,
+  vehicle_id: veiculos[0].id,
   status: "waiting_approval",
   description: "Cliente relatou barulho estranho vindo do motor."
 )
@@ -73,8 +73,8 @@ Domain::ServiceOrder::Budget.create!(
 )
 
 os2 = Domain::ServiceOrder::ServiceOrder.create!(
-  customer: clientes[1],
-  vehicle: veiculos[2],
+  customer_id: clientes[1].id,
+  vehicle_id: veiculos[2].id,
   status: "in_progress",
   description: "Revisão de freios e troca de óleo de rotina.",
   service_started_at: Time.current
@@ -93,15 +93,15 @@ Domain::ServiceOrder::Budget.create!(
 )
 
 os3 = Domain::ServiceOrder::ServiceOrder.create!(
-  customer: clientes[3],
-  vehicle: veiculos[4],
+  customer_id: clientes[3].id,
+  vehicle_id: veiculos[4].id,
   status: "diagnosis",
   description: "Diagnóstico de barulho no motor em andamento."
 )
 
 os4 = Domain::ServiceOrder::ServiceOrder.create!(
-  customer: clientes[2],
-  vehicle: veiculos[3],
+  customer_id: clientes[2].id,
+  vehicle_id: veiculos[3].id,
   status: "in_progress",
   description: "Serviço em andamento há 15 minutos.",
   service_started_at: 15.minutes.ago
