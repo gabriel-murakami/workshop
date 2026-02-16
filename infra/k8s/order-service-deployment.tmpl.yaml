@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: web-deployment
+  name: order-service-deployment
   namespace: workshop
   labels:
-    app: web
-    tags.datadoghq.com/service: workshop
+    app: order-service
+    tags.datadoghq.com/service: order-service
     tags.datadoghq.com/env: development
     tags.datadoghq.com/version: "1.0.0"
 spec:
   selector:
     matchLabels:
-      app: web
+      app: order-service
   template:
     metadata:
       labels:
-        app: web
-        tags.datadoghq.com/service: workshop
+        app: order-service
+        tags.datadoghq.com/service: order-service
         tags.datadoghq.com/env: development
         tags.datadoghq.com/version: "1.0.0"
       annotations:
@@ -24,14 +24,14 @@ spec:
           [
             {
               "source": "ruby",
-              "service": "workshop"
+              "service": "order-service"
             }
           ]
     spec:
       imagePullSecrets:
         - name: ghcr-secret
       containers:
-        - name: web
+        - name: order-service
           image: "${IMAGE_URI}"
           imagePullPolicy: Always
           ports:

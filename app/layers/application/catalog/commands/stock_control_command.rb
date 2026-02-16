@@ -1,5 +1,5 @@
 module Application
-  module ServiceOrderItem
+  module Catalog
     module Commands
       class StockControlCommand
         attr_accessor :product_id, :stock_change

@@ -4,6 +4,6 @@ module Serializers
       :created_at, :updated_at, :customer_id, :vehicle_id
 
     has_one :budget
-    has_many :service_order_items, serializer: Serializers::Domain::ServiceOrderItem::ServiceOrderItemSerializer
+    has_many :service_order_items, serializer: ::Serializers::Domain::ServiceOrder::ServiceOrderItemSerializer
   end
 end

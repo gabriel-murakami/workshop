@@ -11,7 +11,7 @@ Rails.application.configure do
         trace_id: correlation.trace_id.to_s,
         span_id:  correlation.span_id.to_s,
         env:      Rails.env,
-        service:  "workshop"
+        service:  "order-service"
       },
       ddsource: "ruby",
       params: event.payload[:params].except("controller", "action", "format", "id"),

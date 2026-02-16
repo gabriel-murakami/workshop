@@ -2,7 +2,7 @@ module Infra
   module Repositories
     class ProductRepository
       def initialize(model = {})
-        @product = model.fetch(:product) { Domain::ServiceOrderItem::Product }
+        @product = model.fetch(:product) { Domain::Catalog::Product }
       end
 
       def save(product)

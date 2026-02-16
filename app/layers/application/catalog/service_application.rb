@@ -1,5 +1,5 @@
 module Application
-  module ServiceOrderItem
+  module Catalog
     class ServiceApplication
       def initialize(repositories = {})
         @service_repository = repositories.fetch(:service) { Infra::Repositories::ServiceRepository.new }
@@ -14,7 +14,7 @@ module Application
       end
 
       def create_service(create_service_command)
-        service = Domain::ServiceOrderItem::Service.new(create_service_command.service)
+        service = Domain::Catalog::Service.new(create_service_command.service)
 
         ActiveRecord::Base.transaction do
           @service_repository.save(service)

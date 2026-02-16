@@ -660,7 +660,7 @@ paths:
                           type: integer
                         total_value:
                           type: string
-                        item_type:
+                        item_kind:
                           type: string
                         item_id:
                           type: integer
@@ -668,7 +668,7 @@ paths:
                       - id
                       - quantity
                       - total_value
-                      - item_type
+                      - item_kind
                       - item_id
                 required:
                 - id

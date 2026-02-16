@@ -96,16 +96,16 @@ kubectl apply -f k8s/
 kubectl get pods -w
 
 ### Acessar o pod:
-kubectl exec -it deployment/web-deployment -- /bin/bash
+kubectl exec -it deployment/order-service-deployment -- /bin/bash
 
 ### Rodar as migrations:
-kubectl exec -it deployment/web-deployment -- bundle exec rake db:migrate
+kubectl exec -it deployment/order-service-deployment -- bundle exec rake db:migrate
 
 ### Criar os seeds:
-kubectl exec -it deployment/web-deployment -- bundle exec rake db:seed
+kubectl exec -it deployment/order-service-deployment -- bundle exec rake db:seed
 
 ### Reiniciar pods:
-kubectl rollout restart deployment web-deployment
+kubectl rollout restart deployment order-service-deployment
 
 ### (Local) Disponibilizar External IP
 minikube tunnel

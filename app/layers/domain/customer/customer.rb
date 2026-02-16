@@ -13,7 +13,7 @@ module Domain
 
       def add_vehicle(vehicle)
         if vehicle_already_have_owner?(vehicle)
-          raise Exceptions::CustomerException.new("Vehicle already have owner")
+          raise ::Exceptions::CustomerException.new("Vehicle already have owner")
         end
 
         self.vehicles << vehicle

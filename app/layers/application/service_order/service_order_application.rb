@@ -15,14 +15,14 @@ module Application
 
       def open_service_order(open_service_order_command)
         if open_service_order_command.document_number.nil? || open_service_order_command.license_plate.nil?
-          raise Exceptions::ServiceOrderException.new("Document number and license plate is required")
+          raise ::Exceptions::ServiceOrderException.new("Document number and license plate is required")
         end
 
         customer = find_customer(open_service_order_command.document_number)
         vehicle = find_vehicle(open_service_order_command.license_plate)
 
         if vehicle.customer != customer
-          raise Exceptions::ServiceOrderException.new("The vehicle does not belong to this customer")
+          raise ::Exceptions::ServiceOrderException.new("The vehicle does not belong to this customer")
         end
 
         service_order = Domain::ServiceOrder::ServiceOrder.new(customer_id: customer.id, vehicle_id: vehicle.id)
@@ -43,6 +43,10 @@ module Application
       end
 
       def create_service_order(create_service_order_command)
+        if create_service_order_command.customer_id.nil? || create_service_order_command.vehicle_id.nil?
+          raise ::Exceptions::ServiceOrderException.new("customer_id and vehicle_id is required")
+        end
+
         service_order = Domain::ServiceOrder::ServiceOrder.new(
           customer_id: create_service_order_command.customer_id,
           vehicle_id: create_service_order_command.vehicle_id
@@ -76,7 +80,7 @@ module Application
 
         datadog_statsd("diagnosis_time", service_order)
 
-        raise Exceptions::ServiceOrderException.new("The service order is not in diagnosis") unless service_order.diagnosis?
+        raise ::Exceptions::ServiceOrderException.new("The service order is not in diagnosis") unless service_order.diagnosis?
 
         ActiveRecord::Base.transaction do
           @service_order_repository.update(service_order, { status: "waiting_approval" })
@@ -92,13 +96,13 @@ module Application
       def add_services(add_services_command)
         service_order = @service_order_repository.find_by_id(add_services_command.service_order_id)
 
-        raise Exceptions::ServiceOrderException.new("The service order is not in diagnosis") unless service_order.diagnosis?
+        raise ::Exceptions::ServiceOrderException.new("The service order is not in diagnosis") unless service_order.diagnosis?
 
-        services = Application::ServiceOrderItem::ServiceApplication.new.find_services_by_codes(
+        services = Application::Catalog::ServiceApplication.new.find_services_by_codes(
           add_services_command.services_codes
         )
 
-        raise Exceptions::ServiceOrderException.new("Invalid services codes") if services.empty?
+        raise ::Exceptions::ServiceOrderException.new("Invalid services codes") if services.empty?
 
         updated_service_order = ActiveRecord::Base.transaction do
           service_order.add_services(services)
@@ -115,14 +119,14 @@ module Application
       def add_products(add_products_command)
         service_order = @service_order_repository.find_by_id(add_products_command.service_order_id)
 
-        raise Exceptions::ServiceOrderException.new("The service order is not in diagnosis") unless service_order.diagnosis?
+        raise ::Exceptions::ServiceOrderException.new("The service order is not in diagnosis") unless service_order.diagnosis?
 
         products_params = add_products_command.products_params
-        products = Application::ServiceOrderItem::ProductApplication.new.find_products_by_skus(
+        products = Application::Catalog::ProductApplication.new.find_products_by_skus(
           products_params.map { |param| param[:sku] }
         )
 
-        raise Exceptions::ServiceOrderException.new("Invalid products codes") if products.empty?
+        raise ::Exceptions::ServiceOrderException.new("Invalid products codes") if products.empty?
 
         products_list = products.map do |product|
           {
@@ -151,7 +155,7 @@ module Application
         datadog_statsd("waiting_approval_time", service_order)
 
         unless service_order.waiting_approval?
-          raise Exceptions::ServiceOrderException.new("The service order is not waiting approval")
+          raise ::Exceptions::ServiceOrderException.new("The service order is not waiting approval")
         end
 
         ActiveRecord::Base.transaction do
@@ -186,8 +190,8 @@ module Application
       def start_service_order(start_service_order_command)
         service_order = @service_order_repository.find_by_id(start_service_order_command.service_order_id)
 
-        raise Exceptions::ServiceOrderException.new("Service order already started") if service_order.in_progress?
-        raise Exceptions::ServiceOrderException.new("The service order is not approved") unless service_order.approved?
+        raise ::Exceptions::ServiceOrderException.new("Service order already started") if service_order.in_progress?
+        raise ::Exceptions::ServiceOrderException.new("The service order is not approved") unless service_order.approved?
 
         ActiveRecord::Base.transaction do
           @service_order_repository.update(
@@ -204,8 +208,8 @@ module Application
       def finish_service_order(finish_service_order_command)
         service_order = @service_order_repository.find_by_id(finish_service_order_command.service_order_id)
 
-        raise Exceptions::ServiceOrderException.new("Service order already finished") if service_order.finished?
-        raise Exceptions::ServiceOrderException.new("The service order is not started") unless service_order.in_progress?
+        raise ::Exceptions::ServiceOrderException.new("Service order already finished") if service_order.finished?
+        raise ::Exceptions::ServiceOrderException.new("The service order is not started") unless service_order.in_progress?
 
         ActiveRecord::Base.transaction do
           @service_order_repository.update(
@@ -277,23 +281,23 @@ module Application
 
       def replace_products(service_order)
         service_order.service_order_items.products.each do |service_order_item|
-          stock_control_command = Application::ServiceOrderItem::Commands::StockControlCommand.new(
+          stock_control_command = Application::Catalog::Commands::StockControlCommand.new(
             product_id: service_order_item.item_id,
             stock_change: service_order_item.quantity
           )
 
-          Application::ServiceOrderItem::ProductApplication.new.add_product(stock_control_command)
+          Application::Catalog::ProductApplication.new.add_product(stock_control_command)
         end
       end
 
       def remove_products(products)
         products.each do |product|
-          stock_control_command = Application::ServiceOrderItem::Commands::StockControlCommand.new(
+          stock_control_command = Application::Catalog::Commands::StockControlCommand.new(
             product_id: product[:item].id,
             stock_change: product[:quantity]
           )
 
-          Application::ServiceOrderItem::ProductApplication.new.remove_product(stock_control_command)
+          Application::Catalog::ProductApplication.new.remove_product(stock_control_command)
         end
       end
 

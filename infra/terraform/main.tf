@@ -7,7 +7,7 @@ resource "kubectl_manifest" "secret" {
 }
 
 resource "kubectl_manifest" "deployment" {
-  yaml_body  = file("${path.module}/../k8s/web-deployment.yaml")
+  yaml_body  = file("${path.module}/../k8s/order-service-deployment.yaml")
   depends_on = [kubectl_manifest.config, kubectl_manifest.secret]
 }
 

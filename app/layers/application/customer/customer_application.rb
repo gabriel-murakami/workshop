@@ -10,6 +10,10 @@ module Application
         @customer_repository.find_all
       end
 
+      def find_by_id(customer_id)
+        @customer_repository.find_by_id(customer_id)
+      end
+
       def find_by_document_number(document_number)
         @customer_repository.find_by_document_number(document_number)
       end

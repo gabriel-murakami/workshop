@@ -36,7 +36,7 @@ jobs:
           SECRET_KEY_BASE: ${{ secrets.SECRET_KEY_BASE }}
           INTERNAL_AUTH_TOKEN: ${{ secrets.INTERNAL_AUTH_TOKEN }}
         run: |
-          envsubst < infra/k8s/web-deployment.tmpl.yaml > infra/k8s/web-deployment.yaml
+          envsubst < infra/k8s/order-service-deployment.tmpl.yaml > infra/k8s/order-service-deployment.yaml
           envsubst < infra/k8s/web-secret.tmpl.yaml > infra/k8s/web-secret.yaml
 
       - uses: hashicorp/setup-terraform@v2
@@ -48,4 +48,4 @@ jobs:
 
       - name: Wait for deployment rollout
         run: |
-           kubectl rollout status deployment/web-deployment --timeout=140s -n $K8S_NAMESPACE
+           kubectl rollout status deployment/order-service-deployment --timeout=140s -n $K8S_NAMESPACE

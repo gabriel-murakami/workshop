@@ -1,8 +1,6 @@
 module Domain
-  module ServiceOrderItem
+  module Catalog
     class Product < Infra::Models::ApplicationRecord
-      has_many :service_order_items, as: :item
-
       validates :sku, presence: true, uniqueness: true,
                       format: { with: /\AAP\d{3}\z/, message: "must be in the format 'AP' followed by 3 digits" }
       validates :name, presence: true
@@ -15,7 +13,7 @@ module Domain
 
       def remove_product(stock_change)
         if stock_change > self.stock_quantity
-          raise Exceptions::ProductException.new("The amount removed cannot be greater than the total in stock")
+          raise ::Exceptions::ProductException.new("The amount removed cannot be greater than the total in stock")
         end
 
         self.stock_quantity -= stock_change

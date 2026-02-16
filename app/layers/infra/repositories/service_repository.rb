@@ -2,7 +2,7 @@ module Infra
   module Repositories
     class ServiceRepository
       def initialize(model = {})
-        @service = model.fetch(:service) { Domain::ServiceOrderItem::Service }
+        @service = model.fetch(:service) { Domain::Catalog::Service }
       end
 
       def save(service)
