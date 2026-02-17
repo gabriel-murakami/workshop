@@ -21,11 +21,11 @@ module Application
         customer = find_customer(open_service_order_command.document_number)
         vehicle = find_vehicle(open_service_order_command.license_plate)
 
-        if vehicle.customer != customer
+        if vehicle[:customer_id] != customer[:id]
           raise ::Exceptions::ServiceOrderException.new("The vehicle does not belong to this customer")
         end
 
-        service_order = Domain::ServiceOrder::ServiceOrder.new(customer_id: customer.id, vehicle_id: vehicle.id)
+        service_order = Domain::ServiceOrder::ServiceOrder.new(customer_id: customer[:id], vehicle_id: vehicle[:id])
 
         created_service_order = ActiveRecord::Base.transaction do
           @service_order_repository.save(service_order)

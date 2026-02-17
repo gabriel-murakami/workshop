@@ -1,18 +1,9 @@
 require 'swagger_helper'
 
 RSpec.describe 'Products', type: :request do
-  let(:user) { create(:user) }
-  let(:token) do
-    secret_key = Rails.application.credentials.jwt_secret || ENV["JWT_SECRET"]
-    payload = { user_id: user.id, exp: 24.hours.from_now.to_i, cpf: user.document_number, iss: 'auth.local', aud: 'api.local' }
-    JWT.encode(payload, secret_key, 'HS256')
-  end
-  let(:Authorization) { "Bearer #{token}" }
-
   path '/api/products' do
     get 'List all products' do
       tags 'Products'
-      security [ bearerAuth: [] ]
       produces 'application/json'
 
       response '200', 'products found' do
@@ -40,7 +31,6 @@ RSpec.describe 'Products', type: :request do
 
     post 'Create a new product' do
       tags 'Products'
-      security [ bearerAuth: [] ]
       consumes 'application/json'
       produces 'application/json'
 
@@ -85,7 +75,6 @@ RSpec.describe 'Products', type: :request do
   path '/api/products/{id}' do
     get 'Get product by id' do
       tags 'Products'
-      security [ bearerAuth: [] ]
       produces 'application/json'
 
       parameter name: :id, in: :path, type: :integer, description: 'Auto part ID'
@@ -118,7 +107,6 @@ RSpec.describe 'Products', type: :request do
 
     put 'Update product by id' do
       tags 'Products'
-      security [ bearerAuth: [] ]
       consumes 'application/json'
       produces 'application/json'
 
@@ -163,7 +151,6 @@ RSpec.describe 'Products', type: :request do
 
     delete 'Delete product by id' do
       tags 'Products'
-      security [ bearerAuth: [] ]
       parameter name: :id, in: :path, type: :integer
 
       response '200', 'product deleted' do
@@ -181,7 +168,6 @@ RSpec.describe 'Products', type: :request do
   path '/api/products/{id}/add' do
     post 'Add stock quantity to product' do
       tags 'Products'
-      security [ bearerAuth: [] ]
       consumes 'application/json'
       produces 'application/json'
 
@@ -210,7 +196,6 @@ RSpec.describe 'Products', type: :request do
   path '/api/products/{id}/remove' do
     post 'Remove stock quantity from product' do
       tags 'Products'
-      security [ bearerAuth: [] ]
       consumes 'application/json'
       produces 'application/json'
 

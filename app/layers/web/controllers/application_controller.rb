@@ -9,10 +9,6 @@ module Web
         render_and_log_error(:not_found, e.message)
       end
 
-      rescue_from ::Exceptions::CustomerException do |e|
-        render_and_log_error(:unprocessable_entity, e.message, "Customer")
-      end
-
       rescue_from ::Exceptions::ProductException do |e|
         render_and_log_error(:unprocessable_entity, e.message, "Product")
       end

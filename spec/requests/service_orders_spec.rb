@@ -1,41 +1,30 @@
 require 'swagger_helper'
 
 RSpec.describe 'Service Orders', type: :request do
-  let(:user) { create(:user) }
-  let(:token) do
-    secret_key = Rails.application.credentials.jwt_secret || ENV["JWT_SECRET"]
-    payload = { user_id: user.id, exp: 24.hours.from_now.to_i, cpf: user.document_number, iss: 'auth.local', aud: 'api.local' }
-    JWT.encode(payload, secret_key, 'HS256')
-  end
-  let(:Authorization) { "Bearer #{token}" }
-
-  let(:customer_payload) do
-    {
-      id: '123',
-      email: "customer@gmail.com"
-    }
-  end
-
-  let(:vehicle_payload) do
-    {
-      license_plate: 'XYZ-0000'
-    }
-  end
+  let(:customer_id) { Faker::Internet.uuid }
+  let(:vehicle_id) { Faker::Internet.uuid }
 
   before do
-    allow_any_instance_of(
-      Application::Customer::CustomerApplication
-    ).to receive(:find_by_id).and_return(customer_payload)
+    client_double = instance_double(Infra::Clients::CustomerServiceClient)
 
-    allow_any_instance_of(
-      Application::Customer::VehicleApplication
-    ).to receive(:find_by_id).and_return(vehicle_payload)
+    allow(Infra::Clients::CustomerServiceClient)
+      .to receive(:new)
+      .and_return(client_double)
+
+    allow(client_double)
+      .to receive(:customer_by_document)
+      .with("12345678900")
+      .and_return({ id: customer_id })
+
+    allow(client_double)
+      .to receive(:vehicle_by_license_plate)
+      .with("ABC1234")
+      .and_return({ id: vehicle_id, customer_id: customer_id })
   end
 
   path '/api/service_orders/{id}' do
     get 'Get a service order by ID' do
       tags 'Service Orders'
-      security [ bearerAuth: [] ]
       produces 'application/json'
 
       parameter name: :id, in: :path, type: :integer, required: true
@@ -89,7 +78,6 @@ RSpec.describe 'Service Orders', type: :request do
   path '/api/service_orders/{id}/send_to_diagnosis' do
     post 'Send service order to diagnosis' do
       tags 'Service Orders'
-      security [ bearerAuth: [] ]
       consumes 'application/json'
       produces 'application/json'
 
@@ -116,7 +104,6 @@ RSpec.describe 'Service Orders', type: :request do
   path '/api/service_orders/{id}/send_to_approval' do
     post 'Send service order to waiting approval' do
       tags 'Service Orders'
-      security [ bearerAuth: [] ]
       consumes 'application/json'
       produces 'application/json'
 
@@ -143,7 +130,6 @@ RSpec.describe 'Service Orders', type: :request do
   path '/api/service_orders' do
     get 'List all service orders' do
       tags 'Service Orders'
-      security [ bearerAuth: [] ]
       produces 'application/json'
 
       response '200', 'success' do
@@ -178,7 +164,6 @@ RSpec.describe 'Service Orders', type: :request do
   path '/api/service_orders/{id}/add_services' do
     post 'Add services to a service order' do
       tags 'Service Orders'
-      security [ bearerAuth: [] ]
       consumes 'application/json'
       produces 'application/json'
 
@@ -215,7 +200,6 @@ RSpec.describe 'Service Orders', type: :request do
   path '/api/service_orders/{id}/add_products' do
     post 'Add products to a service order' do
       tags 'Service Orders'
-      security [ bearerAuth: [] ]
       consumes 'application/json'
       produces 'application/json'
 
@@ -260,7 +244,6 @@ RSpec.describe 'Service Orders', type: :request do
   path '/api/service_orders/{id}/start' do
     post 'Start a service order' do
       tags 'Service Orders'
-      security [ bearerAuth: [] ]
       consumes 'application/json'
       produces 'application/json'
 
@@ -304,7 +287,6 @@ RSpec.describe 'Service Orders', type: :request do
   path '/api/service_orders/{id}/finish' do
     post 'Finish a service order' do
       tags 'Service Orders'
-      security [ bearerAuth: [] ]
       consumes 'application/json'
       produces 'application/json'
 
@@ -339,46 +321,9 @@ RSpec.describe 'Service Orders', type: :request do
     end
   end
 
-  path '/api/service_orders' do
-    post 'Create a new service order' do
-      tags 'Service Orders'
-      security [ bearerAuth: [] ]
-      consumes 'application/json'
-      produces 'application/json'
-
-      parameter name: :service_order, in: :body, schema: {
-        type: :object,
-        properties: {
-          customer_id: { type: :string },
-          vehicle_id: { type: :string }
-        },
-        required: [ 'customer_id', 'vehicle_id' ]
-      }
-
-      response '201', 'service order created' do
-        let(:customer) { create(:customer) }
-        let(:vehicle) { create(:vehicle, customer: customer) }
-        let(:service_order) { { customer_id: customer.id, vehicle_id: vehicle.id } }
-
-        run_test! do |response|
-          json = JSON.parse(response.body)
-          expect(json['customer_id']).to eq(customer.id)
-          expect(json['vehicle_id']).to eq(vehicle.id)
-          expect(json['id']).to be_present
-        end
-      end
-
-      response '422', 'invalid request' do
-        let(:service_order) { { customer_id: nil, vehicle_id: nil } }
-        run_test!
-      end
-    end
-  end
-
   path '/api/service_orders/open' do
     post 'Open (create) a service order with full details' do
       tags 'Service Orders'
-      security [ bearerAuth: [] ]
       consumes 'application/json'
       produces 'application/json'
 
@@ -410,13 +355,11 @@ RSpec.describe 'Service Orders', type: :request do
         let(:service1) { create(:service) }
         let(:service2) { create(:service) }
         let(:product)  { create(:product) }
-        let(:customer) { create(:customer) }
-        let(:vehicle) { create(:vehicle, customer: customer) }
 
         let(:body) do
           {
-            document_number: customer.document_number,
-            license_plate: vehicle.license_plate,
+            document_number: "12345678900",
+            license_plate: "ABC1234",
             services_codes: [ service1.code, service2.code ],
             products_params: [
               { sku: product.sku, quantity: 2 }
@@ -427,8 +370,8 @@ RSpec.describe 'Service Orders', type: :request do
         run_test! do |response|
           json = JSON.parse(response.body)
           expect(json['id']).to be_present
-          expect(json['customer_id']).to eq(customer.id)
-          expect(json['vehicle_id']).to eq(vehicle.id)
+          expect(json['customer_id']).to eq(customer_id)
+          expect(json['vehicle_id']).to eq(vehicle_id)
           expect(json['service_order_items']).to be_an(Array)
           expect(json['service_order_items'].size).to eq(3)
         end

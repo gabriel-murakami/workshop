@@ -4,7 +4,7 @@ module Domain
       # belongs_to :customer, class_name: "Domain::Customer::Customer", required: true
       # belongs_to :vehicle, class_name: "Domain::Customer::Vehicle", required: true
 
-      after_update_commit :send_status_update_email, if: :saved_change_to_status?
+      # after_update_commit :send_status_update_email, if: :saved_change_to_status?
 
       has_one :budget, dependent: :destroy
       has_many :service_order_items, class_name: "Domain::ServiceOrder::ServiceOrderItem", dependent: :destroy
@@ -66,17 +66,9 @@ module Domain
 
       private
 
-      def send_status_update_email
-        ServiceOrderMailer.status_updated(self, customer, vehicle).deliver_later
-      end
-
-      def customer
-        Application::Customer::CustomerApplication.new.find_by_id(customer_id)
-      end
-
-      def vehicle
-        Application::Customer::VehicleApplication.new.find_by_id(vehicle_id)
-      end
+      # def send_status_update_email
+      #   ServiceOrderMailer.status_updated(service_order, customer, vehicle).deliver_later
+      # end
     end
   end
 end

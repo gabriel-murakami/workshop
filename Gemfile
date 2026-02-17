@@ -12,6 +12,7 @@ gem "active_model_serializers"
 gem "datadog", require: "datadog/auto_instrument"
 gem "lograge"
 gem "dogstatsd-ruby"
+gem "faraday"
 
 group :test do
   gem "simplecov", require: false

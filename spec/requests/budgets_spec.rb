@@ -1,41 +1,9 @@
 require 'swagger_helper'
 
 RSpec.describe 'Budgets', type: :request do
-  let(:user) { create(:user) }
-  let(:token) do
-    secret_key = Rails.application.credentials.jwt_secret || ENV["JWT_SECRET"]
-    payload = { user_id: user.id, exp: 24.hours.from_now.to_i, cpf: user.document_number, iss: 'auth.local', aud: 'api.local' }
-    JWT.encode(payload, secret_key, 'HS256')
-  end
-  let(:Authorization) { "Bearer #{token}" }
-
-  let(:customer_payload) do
-    {
-      id: '123',
-      email: "customer@gmail.com"
-    }
-  end
-
-  let(:vehicle_payload) do
-    {
-      license_plate: 'XYZ-0000'
-    }
-  end
-
-  before do
-    allow_any_instance_of(
-      Application::Customer::CustomerApplication
-    ).to receive(:find_by_id).and_return(customer_payload)
-
-    allow_any_instance_of(
-      Application::Customer::VehicleApplication
-    ).to receive(:find_by_id).and_return(vehicle_payload)
-  end
-
   path '/api/budgets' do
     get 'List all budgets' do
       tags 'Budgets'
-      security [ bearerAuth: [] ]
       produces 'application/json'
 
       response '200', 'budgets found' do
@@ -63,7 +31,6 @@ RSpec.describe 'Budgets', type: :request do
 
     get 'Filtered by customer_id' do
       tags 'Budgets'
-      security [ bearerAuth: [] ]
       produces 'application/json'
 
       parameter name: :customer_id, in: :query, type: :string, description: 'Customer customer_id to filter budgets'
@@ -100,7 +67,6 @@ RSpec.describe 'Budgets', type: :request do
   path '/api/budgets/{id}' do
     get 'Get budget by id' do
       tags 'Budgets'
-      security [ bearerAuth: [] ]
       produces 'application/json'
 
       parameter name: :id, in: :path, type: :integer, description: 'Budget ID'
@@ -136,7 +102,6 @@ RSpec.describe 'Budgets', type: :request do
   path '/api/budgets/{id}/approve' do
     post 'Approve a budget' do
       tags 'Budgets'
-      security [ bearerAuth: [] ]
 
       parameter name: :id, in: :path, type: :integer, description: 'Budget ID'
 
@@ -158,7 +123,6 @@ RSpec.describe 'Budgets', type: :request do
   path '/api/budgets/{id}/reject' do
     post 'Reject a budget' do
       tags 'Budgets'
-      security [ bearerAuth: [] ]
 
       parameter name: :id, in: :path, type: :integer, description: 'Budget ID'
 
