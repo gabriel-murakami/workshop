@@ -13,6 +13,8 @@ gem "datadog", require: "datadog/auto_instrument"
 gem "lograge"
 gem "dogstatsd-ruby"
 gem "faraday"
+gem "sneakers"
+gem "bunny"
 
 group :test do
   gem "simplecov", require: false

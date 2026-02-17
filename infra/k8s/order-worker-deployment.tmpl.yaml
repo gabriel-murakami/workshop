@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-worker
+  namespace: workshop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: order-worker
+  template:
+    metadata:
+      labels:
+        app: order-worker
+    spec:
+      containers:
+        - name: order-worker
+          image: ${IMAGE_URI}
+          command: ["bundle", "exec", "sneakers", "run"]
+          envFrom:
+            - secretRef:
+                name: web-secret

@@ -165,6 +165,14 @@ module Application
           )
         end
 
+        EventBus::Publisher.publish(
+          "order.approved",
+          {
+            order_id: service_order.id,
+            amount: service_order.budget.total_value
+          }
+        )
+
         Rails.logger.info({ service_order_id: service_order.id, status: "approved", timestamp: Time.current })
 
         service_order

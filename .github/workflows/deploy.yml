@@ -36,8 +36,12 @@ jobs:
           SECRET_KEY_BASE: ${{ secrets.SECRET_KEY_BASE }}
           INTERNAL_AUTH_TOKEN: ${{ secrets.INTERNAL_AUTH_TOKEN }}
           CUSTOMER_SERVICE_URL: ${{ secrets.CUSTOMER_SERVICE_URL }}
+          RABBITMQ_HOST: ${{ secrets.RABBITMQ_HOST }}
+          RABBITMQ_USER: ${{ secrets.RABBITMQ_USER }}
+          RABBITMQ_PASSWORD: ${{ secrets.RABBITMQ_PASSWORD }}
         run: |
           envsubst < infra/k8s/order-service-deployment.tmpl.yaml > infra/k8s/order-service-deployment.yaml
+          envsubst < infra/k8s/order-worker-deployment.tmpl.yaml > infra/k8s/order-worker-deployment.yaml
           envsubst < infra/k8s/web-secret.tmpl.yaml > infra/k8s/web-secret.yaml
 
       - uses: hashicorp/setup-terraform@v2
@@ -47,6 +51,7 @@ jobs:
       - run: terraform -chdir=infra/terraform init -input=false
       - run: terraform -chdir=infra/terraform apply -auto-approve
 
-      - name: Wait for deployment rollout
+      - name: Wait for deployments rollout
         run: |
-           kubectl rollout status deployment/order-service-deployment --timeout=140s -n $K8S_NAMESPACE
+          kubectl rollout status deployment/order-service-deployment --timeout=140s -n $K8S_NAMESPACE
+          kubectl rollout status deployment/order-worker --timeout=140s -n $K8S_NAMESPACE
