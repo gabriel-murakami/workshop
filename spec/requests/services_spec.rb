@@ -1,18 +1,9 @@
 require 'swagger_helper'
 
 RSpec.describe 'Services', type: :request do
-  let(:user) { create(:user) }
-  let(:token) do
-    secret_key = Rails.application.credentials.jwt_secret || ENV["JWT_SECRET"]
-    payload = { user_id: user.id, exp: 24.hours.from_now.to_i, cpf: user.document_number, iss: 'auth.local', aud: 'api.local' }
-    JWT.encode(payload, secret_key, 'HS256')
-  end
-  let(:Authorization) { "Bearer #{token}" }
-
   path '/api/services' do
     get 'List all services' do
       tags 'Services'
-      security [ bearerAuth: [] ]
       produces 'application/json'
 
       response '200', 'services found' do
@@ -39,7 +30,6 @@ RSpec.describe 'Services', type: :request do
 
     post 'Create a new service' do
       tags 'Services'
-      security [ bearerAuth: [] ]
       consumes 'application/json'
       produces 'application/json'
 
@@ -81,7 +71,6 @@ RSpec.describe 'Services', type: :request do
   path '/api/services/{id}' do
     get 'Get service by id' do
       tags 'Services'
-      security [ bearerAuth: [] ]
       produces 'application/json'
 
       parameter name: :id, in: :path, type: :integer, description: 'Service ID'
@@ -113,7 +102,6 @@ RSpec.describe 'Services', type: :request do
 
     put 'Update service by id' do
       tags 'Services'
-      security [ bearerAuth: [] ]
       consumes 'application/json'
       produces 'application/json'
 
@@ -156,7 +144,6 @@ RSpec.describe 'Services', type: :request do
 
     delete 'Delete service by id' do
       tags 'Services'
-      security [ bearerAuth: [] ]
       parameter name: :id, in: :path, type: :integer
 
       response '200', 'service deleted' do

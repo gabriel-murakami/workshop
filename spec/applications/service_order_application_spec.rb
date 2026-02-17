@@ -4,29 +4,6 @@ RSpec.describe Application::ServiceOrder::ServiceOrderApplication do
   let(:service_order_repository) { Infra::Repositories::ServiceOrderRepository.new }
   let(:application) { described_class.new(service_order: service_order_repository) }
 
-  let(:customer_payload) do
-    {
-      id: '123',
-      email: "customer@gmail.com"
-    }
-  end
-
-  let(:vehicle_payload) do
-    {
-      license_plate: 'XYZ-0000'
-    }
-  end
-
-  before do
-    allow_any_instance_of(
-      Application::Customer::CustomerApplication
-    ).to receive(:find_by_id).and_return(customer_payload)
-
-    allow_any_instance_of(
-      Application::Customer::VehicleApplication
-    ).to receive(:find_by_id).and_return(vehicle_payload)
-  end
-
   describe "#find_all" do
     it "returns filtered service orders" do
       so1 = create(:service_order, status: "received")

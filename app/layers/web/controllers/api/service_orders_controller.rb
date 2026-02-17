@@ -33,18 +33,6 @@ module Web
             serializer: ::Serializers::Domain::ServiceOrder::ServiceOrderSerializer
         end
 
-        def create
-          service_order = Application::ServiceOrder::ServiceOrderApplication.new.create_service_order(
-            Application::ServiceOrder::Commands::CreateServiceOrderCommand.new(
-              customer_id: permitted_params[:customer_id],
-              vehicle_id: permitted_params[:vehicle_id]
-            )
-          )
-
-          render json: service_order, status: :created,
-           serializer: ::Serializers::Domain::ServiceOrder::ServiceOrderSerializer
-        end
-
         def send_to_diagnosis
           command = Application::ServiceOrder::Commands::SendToDiagnosisCommand.new(
             service_order_id: permitted_params[:id]

@@ -44,6 +44,11 @@ spec:
                 secretKeyRef:
                   name: web-secret
                   key: INTERNAL_AUTH_TOKEN
+            - name: CUSTOMER_SERVICE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: CUSTOMER_SERVICE_URL
             - name: DD_TRACE_ENABLED
               value: "true"
             - name: DD_AGENT_HOST
