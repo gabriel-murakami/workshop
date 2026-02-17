@@ -21,9 +21,7 @@ RSpec.describe Infra::Clients::CustomerServiceClient do
   describe "#customer_by_document" do
     context "when request succeeds" do
       before do
-        stubs.get("/api/customers") do |env|
-          expect(env.params["document_number"]).to eq("12345678900")
-
+        stubs.get("/api/customers/12345678900") do |env|
           [
             200,
             { "Content-Type" => "application/json" },
@@ -43,7 +41,7 @@ RSpec.describe Infra::Clients::CustomerServiceClient do
 
     context "when request fails" do
       before do
-        stubs.get("/api/customers") do |_env|
+        stubs.get("/api/customers/000") do |_env|
           [
             404,
             { "Content-Type" => "application/json" },
@@ -65,9 +63,7 @@ RSpec.describe Infra::Clients::CustomerServiceClient do
 
   describe "#vehicle_by_license_plate" do
     before do
-      stubs.get("/api/vehicles") do |env|
-        expect(env.params["license_plate"]).to eq("ABC1234")
-
+      stubs.get("/api/vehicles/ABC1234") do |env|
         [
           200,
           { "Content-Type" => "application/json" },

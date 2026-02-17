@@ -19,11 +19,11 @@ module Infra
       end
 
       def customer_by_document(document_number)
-        handle_response(@conn.get("/api/customers", { document_number: document_number }))
+        handle_response(@conn.get("/api/customers/#{document_number}"))
       end
 
       def vehicle_by_license_plate(plate)
-        handle_response(@conn.get("/api/vehicles", { license_plate: plate }))
+        handle_response(@conn.get("/api/vehicles/#{plate}"))
       end
 
       private
