@@ -84,8 +84,14 @@ RSpec.describe Application::ServiceOrder::ServiceOrderApplication do
   end
 
   describe "#approve_service_order" do
+    before do
+      allow(EventBus::Publisher).to receive(:publish).and_return(true)
+    end
+
     it "updates status to approved" do
       service_order = create(:service_order, status: "waiting_approval")
+      budget = create(:budget, service_order: service_order)
+
       command = Application::ServiceOrder::Commands::ApproveServiceOrderCommand.new(service_order_id: service_order.id)
 
       application.approve_service_order(command)

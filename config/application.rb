@@ -14,6 +14,9 @@ module Workshop
 
     config.api_only = true
 
+    config.autoload_paths << Rails.root.join("app/layers")
+    config.eager_load_paths << Rails.root.join("app/layers")
+
     config.generators do |generator|
       generator.orm :active_record, primary_key_type: :uuid
     end

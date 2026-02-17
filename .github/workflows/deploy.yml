@@ -54,4 +54,3 @@ jobs:
       - name: Wait for deployments rollout
         run: |
           kubectl rollout status deployment/order-service-deployment --timeout=140s -n $K8S_NAMESPACE
-          kubectl rollout status deployment/order-worker --timeout=140s -n $K8S_NAMESPACE

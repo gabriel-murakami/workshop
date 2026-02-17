@@ -1,10 +1,9 @@
 Sneakers.configure(
   amqp: "amqp://#{ENV['RABBITMQ_USER']}:#{ENV['RABBITMQ_PASSWORD']}@#{ENV['RABBITMQ_HOST']}:5672",
-  workers: 2,
-  threads: 2,
+  exchange: "app.exchange",
+  exchange_type: :direct,
   durable: true,
-  ack: true,
-  heartbeat: 30
+  workers: 1
 )
 
 Sneakers.logger.level = Logger::INFO

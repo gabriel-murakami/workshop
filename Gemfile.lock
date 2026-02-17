@@ -412,6 +412,7 @@ DEPENDENCIES
   bcrypt
   bootsnap
   brakeman
+  bunny
   cpf_cnpj
   datadog
   debug

@@ -1,8 +1,13 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: order-worker
+  name: order-worker-deployment
   namespace: workshop
+  labels:
+    app: order-worker
+    tags.datadoghq.com/service: order-worker
+    tags.datadoghq.com/env: development
+    tags.datadoghq.com/version: "1.0.0"
 spec:
   replicas: 1
   selector:
@@ -12,11 +17,117 @@ spec:
     metadata:
       labels:
         app: order-worker
+        tags.datadoghq.com/service: order-worker
+        tags.datadoghq.com/env: development
+        tags.datadoghq.com/version: "1.0.0"
     spec:
+      imagePullSecrets:
+        - name: ghcr-secret
       containers:
         - name: order-worker
-          image: ${IMAGE_URI}
-          command: ["bundle", "exec", "sneakers", "run"]
-          envFrom:
-            - secretRef:
-                name: web-secret
+          image: "${IMAGE_URI}"
+          imagePullPolicy: Always
+          command:
+            - bundle
+            - exec
+            - ruby
+            - bin/order_worker
+          env:
+            - name: DD_TRACE_HTTP_CLIENT_IGNORE_URLS
+              value: "/up"
+            - name: INTERNAL_AUTH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: INTERNAL_AUTH_TOKEN
+            - name: CUSTOMER_SERVICE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: CUSTOMER_SERVICE_URL
+            - name: DD_TRACE_ENABLED
+              value: "true"
+            - name: DD_AGENT_HOST
+              value: datadog-agent
+            - name: DD_TRACE_AGENT_PORT
+              value: "8126"
+            - name: DD_SERVICE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.labels['tags.datadoghq.com/service']
+            - name: DD_ENV
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.labels['tags.datadoghq.com/env']
+            - name: DD_VERSION
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.labels['tags.datadoghq.com/version']
+            - name: DD_TRACE_HTTP_CLIENT_IGNORE_URLS
+              value: "/up"
+            - name: RAILS_LOG_TO_STDOUT
+              value: "true"
+            - name: RABBITMQ_HOST
+              value: rabbitmq
+            - name: RABBITMQ_USER
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-secret
+                  key: RABBITMQ_DEFAULT_USER
+            - name: RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-secret
+                  key: RABBITMQ_DEFAULT_PASS
+            - name: UID
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: UID
+            - name: GID
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: GID
+            - name: DATABASE_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: DATABASE_HOST
+            - name: DATABASE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: DATABASE_USERNAME
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: DATABASE_PASSWORD
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: JWT_SECRET
+            - name: SMTP_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: SMTP_USERNAME
+            - name: SMTP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: SMTP_PASSWORD
+            - name: SECRET_KEY_BASE
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: SECRET_KEY_BASE
+          resources:
+            requests:
+              cpu: "200m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"

@@ -13,10 +13,12 @@ module Infra
                 ack: true
 
       def work(raw_message)
-        payload = JSON.parse(raw_message)
+        payload = JSON.parse(raw_message, symbolize_names: true)
 
-        Rails.logger("ORDER APPROVED")
-        Rails.logger(payload)
+        Rails.logger.info("ORDER APPROVED")
+        Rails.logger.info(payload)
+
+        Application::ServiceOrder::ServiceOrderApplication.new.send_to_pending_payment(payload[:service_order_id])
 
         ack!
       rescue => e

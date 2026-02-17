@@ -71,6 +71,18 @@ spec:
               value: "/up"
             - name: RAILS_LOG_TO_STDOUT
               value: "true"
+            - name: RABBITMQ_HOST
+              value: rabbitmq
+            - name: RABBITMQ_USER
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-secret
+                  key: RABBITMQ_DEFAULT_USER
+            - name: RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-secret
+                  key: RABBITMQ_DEFAULT_PASS
             - name: UID
               valueFrom:
                 configMapKeyRef:

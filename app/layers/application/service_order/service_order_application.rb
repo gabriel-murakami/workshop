@@ -75,6 +75,16 @@ module Application
         service_order
       end
 
+      def send_to_pending_payment(service_order_id)
+        service_order = @service_order_repository.find_by_id(service_order_id)
+
+        ActiveRecord::Base.transaction do
+          @service_order_repository.update(service_order, { status: "pending_payment" })
+        end
+
+        Rails.logger.info({ service_order_id: service_order.id, status: "pending_payment", timestamp: Time.current })
+      end
+
       def send_to_approval(send_to_approval_command, service_order = nil)
         service_order = service_order || @service_order_repository.find_by_id(send_to_approval_command.service_order_id)
 
@@ -168,7 +178,7 @@ module Application
         EventBus::Publisher.publish(
           "order.approved",
           {
-            order_id: service_order.id,
+            service_order_id: service_order.id,
             amount: service_order.budget.total_value
           }
         )
