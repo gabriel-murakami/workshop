@@ -14,6 +14,7 @@ module Domain
         diagnosis: "diagnosis",
         waiting_approval: "waiting_approval",
         approved: "approved",
+        pending_payment: "pending_payment",
         in_progress: "in_progress",
         finished: "finished",
         delivered: "delivered",

@@ -100,6 +100,10 @@ RSpec.describe 'Budgets', type: :request do
   end
 
   path '/api/budgets/{id}/approve' do
+    before do
+      allow(EventBus::Publisher).to receive(:publish).and_return(true)
+    end
+
     post 'Approve a budget' do
       tags 'Budgets'
 

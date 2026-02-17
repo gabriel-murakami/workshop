@@ -11,6 +11,11 @@ resource "kubectl_manifest" "deployment" {
   depends_on = [kubectl_manifest.config, kubectl_manifest.secret]
 }
 
+resource "kubectl_manifest" "worker-deployment" {
+  yaml_body  = file("${path.module}/../k8s/order-worker-deployment.yaml")
+  depends_on = [kubectl_manifest.config, kubectl_manifest.secret]
+}
+
 resource "kubectl_manifest" "service" {
   yaml_body  = file("${path.module}/../k8s/web-service.yaml")
   depends_on = [kubectl_manifest.deployment]

@@ -1,41 +1,37 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: order-service-deployment
+  name: order-worker-deployment
   namespace: workshop
   labels:
-    app: order-service
-    tags.datadoghq.com/service: order-service
+    app: order-worker
+    tags.datadoghq.com/service: order-worker
     tags.datadoghq.com/env: development
     tags.datadoghq.com/version: "1.0.0"
 spec:
+  replicas: 1
   selector:
     matchLabels:
-      app: order-service
+      app: order-worker
   template:
     metadata:
       labels:
-        app: order-service
-        tags.datadoghq.com/service: order-service
+        app: order-worker
+        tags.datadoghq.com/service: order-worker
         tags.datadoghq.com/env: development
         tags.datadoghq.com/version: "1.0.0"
-      annotations:
-        ad.datadoghq.com/web.logs: |
-          [
-            {
-              "source": "ruby",
-              "service": "order-service"
-            }
-          ]
     spec:
       imagePullSecrets:
         - name: ghcr-secret
       containers:
-        - name: order-service
+        - name: order-worker
           image: "${IMAGE_URI}"
           imagePullPolicy: Always
-          ports:
-            - containerPort: 3000
+          command:
+            - bundle
+            - exec
+            - ruby
+            - bin/order_worker
           env:
             - name: DD_TRACE_HTTP_CLIENT_IGNORE_URLS
               value: "/up"
@@ -130,21 +126,8 @@ spec:
                   key: SECRET_KEY_BASE
           resources:
             requests:
-              cpu: "250m"
-              memory: "512Mi"
+              cpu: "200m"
+              memory: "256Mi"
             limits:
               cpu: "500m"
-              memory: "1Gi"
-          readinessProbe:
-            httpGet:
-              path: /up
-              port: 3000
-            initialDelaySeconds: 5
-            periodSeconds: 60
-          livenessProbe:
-            httpGet:
-              path: /up
-              port: 3000
-            initialDelaySeconds: 10
-            periodSeconds: 60
-      restartPolicy: Always
+              memory: "512Mi"

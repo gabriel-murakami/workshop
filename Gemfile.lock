@@ -81,6 +81,7 @@ GEM
       tzinfo (~> 2.0, >= 2.0.5)
     addressable (2.8.8)
       public_suffix (>= 2.0.2, < 8.0)
+    amq-protocol (2.5.1)
     ansi (1.5.0)
     ast (2.4.3)
     base64 (0.3.0)
@@ -92,6 +93,9 @@ GEM
     brakeman (8.0.2)
       racc
     builder (3.3.0)
+    bunny (2.24.0)
+      amq-protocol (~> 2.3)
+      sorted_set (~> 1, >= 1.0.2)
     case_transform (0.2)
       activesupport
     cgi (0.5.1)
@@ -279,6 +283,7 @@ GEM
       zeitwerk (~> 2.6)
     rainbow (3.1.1)
     rake (13.3.1)
+    rbtree (0.4.6)
     rdoc (7.0.1)
       erb
       psych (>= 4.0.0)
@@ -346,6 +351,10 @@ GEM
       rubocop-rails (>= 2.30)
     ruby-progressbar (1.13.0)
     securerandom (0.4.1)
+    serverengine (2.0.7)
+      sigdump (~> 0.2.2)
+    set (1.1.2)
+    sigdump (0.2.5)
     simplecov (0.22.0)
       docile (~> 1.1)
       simplecov-html (~> 0.11)
@@ -359,6 +368,15 @@ GEM
       json
       simplecov
     simplecov_json_formatter (0.1.4)
+    sneakers (2.11.0)
+      bunny (~> 2.12)
+      concurrent-ruby (~> 1.0)
+      rake
+      serverengine (~> 2.0.5)
+      thor
+    sorted_set (1.0.3)
+      rbtree
+      set (~> 1.0)
     stringio (3.2.0)
     terminal-table (4.0.0)
       unicode-display_width (>= 1.1.1, < 4)
@@ -394,6 +412,7 @@ DEPENDENCIES
   bcrypt
   bootsnap
   brakeman
+  bunny
   cpf_cnpj
   datadog
   debug
@@ -414,6 +433,7 @@ DEPENDENCIES
   simplecov
   simplecov-console
   simplecov-json
+  sneakers
   tzinfo-data
 
 BUNDLED WITH
