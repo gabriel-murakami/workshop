@@ -25,16 +25,6 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_27_142912) do
     t.index ["service_order_id"], name: "index_budgets_on_service_order_id", unique: true
   end
 
-  create_table "customers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "name", null: false
-    t.string "document_number", null: false
-    t.string "email"
-    t.string "phone"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["document_number"], name: "index_customers_on_document_number", unique: true
-  end
-
   create_table "metrics", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.integer "service_order_count", default: 0
     t.decimal "average_time", default: "0.0"
@@ -102,19 +92,6 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_27_142912) do
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
-  create_table "vehicles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "customer_id", null: false
-    t.string "license_plate", null: false
-    t.string "brand"
-    t.string "model"
-    t.integer "year"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["customer_id"], name: "index_vehicles_on_customer_id"
-    t.index ["license_plate"], name: "index_vehicles_on_license_plate", unique: true
-  end
-
   add_foreign_key "budgets", "service_orders"
   add_foreign_key "service_order_items", "service_orders"
-  add_foreign_key "vehicles", "customers"
 end
