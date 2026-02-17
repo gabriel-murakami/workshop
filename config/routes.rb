@@ -17,7 +17,17 @@ Rails.application.routes.draw do
 
       post "/login", to: "api/auth#login"
 
+      namespace :webhooks do
+        scope controller: :payments do
+          post "payments", action: :create
+        end
+      end
+
       namespace :api do
+        scope controller: :payments do
+          resources :payments, only: %i[index]
+        end
+
         scope controller: :customers do
           resources :customers, only: %i[index create update destroy]
           get "customers/:document_number", action: :show

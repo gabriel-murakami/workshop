@@ -18,7 +18,7 @@ RSpec.describe Infra::Clients::CustomerServiceClient do
     end
   end
 
-  describe "#customer_by_document" do
+  describe "#find_customer" do
     context "when request succeeds" do
       before do
         stubs.get("/api/customers/12345678900") do |env|
@@ -31,7 +31,7 @@ RSpec.describe Infra::Clients::CustomerServiceClient do
       end
 
       it "returns customer with indifferent access" do
-        result = client.customer_by_document("12345678900")
+        result = client.find_customer("12345678900")
 
         expect(result[:id]).to eq("abc-123")
         expect(result["id"]).to eq("abc-123")
@@ -52,7 +52,7 @@ RSpec.describe Infra::Clients::CustomerServiceClient do
 
       it "raises ExternalServiceError" do
         expect {
-          client.customer_by_document("000")
+          client.find_customer("000")
         }.to raise_error(Infra::Clients::ExternalServiceError) do |error|
           expect(error.status).to eq(404)
           expect(error.body).to eq({ error: "Not found" })

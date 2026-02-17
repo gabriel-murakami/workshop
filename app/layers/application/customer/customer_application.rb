@@ -5,8 +5,8 @@ module Application
         @client = client
       end
 
-      def find_by_document_number(document_number)
-        @client.customer_by_document(document_number)
+      def find(search_param)
+        @client.find_customer(search_param)
       end
     end
   end
