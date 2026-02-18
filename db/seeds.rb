@@ -7,6 +7,7 @@ Domain::ServiceOrder::Metric.delete_all
 Domain::ServiceOrder::User.delete_all
 Domain::Catalog::Service.delete_all
 Domain::Catalog::Product.delete_all
+Domain::ServiceOrder::Payment.delete_all
 
 Domain::ServiceOrder::User.create!(
   name: "Administrador",

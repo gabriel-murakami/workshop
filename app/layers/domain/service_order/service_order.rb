@@ -15,6 +15,7 @@ module Domain
         waiting_approval: "waiting_approval",
         approved: "approved",
         pending_payment: "pending_payment",
+        payment_approved: "payment_approved",
         in_progress: "in_progress",
         finished: "finished",
         delivered: "delivered",

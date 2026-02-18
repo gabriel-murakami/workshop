@@ -38,6 +38,7 @@ services:
       GID: ${GID}
       SMTP_USERNAME: ${SMTP_USERNAME}
       SMTP_PASSWORD: ${SMTP_PASSWORD}
+      MERCADOPAGO_TOKEN: ${MERCADOPAGO_TOKEN}
 
 volumes:
   pgdata:

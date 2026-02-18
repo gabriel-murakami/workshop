@@ -18,8 +18,8 @@ module Infra
         end
       end
 
-      def customer_by_document(document_number)
-        handle_response(@conn.get("/api/customers/#{document_number}"))
+      def find_customer(search_param)
+        handle_response(@conn.get("/api/customers/#{search_param}"))
       end
 
       def vehicle_by_license_plate(plate)

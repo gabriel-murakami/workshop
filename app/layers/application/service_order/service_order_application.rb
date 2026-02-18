@@ -209,7 +209,7 @@ module Application
         service_order = @service_order_repository.find_by_id(start_service_order_command.service_order_id)
 
         raise ::Exceptions::ServiceOrderException.new("Service order already started") if service_order.in_progress?
-        raise ::Exceptions::ServiceOrderException.new("The service order is not approved") unless service_order.approved?
+        raise ::Exceptions::ServiceOrderException.new("The service order is not approved") unless service_order.payment_approved?
 
         ActiveRecord::Base.transaction do
           @service_order_repository.update(
@@ -286,7 +286,7 @@ module Application
       end
 
       def find_customer(document_number)
-        Customer::CustomerApplication.new.find_by_document_number(document_number)
+        Customer::CustomerApplication.new.find(document_number)
       end
 
       def create_new_budget(service_order)
