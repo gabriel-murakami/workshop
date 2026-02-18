@@ -21,10 +21,6 @@ module EventBus
         persistent: true
       )
 
-      Rails.logger.tagged("EventBus::Publisher") do
-        Rails.logger.info(payload.merge(routing_key: routing_key))
-      end
-
       connection.close
     end
   end

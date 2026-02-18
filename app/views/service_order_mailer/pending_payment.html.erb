@@ -1,0 +1,12 @@
+<h2>Olá, <%= @customer[:name] %>!</h2>
+
+<p>
+  Sua ordem de serviço <strong><%= @service_order.id %></strong> está com o pagamento pendente.</strong>.
+</p>
+
+<p>Link para pagamento:</p>
+<a href="<%= @payment.provider_payload["init_point"] %>" target="_blank">
+  Checkout Mercado Pago
+</a>
+
+<p>Obrigado!</p>
