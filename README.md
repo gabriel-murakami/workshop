@@ -206,14 +206,17 @@ flowchart LR
                 AUTH["auth-function (Knative)"]
             end
 
-            subgraph API["Aplicação"]
-                WEB["Rails API"]
-                HPA["HPA"]
-                HPA --> WEB
+            subgraph Services["Microsserviços"]
+                ORDER["order-service (Rails API)"]
+                CUSTOMER["customer-service"]
+                CATALOG["catalog-service"]
             end
 
-            subgraph DB["Persistência"]
-                POSTGRES["PostgreSQL"]
+            subgraph DB["Persistência (Database per Service)"]
+                DB_ORDER_PG["PostgreSQL - order"]
+                DB_ORDER_MONGO["MongoDB - order"]
+                DB_CUSTOMER["PostgreSQL - customer"]
+                DB_CATALOG["PostgreSQL - catalog"]
             end
 
             subgraph Obs["Observabilidade"]
@@ -224,16 +227,35 @@ flowchart LR
 
     Client["Cliente / Frontend / HTTP Client"]
 
+    %% Entrada
     Client --> NGINX
+
+    %% Auth apenas no order-service
     NGINX --> AUTH
     AUTH --> NGINX
-    NGINX --> WEB
-    WEB --> POSTGRES
+    NGINX --> ORDER
 
+    %% Comunicação interna
+    ORDER --> CUSTOMER
+    ORDER --> CATALOG
+
+    %% Bancos
+    ORDER --> DB_ORDER_PG
+    ORDER --> DB_ORDER_MONGO
+    CUSTOMER --> DB_CUSTOMER
+    CATALOG --> DB_CATALOG
+
+    %% Observabilidade
     DD --> NGINX
     DD --> AUTH
-    DD --> WEB
-    DD --> POSTGRES
+    DD --> ORDER
+    DD --> CUSTOMER
+    DD --> CATALOG
+    DD --> DB_ORDER_PG
+    DD --> DB_ORDER_MONGO
+    DD --> DB_CUSTOMER
+    DD --> DB_CATALOG
+
 ```
 
 ## Diagrama de Sequência
@@ -242,39 +264,50 @@ sequenceDiagram
     participant Client as Cliente
     participant NGINX as NGINX Ingress
     participant AUTH as Auth Function (Knative)
-    participant API as Rails API
-    participant DB as PostgreSQL
+    participant ORDER as order-service
+    participant CUSTOMER as customer-service
+    participant CATALOG as catalog-service
+    participant DB_ORDER as DB Order
+    participant DB_CUSTOMER as DB Customer
+    participant DB_CATALOG as DB Catalog
 
     %% =====================
-    %% ETAPA 1 - AUTENTICAÇÃO
+    %% ETAPA 1 - AUTENTICAÇÃO (somente order-service)
     %% =====================
     Client->>NGINX: POST /auth (CPF)
     NGINX->>AUTH: Forward /auth
-
-    AUTH->>API: GET /internal/users?cpf
-    API->>DB: Busca usuário por CPF
-    DB-->>API: Usuário encontrado e ativo
-    API-->>AUTH: Status OK
-
     AUTH-->>NGINX: 200 OK + JWT
     NGINX-->>Client: 200 OK + JWT
 
     %% =====================
-    %% ETAPA 2 - USO DA API
+    %% ETAPA 2 - CRIAR ORDEM
     %% =====================
-    Client->>NGINX: POST /service_orders/open (Authorization: Bearer JWT)
+    Client->>NGINX: POST /orders (Bearer JWT)
     NGINX->>AUTH: auth_request (/auth/validate)
+    AUTH-->>NGINX: 200 OK + Headers
 
-    AUTH-->>NGINX: 200 OK + Headers (X-User-Id, X-User-CPF)
-    NGINX->>API: Forward request autorizado
+    NGINX->>ORDER: Forward request autorizado
 
-    API->>DB: Cria ordem de serviço
-    DB-->>API: Ordem persistida
+    %% Order consulta dados externos
+    ORDER->>CUSTOMER: GET /customers/{id}
+    CUSTOMER->>DB_CUSTOMER: Buscar cliente
+    DB_CUSTOMER-->>CUSTOMER: Cliente encontrado
+    CUSTOMER-->>ORDER: Dados do cliente
 
-    API-->>NGINX: 201 Created
+    ORDER->>CATALOG: GET /services/{id}
+    CATALOG->>DB_CATALOG: Buscar serviço
+    DB_CATALOG-->>CATALOG: Serviço encontrado
+    CATALOG-->>ORDER: Dados do serviço
+
+    %% Persistência final
+    ORDER->>DB_ORDER: Criar ordem
+    DB_ORDER-->>ORDER: Ordem persistida
+
+    ORDER-->>NGINX: 201 Created
     NGINX-->>Client: 201 Created + Payload
+
 
 ```
 
 ## Diagrama das Tabelas do Banco
-![Diagrama ER](docs/diagram.svg)
+<!-- ![Diagrama ER](docs/diagram.svg) -->

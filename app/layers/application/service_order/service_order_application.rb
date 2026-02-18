@@ -141,7 +141,7 @@ module Application
         products_list = products.map do |product|
           {
             item: product,
-            quantity: products_params.find { |param| param[:sku] == product.sku  }[:quantity]
+            quantity: products_params.find { |param| param[:sku] == product[:sku]  }[:quantity]
           }
         end
 
@@ -299,23 +299,17 @@ module Application
 
       def replace_products(service_order)
         service_order.service_order_items.products.each do |service_order_item|
-          stock_control_command = Application::Catalog::Commands::StockControlCommand.new(
-            product_id: service_order_item.item_id,
-            stock_change: service_order_item.quantity
+          Application::Catalog::ProductApplication.new.add_product(
+            { id: service_order_item.item_id, stock_change: service_order_item.quantity }
           )
-
-          Application::Catalog::ProductApplication.new.add_product(stock_control_command)
         end
       end
 
       def remove_products(products)
         products.each do |product|
-          stock_control_command = Application::Catalog::Commands::StockControlCommand.new(
-            product_id: product[:item].id,
-            stock_change: product[:quantity]
+          Application::Catalog::ProductApplication.new.remove_product(
+            { id: product[:item][:id], stock_change: product[:quantity] }
           )
-
-          Application::Catalog::ProductApplication.new.remove_product(stock_control_command)
         end
       end
 

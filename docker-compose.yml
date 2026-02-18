@@ -1,4 +1,16 @@
+version: "3.9"
+
 services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - /app/hdp/mongo/data:/data/db
+    networks:
+      - workshop_net
+
   db:
     image: postgres:15
     environment:
@@ -27,6 +39,7 @@ services:
       - "3000:3000"
     depends_on:
       - db
+      - mongodb
     networks:
       - workshop_net
     environment:
@@ -39,6 +52,7 @@ services:
       SMTP_USERNAME: ${SMTP_USERNAME}
       SMTP_PASSWORD: ${SMTP_PASSWORD}
       MERCADOPAGO_TOKEN: ${MERCADOPAGO_TOKEN}
+      MONGO_URL: mongodb://mongodb:27017
 
 volumes:
   pgdata:
@@ -48,3 +62,4 @@ volumes:
 
 networks:
   workshop_net:
+    driver: bridge

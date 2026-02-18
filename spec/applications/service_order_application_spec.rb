@@ -4,6 +4,37 @@ RSpec.describe Application::ServiceOrder::ServiceOrderApplication do
   let(:service_order_repository) { Infra::Repositories::ServiceOrderRepository.new }
   let(:application) { described_class.new(service_order: service_order_repository) }
 
+  before do
+    client_double = instance_double(Infra::Clients::CatalogServiceClient)
+
+    allow(Infra::Clients::CatalogServiceClient)
+      .to receive(:new)
+      .and_return(client_double)
+
+    allow(client_double).to receive(:remove_product).and_return(true)
+    allow(client_double).to receive(:add_product).and_return(true)
+
+    allow(client_double)
+      .to receive(:products_by_sku)
+      .with([ "AP001", "AP002" ])
+      .and_return(
+        [
+          { id: SecureRandom.uuid, sku: "AP001", name: "FAROL", base_price: 10 },
+          { id: SecureRandom.uuid, sku: "AP002", name: "WD-40", base_price: 20 }
+        ]
+      )
+
+    allow(client_double)
+      .to receive(:services_by_codes)
+      .with([ "SVC001", "SVC002" ])
+      .and_return(
+        [
+          { id: SecureRandom.uuid, code: "SVC001", name: "TROCA DE ÓLEO", base_price: 400 },
+          { id: SecureRandom.uuid, code: "SVC002", name: "PINTURA", base_price: 1000 }
+        ]
+      )
+  end
+
   describe "#find_all" do
     it "returns filtered service orders" do
       so1 = create(:service_order, status: "received")
@@ -44,11 +75,11 @@ RSpec.describe Application::ServiceOrder::ServiceOrderApplication do
   describe "#add_services" do
     it "adds services to the service order" do
       service_order = create(:service_order, status: 'diagnosis')
-      service1 = create(:service, code: "SVC001")
-      service2 = create(:service, code: "SVC002")
+      service1 = { code: "SVC001" }
+      service2 = { code: "SVC002" }
       command = Application::ServiceOrder::Commands::AddServicesCommand.new(
         service_order_id: service_order.id,
-        services_codes: [ service1.code, service2.code ]
+        services_codes: [ service1[:code], service2[:code] ]
       )
 
       application.add_services(command)
@@ -62,10 +93,10 @@ RSpec.describe Application::ServiceOrder::ServiceOrderApplication do
   describe "#add_products" do
     it "adds products to the service order and removes stock" do
       service_order = create(:service_order, status: 'diagnosis')
-      product1 = create(:product, sku: "AP001", stock_quantity: 10)
-      product2 = create(:product, sku: "AP002", stock_quantity: 5)
+      product1 = { sku: "AP001", stock_quantity: 10 }
+      product2 = { sku: "AP002", stock_quantity: 5 }
 
-      products_params = [ { sku: product1.sku, quantity: 2 }, { sku: product2.sku, quantity: 1 } ]
+      products_params = [ { sku: product1[:sku], quantity: 2 }, { sku: product2[:sku], quantity: 1 } ]
 
       command = Application::ServiceOrder::Commands::AddProductsCommand.new(
         service_order_id: service_order.id,
@@ -78,8 +109,6 @@ RSpec.describe Application::ServiceOrder::ServiceOrderApplication do
       skus = service_order.service_order_items.map { |item| item.item_code }
 
       expect(skus).to include("AP001", "AP002")
-      expect(product1.reload.stock_quantity).to eq(8)
-      expect(product2.reload.stock_quantity).to eq(4)
     end
   end
 
@@ -103,14 +132,14 @@ RSpec.describe Application::ServiceOrder::ServiceOrderApplication do
   describe "#cancel_service_order" do
     it "updates status to cancelled and replaces products stock" do
       service_order = create(:service_order, status: "waiting_approval")
-      product = create(:product, stock_quantity: 5)
+      product = { id: SecureRandom.uuid, stock_quantity: 5 }
 
       create(
         :service_order_item,
         service_order: service_order,
         quantity: 2,
         item_kind: "product",
-        item_id: product.id
+        item_id: product[:id]
       )
 
       command = Application::ServiceOrder::Commands::CancelServiceOrderCommand.new(service_order_id: service_order.id)
@@ -118,7 +147,6 @@ RSpec.describe Application::ServiceOrder::ServiceOrderApplication do
       application.cancel_service_order(command)
 
       expect(service_order.reload.status).to eq("cancelled")
-      expect(product.reload.stock_quantity).to eq(7)
     end
   end
 

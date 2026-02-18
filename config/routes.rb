@@ -28,27 +28,6 @@ Rails.application.routes.draw do
           resources :payments, only: %i[index]
         end
 
-        scope controller: :customers do
-          resources :customers, only: %i[index create update destroy]
-          get "customers/:document_number", action: :show
-          patch "customers/:document_number/add_vehicle", action: :add_vehicle
-        end
-
-        scope controller: :vehicles do
-          resources :vehicles, only: %i[index create update destroy]
-          get "vehicles/:license_plate", action: :show
-        end
-
-        scope controller: :services do
-          resources :services, only: %i[index create update destroy show]
-        end
-
-        scope controller: :products do
-          resources :products, only: %i[index create update destroy show]
-          post "products/:id/add", action: :add_products
-          post "products/:id/remove", action: :remove_products
-        end
-
         scope controller: :metrics do
           resources :metrics, only: %i[index]
         end

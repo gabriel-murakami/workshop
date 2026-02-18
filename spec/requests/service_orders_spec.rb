@@ -4,22 +4,50 @@ RSpec.describe 'Service Orders', type: :request do
   let(:customer_id) { Faker::Internet.uuid }
   let(:vehicle_id) { Faker::Internet.uuid }
 
-  before do
-    client_double = instance_double(Infra::Clients::CustomerServiceClient)
+  let(:customer_client_double) { instance_double(Infra::Clients::CustomerServiceClient) }
+  let(:catalog_client_double) { instance_double(Infra::Clients::CatalogServiceClient) }
 
+  before do
     allow(Infra::Clients::CustomerServiceClient)
       .to receive(:new)
-      .and_return(client_double)
+      .and_return(customer_client_double)
 
-    allow(client_double)
+    allow(customer_client_double)
       .to receive(:find_customer)
       .with("12345678900")
       .and_return({ id: customer_id })
 
-    allow(client_double)
+    allow(customer_client_double)
       .to receive(:vehicle_by_license_plate)
       .with("ABC1234")
       .and_return({ id: vehicle_id, customer_id: customer_id })
+
+    allow(Infra::Clients::CatalogServiceClient)
+      .to receive(:new)
+      .and_return(catalog_client_double)
+
+    allow(catalog_client_double).to receive(:remove_product).and_return(true)
+    allow(catalog_client_double).to receive(:add_product).and_return(true)
+
+    allow(catalog_client_double)
+      .to receive(:products_by_sku)
+      .with([ "AP001", "AP002" ])
+      .and_return(
+        [
+          { id: SecureRandom.uuid, sku: "AP001", name: "FAROL", base_price: 10 },
+          { id: SecureRandom.uuid, sku: "AP002", name: "WD-40", base_price: 20 }
+        ]
+      )
+
+    allow(catalog_client_double)
+      .to receive(:services_by_codes)
+      .with([ "SVC001", "SVC002" ])
+      .and_return(
+        [
+          { id: SecureRandom.uuid, code: "SVC001", name: "TROCA DE ÓLEO", base_price: 400 },
+          { id: SecureRandom.uuid, code: "SVC002", name: "PINTURA", base_price: 1000 }
+        ]
+      )
   end
 
   path '/api/service_orders/{id}' do
@@ -177,17 +205,24 @@ RSpec.describe 'Service Orders', type: :request do
       }
 
       response '200', 'services added' do
-        let(:service1) { create(:service) }
-        let(:service2) { create(:service) }
+        let(:service1) { { id: SecureRandom.uuid, code: "SVC001" } }
+        let(:service2) { { id: SecureRandom.uuid, code: "SVC002" } }
 
         let(:service_order) { create(:service_order, status: 'diagnosis') }
         let(:id) { service_order.id }
-        let(:body) { { services_codes: [ service1.code, service2.code ] } }
+        let(:body) { { services_codes: [ service1[:code], service2[:code] ] } }
 
         run_test!
       end
 
       response '422', 'invalid services' do
+        before do
+          allow(catalog_client_double)
+            .to receive(:services_by_codes)
+            .with([ "SVC111", "SVC222" ])
+            .and_return([])
+        end
+
         let(:service_order) { create(:service_order, status: 'diagnosis') }
         let(:id) { service_order.id }
         let(:body) { { services_codes: [ 'SVC111', 'SVC222' ] } }
@@ -223,10 +258,17 @@ RSpec.describe 'Service Orders', type: :request do
       }
 
       response '200', 'products added' do
-        let(:product) { create(:product) }
+        before do
+          allow(catalog_client_double)
+            .to receive(:products_by_sku)
+            .with([ "AP001" ])
+            .and_return([ product ])
+        end
+
+        let(:product) { { id: SecureRandom.uuid, sku: "AP001", quantity: 10, base_price: 10, name: "WD-40" } }
         let(:service_order) { create(:service_order, status: 'diagnosis') }
         let(:id) { service_order.id }
-        let(:body) { { products_params: [ { sku: product.sku, quantity: 2 } ] } }
+        let(:body) { { products_params: [ { sku: product[:sku], quantity: 2 } ] } }
 
         run_test!
       end
@@ -352,17 +394,24 @@ RSpec.describe 'Service Orders', type: :request do
       }
 
       response '201', 'service order opened successfully' do
-        let(:service1) { create(:service) }
-        let(:service2) { create(:service) }
-        let(:product)  { create(:product) }
+        before do
+          allow(catalog_client_double)
+            .to receive(:products_by_sku)
+            .with([ "AP001" ])
+            .and_return([ product ])
+        end
+
+        let(:service1) { { id: SecureRandom.uuid, code: "SVC001", name: "TROCA DE ÓLEO", base_price: 400 } }
+        let(:service2) { { id: SecureRandom.uuid, code: "SVC002", name: "PINTURA", base_price: 1000 } }
+        let(:product)  { { id: SecureRandom.uuid, sku: "AP001", name: "FAROL", base_price: 10 } }
 
         let(:body) do
           {
             document_number: "12345678900",
             license_plate: "ABC1234",
-            services_codes: [ service1.code, service2.code ],
+            services_codes: [ service1[:code], service2[:code] ],
             products_params: [
-              { sku: product.sku, quantity: 2 }
+              { sku: product[:sku], quantity: 2 }
             ]
           }
         end

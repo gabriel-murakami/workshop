@@ -36,6 +36,7 @@ jobs:
           SECRET_KEY_BASE: ${{ secrets.SECRET_KEY_BASE }}
           INTERNAL_AUTH_TOKEN: ${{ secrets.INTERNAL_AUTH_TOKEN }}
           CUSTOMER_SERVICE_URL: ${{ secrets.CUSTOMER_SERVICE_URL }}
+          CATALOG_SERVICE_URL: ${{ secrets.CATALOG_SERVICE_URL }}
           RABBITMQ_HOST: ${{ secrets.RABBITMQ_HOST }}
           RABBITMQ_USER: ${{ secrets.RABBITMQ_USER }}
           RABBITMQ_PASSWORD: ${{ secrets.RABBITMQ_PASSWORD }}
