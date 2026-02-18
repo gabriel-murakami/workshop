@@ -1,6 +1,6 @@
 development:
   clients:
     default:
-      database: workshop_payments_development
+      database: order_service_mongodb
       hosts:
         - mongodb:27017
