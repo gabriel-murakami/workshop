@@ -10,7 +10,7 @@ module Web
         def show
           service_order = Application::ServiceOrder::ServiceOrderApplication.new.find_by_id(params[:id])
 
-          render json: service_order, include: :service_order_items
+          render json: service_order, serializer: ::Serializers::Domain::ServiceOrder::ServiceOrderSerializer
         end
 
         def current_status

@@ -15,6 +15,8 @@ gem "dogstatsd-ruby"
 gem "faraday"
 gem "sneakers"
 gem "bunny"
+gem "mongoid", "~> 8.0"
+gem "mercadopago-sdk"
 
 group :test do
   gem "simplecov", require: false

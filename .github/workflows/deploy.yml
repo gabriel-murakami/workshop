@@ -39,6 +39,8 @@ jobs:
           RABBITMQ_HOST: ${{ secrets.RABBITMQ_HOST }}
           RABBITMQ_USER: ${{ secrets.RABBITMQ_USER }}
           RABBITMQ_PASSWORD: ${{ secrets.RABBITMQ_PASSWORD }}
+          MERCADOPAGO_TOKEN: ${{ secrets.MERCADOPAGO_TOKEN }}
+          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
         run: |
           envsubst < infra/k8s/order-service-deployment.tmpl.yaml > infra/k8s/order-service-deployment.yaml
           envsubst < infra/k8s/order-worker-deployment.tmpl.yaml > infra/k8s/order-worker-deployment.yaml

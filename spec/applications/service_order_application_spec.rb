@@ -124,7 +124,7 @@ RSpec.describe Application::ServiceOrder::ServiceOrderApplication do
 
   describe "#start_service_order" do
     it "starts the service order setting status and start time" do
-      service_order = create(:service_order, status: "approved")
+      service_order = create(:service_order, status: "payment_approved")
       command = Application::ServiceOrder::Commands::StartServiceOrderCommand.new(service_order_id: service_order.id)
 
       updated = application.start_service_order(command)

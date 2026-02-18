@@ -13,12 +13,23 @@ module Infra
                 ack: true
 
       def work(raw_message)
-        payload = JSON.parse(raw_message, symbolize_names: true)
+        event = JSON.parse(raw_message, symbolize_names: true)
 
-        Rails.logger.info("ORDER APPROVED")
-        Rails.logger.info(payload)
+        result = Infra::Clients::MercadopagoClient.new(
+          service_order_id: event[:service_order_id]
+        ).create_order(event[:amount])
 
-        Application::ServiceOrder::ServiceOrderApplication.new.send_to_pending_payment(payload[:service_order_id])
+        Domain::ServiceOrder::Payment.create!(
+          service_order_id: event[:service_order_id],
+          amount: event[:amount],
+          status: "pending",
+          external_id: result["id"],
+          provider_payload: result.slice(
+            "init_point", "notification_url", "operation_type", "items"
+          )
+        )
+
+        Application::ServiceOrder::ServiceOrderApplication.new.send_to_pending_payment(event[:service_order_id])
 
         ack!
       rescue => e

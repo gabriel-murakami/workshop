@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-ENV["RAILS_ENV"] ||= "development"
+# ENV["RAILS_ENV"] ||= "development"
 
 require_relative "../config/environment"
 
@@ -9,4 +9,7 @@ Rails.application.eager_load!
 require "sneakers"
 require "sneakers/cli"
 
-Sneakers::CLI.start(["work", "Infra::Workers::OrderApprovedWorker"])
+Sneakers::CLI.start([
+  "work",
+  "Infra::Workers::OrderApprovedWorker,Infra::Workers::PaymentReceivedWorker"
+])
