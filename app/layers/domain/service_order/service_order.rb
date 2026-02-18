@@ -34,34 +34,34 @@ module Domain
 
       def add_services(services_to_add)
         services_to_add.each do |service|
-          if self.service_order_items.services.any? { |soi| soi.item_id == service.id }
-            raise ::Exceptions::ServiceOrderException.new("Service #{service.code} already added")
+          if self.service_order_items.services.any? { |soi| soi.item_id == service[:id] }
+            raise ::Exceptions::ServiceOrderException.new("Service #{service[:code]} already added")
           end
 
           service_order_items.create(
-            item_id: service.id,
-            item_name: service.name,
-            item_code: service.code,
+            item_id: service[:id],
+            item_name: service[:name],
+            item_code: service[:code],
             item_kind: ServiceOrderItem::ITEM_KINDS[:service],
             quantity: 1,
-            total_value: service.base_price
+            total_value: service[:base_price]
           )
         end
       end
 
       def add_products(products_to_add)
         products_to_add.each do |product|
-          if self.service_order_items.products.any? { |soi| soi.item_id == product[:item].id }
-            raise Exceptions::ServiceOrderException.new("Auto part #{product[:item].sku} already added")
+          if self.service_order_items.products.any? { |soi| soi.item_id == product[:item][:id] }
+            raise Exceptions::ServiceOrderException.new("Auto part #{product[:item][:sku]} already added")
           end
 
           service_order_items.create(
-            item_id: product[:item].id,
-            item_name: product[:item].name,
-            item_code: product[:item].sku,
+            item_id: product[:item][:id],
+            item_name: product[:item][:name],
+            item_code: product[:item][:sku],
             item_kind: ServiceOrderItem::ITEM_KINDS[:product],
             quantity: product[:quantity],
-            total_value: product[:item].base_price * product[:quantity]
+            total_value: product[:item][:base_price] * product[:quantity]
           )
         end
       end
