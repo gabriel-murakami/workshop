@@ -1,19 +1,18 @@
 <h2>Olá, <%= @customer[:name] %>!</h2>
 
 <p>
-  Sua ordem de serviço <strong><%= @service_order.id %></strong> teve o status atualizado para:
+  Sua Ordem de Serviço <strong><%= @service_order.id %></strong> teve o status atualizado para:
   <strong><%= @service_order.status.humanize %></strong>.
 </p>
 
 <p>Resumo da ordem de serviço:</p>
 <ul>
-  <li>Veículo: <%= @vehicle[:license_plate] %></li>
   <% if @service_order.services.any? %>
     <li>
       Serviços:
       <ul>
         <% @service_order.services.each do |service| %>
-          <li><%= service.item_name %></li>
+          <li><%= service.item_name %> - R$ <%= service.total_value.to_s %></li>
         <% end %>
       </ul>
     </li>
@@ -23,7 +22,7 @@
       Produtos/Peças:
       <ul>
         <% @service_order.products.each do |product| %>
-          <li><%= product.item_name %></li>
+          <li><%= product.item_name %> - R$ <%= product.total_value.to_s %></li>
         <% end %>
       </ul>
     </li>

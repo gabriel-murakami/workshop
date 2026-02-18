@@ -19,6 +19,18 @@ module Web
           render json: service_order, serializer: ::Serializers::Domain::ServiceOrder::CurrentStatusSerializer
         end
 
+        def create
+          service_order = Application::ServiceOrder::ServiceOrderApplication.new.create_service_order(
+            Application::ServiceOrder::Commands::CreateServiceOrderCommand.new(
+              document_number: permitted_params[:document_number],
+              license_plate: permitted_params[:license_plate]
+            )
+          )
+
+          render json: service_order, status: :created,
+            serializer: ::Serializers::Domain::ServiceOrder::ServiceOrderSerializer
+        end
+
         def open
           service_order = Application::ServiceOrder::ServiceOrderApplication.new.open_service_order(
             Application::ServiceOrder::Commands::OpenServiceOrderCommand.new(

@@ -19,9 +19,8 @@ module Application
 
         ActiveRecord::Base.transaction do
           @budget_repository.update(budget, { status: "approved" })
+          approve_service_order(budget)
         end
-
-        approve_service_order(budget)
 
         Rails.logger.info({ budget_id: budget.id, status: "approved", timestamp: Time.current })
       end
@@ -31,9 +30,8 @@ module Application
 
         ActiveRecord::Base.transaction do
           @budget_repository.update(budget, { status: "rejected" })
+          cancel_service_order(budget)
         end
-
-        cancel_service_order(budget)
 
         Rails.logger.info({ budget_id: budget.id, status: "rejected", timestamp: Time.current })
       end

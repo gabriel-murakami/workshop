@@ -43,13 +43,20 @@ module Application
       end
 
       def create_service_order(create_service_order_command)
-        if create_service_order_command.customer_id.nil? || create_service_order_command.vehicle_id.nil?
-          raise ::Exceptions::ServiceOrderException.new("customer_id and vehicle_id is required")
+        if create_service_order_command.document_number.nil? || create_service_order_command.license_plate.nil?
+          raise ::Exceptions::ServiceOrderException.new("document_number and license_plate is required")
+        end
+
+        customer = find_customer(create_service_order_command.document_number)
+        vehicle = find_vehicle(create_service_order_command.license_plate)
+
+        if vehicle[:customer_id] != customer[:id]
+          raise ::Exceptions::ServiceOrderException.new("The vehicle does not belong to this customer")
         end
 
         service_order = Domain::ServiceOrder::ServiceOrder.new(
-          customer_id: create_service_order_command.customer_id,
-          vehicle_id: create_service_order_command.vehicle_id
+          customer_id: customer[:id],
+          vehicle_id: vehicle[:id]
         )
 
         created_service_order = ActiveRecord::Base.transaction do
@@ -144,6 +151,8 @@ module Application
             quantity: products_params.find { |param| param[:sku] == product[:sku]  }[:quantity]
           }
         end
+
+        Rails.logger.info("ProductsList: #{products_list.inspect}")
 
         updated_service_order = ActiveRecord::Base.transaction do
           service_order.add_products(products_list)

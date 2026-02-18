@@ -2,11 +2,11 @@ module Application
   module ServiceOrder
     module Commands
       class CreateServiceOrderCommand
-        attr_accessor :customer_id, :vehicle_id
+        attr_accessor :document_number, :license_plate
 
-        def initialize(customer_id:, vehicle_id:)
-          @customer_id = customer_id
-          @vehicle_id = vehicle_id
+        def initialize(document_number:, license_plate:)
+          @document_number = document_number
+          @license_plate = license_plate
         end
       end
     end
