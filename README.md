@@ -133,6 +133,9 @@ terraform apply
 minikube tunnel
 ```
 
+## Cobertura de Testes
+![Cobertura de Testes](docs/coverage.png)
+
 ## Provisionamento por Repositório
 ```mermaid
 flowchart LR
@@ -212,6 +215,10 @@ flowchart LR
                 CATALOG["catalog-service"]
             end
 
+            subgraph Messaging["Mensageria"]
+                RABBIT["RabbitMQ"]
+            end
+
             subgraph DB["Persistência (Database per Service)"]
                 DB_ORDER_PG["PostgreSQL - order"]
                 DB_ORDER_MONGO["MongoDB - order"]
@@ -235,9 +242,12 @@ flowchart LR
     AUTH --> NGINX
     NGINX --> ORDER
 
-    %% Comunicação interna
+    %% Comunicação síncrona
     ORDER --> CUSTOMER
     ORDER --> CATALOG
+
+    %% Comunicação assíncrona (eventos)
+    ORDER --> RABBIT
 
     %% Bancos
     ORDER --> DB_ORDER_PG
